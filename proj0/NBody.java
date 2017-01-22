@@ -5,8 +5,8 @@ public class NBody {
       String filename=args[2];
       double uniradius=NBody.readRadius(filename);
       Planet[] solar=NBody.readPlanets(filename);
-      StdDraw.setScale(0,uniradius*2);
-      StdDraw.picture(uniradius,uniradius,"./images/starfield.jpg");
+      StdDraw.setScale(-uniradius,uniradius);
+      StdDraw.picture(0,0,"./images/starfield.jpg");
       for (Planet aurora:solar){
           aurora.draw();
       }
@@ -23,11 +23,11 @@ public class NBody {
         for (int i=0;i<5;i++){
           solar[i].update(dt,Xforces[i],Yforces[i]);
         }
-        StdDraw.picture(uniradius,uniradius,"./images/starfield.jpg");
+        StdDraw.picture(0,0,"./images/starfield.jpg");
         for (Planet aurora:solar){
             aurora.draw();
         }
-        StdDraw.show();
+        StdDraw.show(10);
         time=time+dt;
       }
     }
