@@ -44,4 +44,38 @@ public class Planet {
          return this.calcForceExertedBy(b)*bigminussmall(this.yyPos,b.yyPos)/this.calcDistance(b);
   }
 
+  public double calcNetForceExertedByX(Planet[] Galaxy){
+         double force=0;
+         for (Planet deathstar:Galaxy){
+           if (deathstar.equals(this)){
+             force=force+0;
+           }
+           else{
+             force=force+this.calcForceExertedByX(deathstar);
+           }
+         }
+         return force;
+  }
+
+  public double calcNetForceExertedByY(Planet[] Galaxy){
+         double force=0;
+         for (Planet deathstar:Galaxy){
+           if (deathstar.equals(this)){
+             force=force+0;
+           }
+           else{
+             force=force+this.calcForceExertedByY(deathstar);
+           }
+         }
+         return force;
+  }
+
+  public void update(double time,double forceX, double forceY){
+        double accerX=forceX/this.mass;
+        double accerY=forceY/this.mass;
+        this.xxVel=this.xxVel+accerX*time;
+        this.yyVel=this.yyVel+accerY*time;
+        this.xxPos=this.xxPos+time*this.xxVel;
+        this.yyPos=this.yyPos+time*this.yyVel;
+  }
 }
