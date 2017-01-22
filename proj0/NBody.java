@@ -1,4 +1,37 @@
 public class NBody {
+    public static void main(String[]args){
+      double T=Double.parseDouble(args[0]);
+      double dt=Double.parseDouble(args[1]);
+      String filename=args[2];
+      double uniradius=NBody.readRadius(filename);
+      Planet[] solar=NBody.readPlanets(filename);
+      StdDraw.setScale(0,uniradius*2);
+      StdDraw.picture(uniradius,uniradius,"./images/starfield.jpg");
+      for (Planet aurora:solar){
+          aurora.draw();
+      }
+      double time=0;
+      while(time<T){
+        double[] Xforces=new double[5];
+        double[] Yforces=new double[5];
+        for (int i=0;i<5;i++){
+          double forcex=solar[i].calcNetForceExertedByX(solar);
+          Xforces[i]=forcex;
+          double forcey=solar[i].calcNetForceExertedByY(solar);
+          Yforces[i]=forcey;
+        }
+        for (int i=0;i<5;i++){
+          solar[i].update(dt,Xforces[i],Yforces[i]);
+        }
+        StdDraw.picture(uniradius,uniradius,"./images/starfield.jpg");
+        for (Planet aurora:solar){
+            aurora.draw();
+        }
+        StdDraw.show();
+        time=time+dt;
+      }
+    }
+
     public static double readRadius(String directory){
       In in=new In(directory);
       int index=0;
@@ -13,21 +46,22 @@ public class NBody {
     public static Planet[] readPlanets(String directory){
       In in=new In(directory);
       int index=0;
-      Planet[] a=new Planet[5];
+      Planet[] solar=new Planet[5];
+      double nonsense=0;
       while (index<2){
         nonsense=in.readDouble();
         index=index+1;
       }
-      while(!in.isEmpty()){
+      for(int i=0; i<5;i++){
            double a=in.readDouble();
            double b=in.readDouble();
            double c=in.readDouble();
            double d=in.readDouble();
            double e=in.readDouble();
            String f=in.readString();
-           Planet livestar=Planet(a,b,c,d,e,f);
-           a.add(livestar);
+           Planet livestar=new Planet(a,b,c,d,e,f);
+           solar[i]=livestar;
       }
-      return a;
+      return solar;
     }
 }
