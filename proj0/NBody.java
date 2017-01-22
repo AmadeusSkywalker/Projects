@@ -30,7 +30,13 @@ public class NBody {
         StdDraw.show(10);
         time=time+dt;
       }
-    }
+      StdOut.printf("%d\n", solar.length);
+      StdOut.printf("%.2e\n", uniradius);
+      for (int i = 0; i < solar.length; i++) {
+	          StdOut.printf("%11.4e %11.4e %11.4e %11.4e %11.4e %12s\n",
+   	      	solar[i].xxPos, solar[i].yyPos, solar[i].xxVel, solar[i].yyVel, solar[i].mass, solar[i].imgFileName);
+      }
+      }
 
     public static double readRadius(String directory){
       In in=new In(directory);
