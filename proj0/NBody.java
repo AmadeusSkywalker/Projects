@@ -6,10 +6,10 @@ public class NBody {
       double uniradius=NBody.readRadius(filename);
       Planet[] solar=NBody.readPlanets(filename);
       StdDraw.setScale(-uniradius,uniradius);
-      double time=0;
+      double[] Xforces=new double[solar.length];
+      double[] Yforces=new double[solar.length];
+      int time=0;
       while(time<T){
-        double[] Xforces=new double[solar.length];
-        double[] Yforces=new double[solar.length];
         for (int i=0;i<solar.length;i++){
           double forcex=solar[i].calcNetForceExertedByX(solar);
           Xforces[i]=forcex;
@@ -38,7 +38,7 @@ public class NBody {
       In in=new In(directory);
       int index=0;
       double radius=0;
-      int papajones=in.readInt();
+      int numberofplanets=in.readInt();
       radius=in.readDouble();
       return radius;
     }
@@ -47,10 +47,8 @@ public class NBody {
       In in=new In(directory);
       int index=0;
       Planet[] solar=new Planet[5];
-      int denero=0;
-      double hug=0;
-      denero=in.readInt();
-      hug=in.readDouble();
+      int denero=in.readInt();
+      double hug=in.readDouble();
       for(int i=0; i<5;i++){
            double a=in.readDouble();
            double b=in.readDouble();
