@@ -6,15 +6,11 @@ public class NBody {
       double uniradius=NBody.readRadius(filename);
       Planet[] solar=NBody.readPlanets(filename);
       StdDraw.setScale(-uniradius,uniradius);
-      StdDraw.picture(0,0,"./images/starfield.jpg");
-      for (Planet aurora:solar){
-          aurora.draw();
-      }
       double time=0;
       while(time<T){
-        double[] Xforces=new double[5];
-        double[] Yforces=new double[5];
-        for (int i=0;i<5;i++){
+        double[] Xforces=new double[solar.length];
+        double[] Yforces=new double[solar.length];
+        for (int i=0;i<solar.length;i++){
           double forcex=solar[i].calcNetForceExertedByX(solar);
           Xforces[i]=forcex;
           double forcey=solar[i].calcNetForceExertedByY(solar);
