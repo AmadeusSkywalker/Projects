@@ -42,10 +42,8 @@ public class NBody {
       In in=new In(directory);
       int index=0;
       double radius=0;
-      while (index<2){
-        radius=in.readDouble();
-        index=index+1;
-      }
+      int papajones=in.readInt();
+      radius=in.readDouble();
       return radius;
     }
 
@@ -53,11 +51,10 @@ public class NBody {
       In in=new In(directory);
       int index=0;
       Planet[] solar=new Planet[5];
-      double nonsense=0;
-      while (index<2){
-        nonsense=in.readDouble();
-        index=index+1;
-      }
+      int denero=0;
+      double hug=0;
+      denero=in.readInt();
+      hug=in.readDouble();
       for(int i=0; i<5;i++){
            double a=in.readDouble();
            double b=in.readDouble();
