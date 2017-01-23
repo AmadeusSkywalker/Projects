@@ -24,7 +24,7 @@ public class NBody {
             aurora.draw();
         }
         StdDraw.show(10);
-        time=time+dt;
+        time+=dt;
       }
       StdOut.printf("%d\n", solar.length);
       StdOut.printf("%.2e\n", uniradius);
