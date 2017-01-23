@@ -5,7 +5,7 @@ public class Planet {
   public double xxVel;
   public double yyPos;
   public double yyVel;
-  public static double G=6.67*Math.pow(10,-11);
+  private static double G=6.67*Math.pow(10,-11);
   public Planet(double xP, double yP, double xV,double yV, double m, String img){
     xxPos=xP;
     yyPos=yP;
