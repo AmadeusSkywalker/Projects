@@ -15,15 +15,6 @@ public class Planet {
     imgFileName=img;
   }
 
-  public static double bigminussmall(double x,double y){
-    if (x>y){
-      return x-y;
-    }
-    else{
-      return y-x;
-    }
-  }
-
   public Planet(Planet p){
         this(p.xxPos,p.yyPos,p.xxVel,p.yyVel,p.mass,p.imgFileName);
   }
@@ -37,11 +28,11 @@ public class Planet {
   }
 
   public double calcForceExertedByX(Planet b){
-         return this.calcForceExertedBy(b)*bigminussmall(this.xxPos,b.xxPos)/this.calcDistance(b);
+         return this.calcForceExertedBy(b)*(b.xxPos-this.xxPos)/this.calcDistance(b);
   }
 
   public double calcForceExertedByY(Planet b){
-         return this.calcForceExertedBy(b)*bigminussmall(this.yyPos,b.yyPos)/this.calcDistance(b);
+         return this.calcForceExertedBy(b)*(b.yyPos-this.yyPos)/this.calcDistance(b);
   }
 
   public double calcNetForceExertedByX(Planet[] Galaxy){
