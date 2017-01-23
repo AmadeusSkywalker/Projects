@@ -1,11 +1,11 @@
 public class Planet {
-  double xxPos;
-  double yyPos;
-  double xxVel;
-  double yyVel;
-  double mass;
-  String imgFileName;
-  static double G=6.67*Math.pow(10,-11);
+  public String imgFileName;
+  public double mass;
+  public double xxPos;
+  public double xxVel;
+  public double yyPos;
+  public double yyVel;
+  public static double G=6.67*Math.pow(10,-11);
   public Planet(double xP, double yP, double xV,double yV, double m, String img){
     xxPos=xP;
     yyPos=yP;
