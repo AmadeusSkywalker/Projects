@@ -16,7 +16,7 @@ public class NBody {
           double forcey=solar[i].calcNetForceExertedByY(solar);
           Yforces[i]=forcey;
         }
-        for (int i=0;i<5;i++){
+        for (int i=0;i<solar.length;i++){
           solar[i].update(dt,Xforces[i],Yforces[i]);
         }
         StdDraw.picture(0,0,"./images/starfield.jpg");
