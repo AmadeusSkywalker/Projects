@@ -80,6 +80,9 @@ public class IntList {
      */
 
     public static IntList dcatenate(IntList A, IntList B) {
+        if(A==null){
+            return B;
+        }
         IntList L=A;
         while(L.rest!=null){
             L=L.rest;
@@ -93,6 +96,12 @@ public class IntList {
      * * elements of B.  May NOT modify items of A.  Use 'new'.
      */
     public static IntList catenate(IntList A, IntList B) {
+        if (A==null){
+            return B;
+        }
+        if (B==null){
+            return B;
+        }
         IntList comb=new IntList(A.first,null);
         IntList pointer=comb;
         A=A.rest;
