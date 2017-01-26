@@ -99,9 +99,6 @@ public class IntList {
         if (A==null){
             return B;
         }
-        if (B==null){
-            return B;
-        }
         IntList comb=new IntList(A.first,null);
         IntList pointer=comb;
         A=A.rest;
@@ -109,6 +106,9 @@ public class IntList {
             pointer.rest=new IntList(A.first,null);
             A=A.rest;
             pointer=pointer.rest;
+        }
+        if (B==null){
+            return comb;
         }
         while(B!=null){
             pointer.rest=new IntList(B.first,null);
