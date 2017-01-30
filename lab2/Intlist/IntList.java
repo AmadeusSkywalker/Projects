@@ -80,6 +80,7 @@ public class IntList {
      */
 
     public static IntList dcatenate(IntList A, IntList B) {
+<<<<<<< HEAD
         if(A==null){
             return B;
         }
@@ -89,6 +90,10 @@ public class IntList {
         }
         L.rest=B;
         return A;
+=======
+        //TODO:  fill in method
+        return null;
+>>>>>>> db5b5f86bb3e7d5d5857859317fe251c879eb43b
     }
 
     /**
@@ -96,6 +101,7 @@ public class IntList {
      * * elements of B.  May NOT modify items of A.  Use 'new'.
      */
     public static IntList catenate(IntList A, IntList B) {
+<<<<<<< HEAD
         if (A==null){
             return B;
         }
@@ -116,6 +122,10 @@ public class IntList {
             pointer=pointer.rest;
         }
         return comb;
+=======
+        //TODO:  fill in method
+        return null;
+>>>>>>> db5b5f86bb3e7d5d5857859317fe251c879eb43b
     }
 
 
