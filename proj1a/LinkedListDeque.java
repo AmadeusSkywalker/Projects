@@ -20,6 +20,7 @@ public class LinkedListDeque<Type>{
    }
 
    public LinkedListDeque(Type x){
+     Sentinel=new StuffNode(null,Sentinel,Sentinel);
      Sentinel.next=new StuffNode(x,Sentinel,Sentinel);
      Sentinel.prev=Sentinel.next;
      size=1;
@@ -118,5 +119,4 @@ public class LinkedListDeque<Type>{
        }
        return recursehelp(x-1,m.next);
    }
-
 }
