@@ -13,12 +13,14 @@ public class ArrayDeque<Type>{
 
     public void resize(int capacity){
         Type[] a=(Type[]) new Object[capacity];
-        System.arraycopy(items,0,a,0,size);
+        System.arraycopy(items,nextFirst+1,a,capacity-items.length+nextFirst+1,items.length-nextFirst-1);
+        System.arraycopy(items,0,a,0,nextLast);
+        nextFirst=capacity-items.length+nextFirst;
         items=a;
     }
 
     public void addFirst(Type x){
-        if(items.length==size){
+        if(nextFirst==nextLast){
             resize(size*2);
         }
         items[nextFirst]=x;
@@ -27,7 +29,7 @@ public class ArrayDeque<Type>{
     }
 
     public void addLast(Type x){
-        if(items.length==size){
+        if(nextFirst==nextLast){
             resize(size*2);
         }
         items[nextLast]=x;

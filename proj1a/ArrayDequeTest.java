@@ -24,11 +24,13 @@ public class ArrayDequeTest{
         }
     }
 
-    public static void addremoveTest(){
+    public static void generalTest(){
         boolean passed=true;
         System.out.println("Running add tests.\n");
         ArrayDeque<String> army=new ArrayDeque<>();
+        passed=army.isEmpty()&&passed;
         army.addFirst("soldiers");
+        passed=checkSize(1,army.size())&&passed;
         army.addLast("blasters");
         army.addLast("generals");
         army.addLast("guns");
@@ -42,8 +44,23 @@ public class ArrayDequeTest{
         printTestStatus(passed);
     }
 
+    public static void resizeTest(){
+        boolean passed=true;
+        ArrayDeque<String> army=new ArrayDeque<>();
+        passed=army.isEmpty()&&passed;
+        army.addFirst("soldiers");
+        passed=checkSize(1,army.size())&&passed;
+        army.addLast("blasters");
+        army.addLast("generals");
+        army.addLast("guns");
+        army.addLast("tanks");
+        army.addLast("x-wings");
+        army.addLast("battleships");
+        army.addLast("fighters");
+    }
+
     public static void main(String[] args) {
         System.out.println("Running tests.\n");
-        addremoveTest();
+        resizeTest();
     }
 }
