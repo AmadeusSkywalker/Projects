@@ -60,8 +60,35 @@ public class ArrayDequeTest{
         army.addLast("warriors");
     }
 
+    public static void gradescopeTest(){
+        ArrayDeque<Integer> nums=new ArrayDeque<>();
+        nums.addFirst(0);
+        int a=nums.removeLast();    // ==> 0
+        nums.addLast(2);
+        int b=nums.removeFirst();    // ==> 2
+        nums.addLast(4);
+        nums.addFirst(5);
+        nums.addLast(6);
+        nums.addLast(7);
+        nums.addFirst(8);
+        nums.addFirst(9);
+        nums.addLast(10);
+        nums.addFirst(11);
+        nums.addFirst(12);
+        nums.addLast(13);
+        int c=nums.removeFirst();    // ==> 12
+        int d=nums.removeFirst();    // ==> 11
+        int e=nums.removeFirst(); //     ==> 9
+        int f=nums.removeLast(); //      ==> 13
+        int g=nums.removeFirst(); //     ==> 8
+        int h=nums.removeFirst();  //   ==> 5
+        int i=nums.removeLast();  //should be 10    ==> null
+        System.out.println();
+        System.out.println('W');
+    }
+
     public static void main(String[] args) {
         System.out.println("Running tests.\n");
-        resizeTest();
+        gradescopeTest();
     }
 }

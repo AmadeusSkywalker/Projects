@@ -27,7 +27,7 @@ public class ArrayDeque<Item> {
             first = (first + 1) % items.length;
         }
         nextFirst = capacity - 1;
-        nextLast = items.length;
+        nextLast = size;
         items = a;
     }
 
