@@ -1,6 +1,6 @@
 public class LinkedListDeque<Item> {
 
-    private class StuffNode {
+    public class StuffNode {
         private Item item;
         private StuffNode next;
         private StuffNode prev;
@@ -11,15 +11,15 @@ public class LinkedListDeque<Item> {
             prev = b;
         }
 
-        public Item getItem(StuffNode x){
+        public Item getItem(StuffNode x) {
             return x.item;
         }
 
-        public StuffNode getNext(StuffNode x){
+        public StuffNode getNext(StuffNode x) {
             return x.next;
         }
 
-        public StuffNode getPrev(StuffNode x){
+        public StuffNode getPrev(StuffNode x) {
             return x.prev;
         }
     }

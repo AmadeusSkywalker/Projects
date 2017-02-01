@@ -101,10 +101,22 @@ public class LinkedListDequeTest {
 		printTestStatus(passed);
 	}
 
+	public static void gradescopetest(){
+		LinkedListDeque<Integer> nums=new LinkedListDeque<>();
+		nums.addLast(1);
+		nums.addFirst(2);
+		int a=nums.removeFirst();    // ==> 2
+		nums.addFirst(4);
+		nums.addFirst(5);
+		int b=nums.removeFirst();     //==> 5
+		int c=nums.removeLast();
+	}
+
 	public static void main(String[] args) {
 		System.out.println("Running tests.\n");
 		addIsEmptySizeTest();
 		addRemoveTest();
 		getTest();
+		gradescopetest();
 	}
 } 

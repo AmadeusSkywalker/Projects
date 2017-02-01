@@ -57,6 +57,7 @@ public class ArrayDequeTest{
         army.addLast("x-wings");
         army.addLast("battleships");
         army.addLast("fighters");
+        army.addLast("warriors");
     }
 
     public static void main(String[] args) {
