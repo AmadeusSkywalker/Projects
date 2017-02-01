@@ -81,7 +81,7 @@ public class LinkedListDeque<Item> {
         }
         StuffNode pointer = sentinel.next;
         sentinel.next = sentinel.next.next;
-        sentinel.next = sentinel;
+        sentinel.next.prev = sentinel;
         size = size - 1;
         return pointer.item;
     }
