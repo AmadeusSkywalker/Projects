@@ -1,122 +1,126 @@
-public class LinkedListDeque<Type>{
+public class LinkedListDeque<Item> {
 
-   private class StuffNode{
-     public Type item;
-     public StuffNode next;
-     public StuffNode prev;
-     public StuffNode(Type c,StuffNode a,StuffNode b){
-       item=c;
-       next=a;
-       prev=b;
-     }
-   }
+    private class StuffNode {
+        private Item item;
+        private StuffNode next;
+        private StuffNode prev;
 
-   private StuffNode Sentinel;
-   private int size;
+        public StuffNode(Item c, StuffNode a, StuffNode b) {
+            item = c;
+            next = a;
+            prev = b;
+        }
 
-   public LinkedListDeque(){
-     Sentinel=new StuffNode(null,Sentinel,Sentinel);
-     size=0;
-   }
+        public Item getItem(StuffNode x){
+            return x.item;
+        }
 
-   public LinkedListDeque(Type x){
-     Sentinel=new StuffNode(null,Sentinel,Sentinel);
-     Sentinel.next=new StuffNode(x,Sentinel,Sentinel);
-     Sentinel.prev=Sentinel.next;
-     size=1;
-   }
+        public StuffNode getNext(StuffNode x){
+            return x.next;
+        }
 
-   public void addFirst(Type x){
-     if (size==0){
-       Sentinel.next=new StuffNode(x,Sentinel,Sentinel);
-       Sentinel.prev=Sentinel.next;
-       size=size+1;
-     }
-     else {
-         Sentinel.next=new StuffNode(x,Sentinel.next,Sentinel);
-         Sentinel.next.next.prev=Sentinel.next;
-         size+=1;
-     }
-   }
+        public StuffNode getPrev(StuffNode x){
+            return x.prev;
+        }
+    }
 
-   public void addLast(Type x){
-       if (size==0){
-           Sentinel.next=new StuffNode(x,Sentinel,Sentinel);
-           Sentinel.prev=Sentinel.next;
-           size=size+1;
-       }
-       else{
-           Sentinel.prev=new StuffNode(x,Sentinel,Sentinel.prev);
-           Sentinel.prev.prev.next=Sentinel.prev;
-           size+=1;
-       }
-   }
+    private StuffNode sentinel;
+    private int size;
 
-   public boolean isEmpty(){
-       return size==0;
-   }
+    public LinkedListDeque() {
+        sentinel = new StuffNode(null, sentinel, sentinel);
+        size = 0;
+    }
 
-   public int size(){
-       return size;
-   }
+    public void addFirst(Item x) {
+        if (size == 0) {
+            sentinel.next = new StuffNode(x, sentinel, sentinel);
+            sentinel.prev = sentinel.next;
+            size = size + 1;
+        } else {
+            sentinel.next = new StuffNode(x, sentinel.next, sentinel);
+            sentinel.next.next.prev = sentinel.next;
+            size += 1;
+        }
+    }
 
-   public void printDeque(){
-       int index=1;
-       StuffNode pointer=Sentinel.next;
-       while (index<=size){
-           System.out.print(pointer.item+" ");
-           index=index+1;
-           pointer=pointer.next;
-       }
-       System.out.println();
-   }
+    public void addLast(Item x) {
+        if (size == 0) {
+            sentinel.next = new StuffNode(x, sentinel, sentinel);
+            sentinel.prev = sentinel.next;
+            size = size + 1;
+        } else {
+            sentinel.prev = new StuffNode(x, sentinel, sentinel.prev);
+            sentinel.prev.prev.next = sentinel.prev;
+            size += 1;
+        }
+    }
 
-   public Type removeFirst(){
-       if (size==0){
-           return null;
-       }
-       StuffNode pointer=Sentinel.next;
-       Sentinel.next=Sentinel.next.next;
-       Sentinel.next=Sentinel;
-       size=size-1;
-       return pointer.item;
-   }
+    public boolean isEmpty() {
+        return size == 0;
+    }
 
-   public Type removeLast(){
-       if (size==0){
-           return null;
-       }
-       StuffNode pointer=Sentinel.prev;
-       Sentinel.prev=Sentinel.prev.prev;
-       Sentinel.prev.next=Sentinel;
-       size=size-1;
-       return pointer.item;
-   }
+    public int size() {
+        return size;
+    }
 
-   public Type get(int x){
-       StuffNode pointer=Sentinel.next;
-       if (x>=size){
-           return null;
-       }
-       int index=x;
-       while(index>0){
-           pointer=pointer.next;
-           index=index-1;
-       }
-       return pointer.item;
-   }
+    public void printDeque() {
+        int index = 1;
+        StuffNode pointer = sentinel.next;
+        while (index <= size) {
+            System.out.print(pointer.item + " ");
+            index = index + 1;
+            pointer = pointer.next;
+        }
+        System.out.println();
+    }
 
-   public Type getRecursive(int x){
-       if (x>=size){
-           return null;
-       }
-       return recursehelp(x,Sentinel.next);
-   }
+    public Item removeFirst() {
+        if (size == 0) {
+            return null;
+        }
+        StuffNode pointer = sentinel.next;
+        sentinel.next = sentinel.next.next;
+        sentinel.next = sentinel;
+        size = size - 1;
+        return pointer.item;
+    }
 
-   public Type recursehelp(int x, StuffNode m){
-       if (x==0){
-           return m.item;
-       }
-       return recursehelp(x-1,m.next);
-   }
+    public Item removeLast() {
+        if (size == 0) {
+            return null;
+        }
+        StuffNode pointer = sentinel.prev;
+        sentinel.prev = sentinel.prev.prev;
+        sentinel.prev.next = sentinel;
+        size = size - 1;
+        return pointer.item;
+    }
+
+    public Item get(int x) {
+        StuffNode pointer = sentinel.next;
+        if (x >= size) {
+            return null;
+        }
+        int index = x;
+        while (index > 0) {
+            pointer = pointer.next;
+            index = index - 1;
+        }
+        return pointer.item;
+    }
+
+    public Item getRecursive(int x) {
+        if (x >= size) {
+            return null;
+        }
+        return recursehelp(x, sentinel.next);
+    }
+
+    private Item recursehelp(int x, StuffNode m) {
+        if (x == 0) {
+            return m.item;
+        }
+        return recursehelp(x - 1, m.next);
+    }
 }
