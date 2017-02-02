@@ -59,15 +59,28 @@ public class IntListTest {
 
     @Test
     public void testCatenate() {
-        IntList A = IntList.list(1,2,3);
+        IntList A = IntList.list(1, 2, 3);
         IntList B = IntList.list(4, 5, 6);
         IntList exp = IntList.list(1, 2, 3, 4, 5, 6);
         assertEquals(exp, IntList.catenate(A, B));
         assertEquals(IntList.list(1, 2, 3), A);
     }
 
-    /** If you're running this from the command line, you'll need
-      * to add a main method. See ArithmeticTest.java for an
-      * example. */
+    /**
+     * If you're running this from the command line, you'll need
+     * to add a main method. See ArithmeticTest.java for an
+     * example.
+     */
 
+    @Test(timeout = 1000)
+    public void testReverse() {
+        IntList first = IntList.list(1, 2, 3, 4);
+        IntList expected = IntList.list(4, 3, 2, 1);
+        assertEquals(expected, IntList.reverse(first));
+        IntList first2 = IntList.list(1, 2, 3, 4);
+        IntList expected2 = IntList.list(4, 3, 2, 1);
+        assertNotEquals(first2, IntList.reverse(first2));
+        IntList a = null;
+        assertEquals(a, IntList.reverse(a));
+    }
 }

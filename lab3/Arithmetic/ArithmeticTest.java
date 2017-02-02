@@ -1,10 +1,13 @@
 import static org.junit.Assert.*;
+
 import org.junit.Test;
 
 public class ArithmeticTest {
 
-    /** Performs a few arbitrary tests to see if the product method is correct */
-    @Test 
+    /**
+     * Performs a few arbitrary tests to see if the product method is correct
+     */
+    @Test
     public void testProduct() {
         /* assertEquals for comparison of ints takes two arguments:
         assertEquals(expected, actual).
@@ -18,8 +21,10 @@ public class ArithmeticTest {
         assertEquals(0, Arithmetic.product(0, -6));
     }
 
-    /** Performs a few arbitrary tests to see if the sum method is correct */
-    @Test 
+    /**
+     * Performs a few arbitrary tests to see if the sum method is correct
+     */
+    @Test
     public void testSum() {
         assertEquals(11, Arithmetic.sum(5, 6));
         assertEquals(-1, Arithmetic.sum(5, -6));
@@ -29,7 +34,7 @@ public class ArithmeticTest {
 
     /* Run the unit tests in this file. 
        This isn't necessary if you're using IntelliJ. See Lab 3 for more.*/
-    public static void main(String... args) {        
+    public static void main(String... args) {
         jh61b.junit.TestRunner.runTests("all", ArithmeticTest.class);
     }
 }
