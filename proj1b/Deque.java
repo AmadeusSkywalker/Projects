@@ -1,15 +1,15 @@
 public interface Deque<Item> {
-    public void addFirst(Item x);
+    void addFirst(Item x);
 
-    public void addLast(Item x);
+    void addLast(Item x);
 
-    public int size();
+    int size();
 
-    public void printDeque();
+    void printDeque();
 
-    public Item removeFirst();
+    Item removeFirst();
 
-    public Item removeLast();
+    Item removeLast();
 
-    public Item get(int index);
+    Item get(int index);
 }

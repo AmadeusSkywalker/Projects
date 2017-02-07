@@ -5,8 +5,8 @@ import org.junit.Test;
 public class TestArrayDeque1B {
     @Test
     public void testAD() {
-        StudentArrayDeque<Integer> darkside = new StudentArrayDeque<>();
-        ArrayDequeSolution<Integer> lightside = new ArrayDequeSolution<>();
+        StudentArrayDeque<Integer> darkside = new StudentArrayDeque<Integer>();
+        ArrayDequeSolution<Integer> lightside = new ArrayDequeSolution<Integer>();
         OperationSequence printme = new OperationSequence();
         for (int i = 0; i < 100; i++) {
             int random = StdRandom.uniform(1, 1001);
@@ -28,6 +28,5 @@ public class TestArrayDeque1B {
             assertEquals(printme.toString(), lightside.removeLast(), darkside.removeLast());
 
         }
-        System.out.println(printme.toString());
     }
 }

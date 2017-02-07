@@ -1,6 +1,6 @@
 public class Palindrome {
     public static Deque<Character> wordToDeque(String word) {
-        Deque<Character> result = new ArrayDequeSolution<>();
+        Deque<Character> result = new ArrayDequeSolution<Character>();
         for (int i = 0; i < word.length(); i++) {
             result.addLast(word.charAt(i));
         }
@@ -20,7 +20,7 @@ public class Palindrome {
     public static boolean isPalindrome(String word, CharacterComparator cc) {
         if (word.length() == 0 || word.length() == 1) {
             return true;
-        } else if (cc.equalChars(word.charAt(0), word.charAt(word.length() - 1))) {
+        } else if (cc.equalChars(word.charAt(0), word.charAt(word.length() - 1)) == false) {
             return false;
         } else {
             return isPalindrome(word.substring(1, word.length() - 1));
