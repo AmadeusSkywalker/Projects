@@ -23,7 +23,7 @@ public class Palindrome {
         } else if (cc.equalChars(word.charAt(0), word.charAt(word.length() - 1)) == false) {
             return false;
         } else {
-            return isPalindrome(word.substring(1, word.length() - 1));
+            return isPalindrome(word.substring(1, word.length() - 1), cc);
         }
     }
 }
