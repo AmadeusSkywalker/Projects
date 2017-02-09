@@ -4,23 +4,23 @@ ArrayDeque:
 
 Q: Give an example of at least one idea from the staff solution that would have made your solution better (if any).
 
-A: 
+A: The staff solution used a minusone() method to make code more readable! “Any fool can write code computers can understand; a good programmer write code that humans can understand.”
 
 Q: What's something you felt proud of in your code, if anything?
 
-A:
+A: The way I used remainder to make my list circular and the clever way of copying the list to the front of the new list when resizing in order to avoid complication.
 
 Q: What's something that was particularly inelegant in your code, if anything?
 
-A:
+A: Particularly inelegant? I am sorry; I am a graceful person.
 
 Q: What do you wish you would have known before writing ArrayDeque, if anything?
 
-A:
+A: How to resize without using ArrayCopy().
 
 Q: If you wrote ArrayDeque again, what would you do differently, if anything?
 
-A:
+A: Using a minusone() method, for God’s sake!
 
 -----
 
@@ -28,23 +28,24 @@ LinkedListDeque:
 
 Q: Give an example of at least one idea from the staff solution that would have made your solution better (if any).
 
-A: 
+A: I should have used this.item, this.next, this.prev in my StuffNode Constructor.
 
 Q: What's something you felt proud of in your code, if anything?
 
-A:
+A: I love my private getRecursive method. It feels like using higher-order functions in python but not exactly the same, if you know what I mean.
 
 Q: What's something that was particularly inelegant in your code, if anything?
 
-A:
+A: I wrote repeated code in addFirst() and addLast().
 
 Q: What do you wish you would have known before writing ArrayDeque, if anything?
 
-A:
+A: Seriously, the “ArrayDeque” in the question should be “LinkedListDeque”. 
+   I wish I knew that Gradescope would check for code style and there is a “reformat” button in IntelliJ.
 
 Q: If you wrote LinkedListDeque again, what would you do differently, if anything?
 
-A:
+A: I would have used a private helper method to create a LinkedList with one element so that I wouldn’t have to write repeated code.
 
 -----
 
@@ -52,4 +53,4 @@ Meta:
 
 Q: This is the first time we've tried something like this. Did you like this design review process? Anything we should do differently next time?
 
-A: 
+A: I don’t have hard feelings about this review process. But using a Google survey form may be more convenient? 
