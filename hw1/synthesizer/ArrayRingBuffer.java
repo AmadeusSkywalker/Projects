@@ -1,10 +1,10 @@
-// TODO: Make sure to make this class a part of the synthesizer package
-// package <package name>;
+package synthesizer;
+
 import java.util.Iterator;
 
 //TODO: Make sure to make this class and all of its methods public
 //TODO: Make sure to make this class extend AbstractBoundedQueue<t>
-public class ArrayRingBuffer<T>  {
+public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
     /* Index for the next dequeue or peek. */
     private int first;            // index for the next dequeue or peek
     /* Index for the next enqueue. */
@@ -21,6 +21,11 @@ public class ArrayRingBuffer<T>  {
         //       this.capacity should be set appropriately. Note that the local variable
         //       here shadows the field we inherit from AbstractBoundedQueue, so
         //       you'll need to use this.capacity to set the capacity.
+        first = 0;
+        last = 0;
+        fillCount = 0;
+        this.capacity = capacity;
+        rb = (T[]) new Object[capacity];
     }
 
     /**
@@ -30,6 +35,14 @@ public class ArrayRingBuffer<T>  {
      */
     public void enqueue(T x) {
         // TODO: Enqueue the item. Don't forget to increase fillCount and update last.
+        if (this.isFull()) {
+            throw new RuntimeException("Ring Buffer Overflow");
+        } else {
+            int index = last % capacity();
+            rb[index] = x;
+            fillCount += 1;
+            last += 1;
+        }
     }
 
     /**
@@ -38,14 +51,52 @@ public class ArrayRingBuffer<T>  {
      * covered Monday.
      */
     public T dequeue() {
-        // TODO: Dequeue the first item. Don't forget to decrease fillCount and update 
+        if (this.isEmpty()) {
+            throw new RuntimeException("Ring Buffer Underflow");
+        } else {
+            int index = first % capacity();
+            T result = rb[index];
+            rb[index] = null;
+            fillCount -= 1;
+            first += 1;
+            return result;
+        }
+        // TODO: Dequeue the first item. Don't forget to decrease fillCount and update
     }
 
     /**
      * Return oldest item, but don't remove it.
      */
     public T peek() {
+        if (this.isEmpty()) {
+            throw new RuntimeException("Empty buffer! loser!");
+        }
         // TODO: Return the first item. None of your instance variables should change.
+        else {
+            return rb[first];
+        }
+    }
+
+    public Iterator<T> iterator() {
+        return new iterhelper();
+    }
+
+    private class iterhelper implements Iterator<T> {
+        private int index;
+
+        public iterhelper() {
+            index = 0;
+        }
+
+        public boolean hasNext() {
+            return index < fillCount();
+        }
+
+        public T next() {
+            T current = rb[index];
+            index = index + 1;
+            return current;
+        }
     }
 
     // TODO: When you get to part 5, implement the needed code to support iteration.
