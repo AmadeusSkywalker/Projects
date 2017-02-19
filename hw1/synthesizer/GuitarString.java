@@ -21,15 +21,16 @@ public class GuitarString {
         //       cast the result of this divsion operation into an int. For better
         //       accuracy, use the Math.round() function before casting.
         //       Your buffer should be initially filled with zeros.
+        while (!buffer.isFull()) {
+            buffer.enqueue(0.0);
+        }
     }
 
 
     /* Pluck the guitar string by replacing the buffer with white noise. */
     public void pluck() {
-        for (int i = 0; i < buffer.fillCount(); i++) {
-            buffer.dequeue();
-        }
         for (int i = 0; i < buffer.capacity(); i++) {
+            buffer.dequeue();
             buffer.enqueue(Math.random() - 0.5);
         }
         // TODO: Dequeue everything in the buffer, and replace it with random numbers
