@@ -69,13 +69,13 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
 
     @Override
     public Iterator<T> iterator() {
-        return new iterhelper();
+        return new Iterhelper();
     }
 
-    private class iterhelper implements Iterator<T> {
+    private class Iterhelper implements Iterator<T> {
         private int index;
 
-        public iterhelper() {
+        Iterhelper() {
             index = 0;
         }
 
