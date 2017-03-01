@@ -45,7 +45,8 @@ public class Database {
             columnNames.add(colName);
             columnTypes.add(colType);
             if (!isend) {
-                firstLine = firstLine.substring(secondIndex + 1);
+                firstLine=firstLine.substring(secondIndex+1);
+                firstLine=firstLine.trim();
             }
         }
         createtable(name, columnNames, columnTypes);

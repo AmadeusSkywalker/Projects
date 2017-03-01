@@ -51,7 +51,7 @@ public class Parse {
                 return x.load(name);
             }
             catch (IOException X){
-                String errormess="ERROR:couldn't read file";
+                String errormess="ERROR: .*";
                 return errormess;
             }
         } else if ((m = STORE_CMD.matcher(query)).matches()) {
