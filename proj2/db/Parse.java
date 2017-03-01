@@ -1,5 +1,6 @@
 package db;
 
+import java.awt.*;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.io.IOException;
@@ -34,19 +35,25 @@ public class Parse {
                                  INSERT_CLS  = Pattern.compile("(\\S+)\\s+values\\s+(.+?" +
                                                "\\s*(?:,\\s*.+?\\s*)*)");
 
-    static String parse(String line,Database x) throws IOException{  //put in the db package and rename the main function
+    static String parse(String line,Database x) {  //put in the db package and rename the main function
         String result=eval(line,x);
         return result;  //Possible make all of the things below string return type??
     }
 
-    private static String eval(String query,Database x) throws IOException{
+    private static String eval(String query,Database x) {
         Matcher m;
         if ((m = CREATE_CMD.matcher(query)).matches()) {
             createTable(m.group(1));
             return"";
         } else if ((m = LOAD_CMD.matcher(query)).matches()) {
-            String name=loadTable(m.group(1));
-            return x.load(name);
+            try {
+                String name=loadTable(m.group(1));
+                return x.load(name);
+            }
+            catch (IOException X){
+                System.out.println("couldn't read file");
+                return "";
+            }
         } else if ((m = STORE_CMD.matcher(query)).matches()) {
             storeTable(m.group(1));
             return"";

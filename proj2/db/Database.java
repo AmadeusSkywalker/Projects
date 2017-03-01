@@ -1,5 +1,7 @@
 package db;
 
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,24 +29,24 @@ public class Database {
         return "";
     }
 
-    public String load(String name) throws IOException{
+    public String load(String name) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(name + ".tbl"));
         String firstLine = reader.readLine();
         ArrayList<String> columnNames = new ArrayList<>();
         ArrayList<String> columnTypes = new ArrayList<>();
-        boolean isend=false;
-        while(!isend) {
+        boolean isend = false;
+        while (!isend) {
             int firstIndex = firstLine.indexOf(" ");
             int secondIndex = firstLine.indexOf(",");
-            if(secondIndex==-1){
-                secondIndex=firstLine.length();
-                isend=true;
+            if (secondIndex == -1) {
+                secondIndex = firstLine.length();
+                isend = true;
             }
             String colName = firstLine.substring(0, firstIndex);
-            String colType = firstLine.substring(firstIndex+1, secondIndex);
+            String colType = firstLine.substring(firstIndex + 1, secondIndex);
             columnNames.add(colName);
             columnTypes.add(colType);
-            if(!isend) {
+            if (!isend) {
                 firstLine = firstLine.substring(secondIndex + 1);
             }
         }
@@ -52,15 +54,15 @@ public class Database {
 
         String nextLine = reader.readLine();
         int rowNum = 1; //Slot 0 taken by header row
-        boolean isend2=false;
-        while (nextLine!=null) { //runs per line
+        boolean isend2 = false;
+        while (nextLine != null) { //runs per line
             int index = 0;
             ArrayList<Object> newRow = new ArrayList<>();
             while (!isend2) { //categorizes items inside each line
                 int commaIndex = nextLine.indexOf(",");
-                if(commaIndex==-1){
-                    commaIndex=nextLine.length();
-                    isend2=true;
+                if (commaIndex == -1) {
+                    commaIndex = nextLine.length();
+                    isend2 = true;
                 }
                 String firstItem = nextLine.substring(0, commaIndex);
                 if (columnTypes.get(index).equals("string")) {
@@ -72,11 +74,11 @@ public class Database {
                     newRow.add(Integer.valueOf(firstItem));
                 }
                 index++;
-                if(!isend2) {
+                if (!isend2) {
                     nextLine = nextLine.substring(commaIndex + 1);
                 }
             }
-            isend2=false;
+            isend2 = false;
             Row realNewRow = new Row(newRow, rowNum);
             rowNum++;
             insertInto(name, realNewRow);
@@ -85,7 +87,7 @@ public class Database {
         return "";
     }
 
-    public String store(String name) throws IOException{
+    public String store(String name) throws IOException {
         File file = new File(name + ".tbl"); // "./" if filepath doesn't work
         BufferedWriter writer = new BufferedWriter(new FileWriter(file));
         Table currTable = database.get(name);
@@ -116,17 +118,16 @@ public class Database {
     }
 
     public String droptable(String name) {
-        if (database.containsKey(name)){
+        if (database.containsKey(name)) {
             database.remove(name);
-            return"";
-        }
-        else{
+            return "";
+        } else {
             throw new RuntimeException("Hey!No such table!");
         }
     }
 
     public String insertInto(String tablename, Row x) {
-        Table changed=database.get(tablename); //find the table that we need to change
+        Table changed = database.get(tablename); //find the table that we need to change
         changed.addRow(x); //go to the addRow method in the table class
         return "";
     }
@@ -135,8 +136,7 @@ public class Database {
         if (database.containsKey(tablename)) {
             Table changed = database.get(tablename);
             return changed.printtable();
-        }
-        else{
+        } else {
             throw new RuntimeException("No such table!");
         }
     }
@@ -144,16 +144,16 @@ public class Database {
     public String select(String name, ArrayList<String> exprs, ArrayList<String> tableNames, ArrayList<String> conds) {
         Table newTable = database.get(tableNames.get(0));
         for (int i = 1; i < tableNames.size(); i++) {
-        //    newTable = Table.select(name, exprs, newTable, database.get(tableNames.get(i)), conds);
+            //    newTable = Table.select(name, exprs, newTable, database.get(tableNames.get(i)), conds);
         }
         return newTable.printtable();
     }
 
-    public HashMap<String,Table> getbody(){
+    public HashMap<String, Table> getbody() {
         return database;
     }
 
-    public String transact(String query) throws IOException {
-        return Parse.parse(query,this);
+    public String transact(String query) {
+        return Parse.parse(query, this);
     }
 }
