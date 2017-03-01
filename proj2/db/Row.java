@@ -7,11 +7,11 @@ package db;
 import java.util.ArrayList;
 
 //There is no row of the column headers, it just doesn't exist
-public class Row {
+public class Row<Object> {
       ArrayList<Object> body;
       int index;
 
-      public Row(ArrayList x,int rownum){
+      public Row(ArrayList<Object> x,int rownum){
           body=x;
           index=rownum;
       }

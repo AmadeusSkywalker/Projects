@@ -36,8 +36,8 @@ public class Table {
     }
 
     public void addRow(Row x) {
-        ArrayList rowbody = x.getbody();//get the body of the row we want to add, which is an arraylist
-        ArrayList newrow = new ArrayList();
+        ArrayList<Object> rowbody = x.getbody();//get the body of the row we want to add, which is an arraylist
+        ArrayList<Object> newrow = new ArrayList();
         int index = 0;  //this index is used to track the numofcols we have iterated through
         for (Column a : columns.values()) {
             //when index is still less than the length of the newly added row, we just add elements of row to each column
@@ -67,7 +67,7 @@ public class Table {
         for (Row row : rows) {
             //printing the table row by row
             String currentrow = "";
-            ArrayList tobeprinted = row.getbody();
+            ArrayList<Object> tobeprinted = row.getbody();
             int index = 0;
             for (Object h : tobeprinted) {
                 //in each row, add the string representation of the object to the result
@@ -165,9 +165,9 @@ public class Table {
             for (int k = 1; k < t2.getNumofrows(); k++) {
                 Row x = t1.getrows().get(i);
                 Row y = t2.getrows().get(k);
-                ArrayList bodyx = x.getbody();
-                ArrayList bodyy = y.getbody();
-                ArrayList bigbody = new ArrayList();
+                ArrayList<Object> bodyx = x.getbody();
+                ArrayList<Object> bodyy = y.getbody();
+                ArrayList<Object> bigbody = new ArrayList();
                 bigbody.addAll(bodyx);
                 bigbody.addAll(bodyy);
                 Row xy = new Row(bigbody, index);
