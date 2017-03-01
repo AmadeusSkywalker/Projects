@@ -51,8 +51,8 @@ public class Parse {
                 return x.load(name);
             }
             catch (IOException X){
-                System.out.println("couldn't read file");
-                return "";
+                String errormess="ERROR:couldn't read file";
+                return errormess;
             }
         } else if ((m = STORE_CMD.matcher(query)).matches()) {
             storeTable(m.group(1));
@@ -112,7 +112,6 @@ public class Parse {
     }
 
     private static String loadTable(String name) {
-        System.out.printf("You are trying to load the table named %s\n", name);
         return name;
     }
 
