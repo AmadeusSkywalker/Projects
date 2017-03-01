@@ -4,22 +4,27 @@ package db;
  * Created by ErichRathkamp on 2/27/17.
  */
 public class TableItemCombiner {
-    private String operation;
+    String operation;
     String colOne;
-    String colTwo = null;
+    String colTwo = null; //If colTwo is null, then don't use combiner method
     String resultName;
 
     public TableItemCombiner(String combiner) {
         if (combiner.contains("%")) {
             operation = "%";
+            cataloguer(combiner);
         } else if (combiner.contains("+")) {
             operation = "+";
+            cataloguer(combiner);
         } else if (combiner.contains("-")) {
             operation = "-";
+            cataloguer(combiner);
         } else if (combiner.contains("*")) {
             operation = "*";
+            cataloguer(combiner);
         } else if (combiner.contains("/")) {
             operation = "/";
+            cataloguer(combiner);
         } else if (combiner.equals("")) {
             throw new RuntimeException("Invalid combiner");
         } else {
@@ -28,7 +33,13 @@ public class TableItemCombiner {
         }
     }
 
-    private void colCataloguer(String combiner) {
+    private void cataloguer(String combiner) {
+        int asInd = combiner.indexOf("as");
+        resultName = combiner.substring(asInd + 2); //No spaces
+        combiner = combiner.substring(0, asInd); //Removes the "as ..."
+        int opInd = combiner.indexOf(operation);
+        colTwo = combiner.substring(opInd + 1); //gets the second name
+        colOne = combiner.substring(0, opInd);
 
     }
 
@@ -96,7 +107,7 @@ public class TableItemCombiner {
                 return (Integer) item1 / (Float) item2;
             }
         }
-        return "Non-Table Item";
+        return "Unhandled Item Type";
     }
 
 

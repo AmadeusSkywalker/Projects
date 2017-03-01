@@ -1,8 +1,9 @@
 package db;
 
-import java.io.IOException;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.io.IOException;
+
 
 import java.util.StringJoiner;
 
@@ -34,35 +35,33 @@ public class Parse {
                                                "\\s*(?:,\\s*.+?\\s*)*)");
 
     static String parse(String line,Database x) throws IOException{  //put in the db package and rename the main function
-            String result=eval(line,x);
-            return result;  //Possible make all of the things below string return type??
+        String result=eval(line,x);
+        return result;  //Possible make all of the things below string return type??
     }
 
     private static String eval(String query,Database x) throws IOException{
         Matcher m;
         if ((m = CREATE_CMD.matcher(query)).matches()) {
-             createTable(m.group(1));
-             return"";
+            createTable(m.group(1));
+            return"";
         } else if ((m = LOAD_CMD.matcher(query)).matches()) {
-             String name=loadTable(m.group(1));
-             String result=x.load(name);
-             return result;
+            String name=loadTable(m.group(1));
+            return x.load(name);
         } else if ((m = STORE_CMD.matcher(query)).matches()) {
-             storeTable(m.group(1));
-             return"";
+            storeTable(m.group(1));
+            return"";
         } else if ((m = DROP_CMD.matcher(query)).matches()) {
-             dropTable(m.group(1));
-             return "";
+            dropTable(m.group(1));
+            return "";
         } else if ((m = INSERT_CMD.matcher(query)).matches()) {
-             insertRow(m.group(1));
-             return "";
+            insertRow(m.group(1));
+            return "";
         } else if ((m = PRINT_CMD.matcher(query)).matches()) {
-             String name=printTable(m.group(1));
-             String result=x.print(name);
-             return result;
+            String name=printTable(m.group(1));
+            return x.print(name);
         } else if ((m = SELECT_CMD.matcher(query)).matches()) {
-             select(m.group(1));
-             return "";
+            select(m.group(1));
+            return "";
         } else {
             System.err.printf("Malformed query: %s\n", query);
             return "";
@@ -97,7 +96,9 @@ public class Parse {
             throw new RuntimeException("Malformed column join: You need an alias");
         }
 
-        exprs = exprs.replaceAll("\\s+","");
+        exprs = exprs.replaceAll("\\s+",""); //This and all instances from next line url
+        //http://stackoverflow.com/questions/5455794/removing-whitespace-from-strings-in-java
+        //Also spaces and newlines are for losers
 
         System.out.printf("You are trying to create a table named %s by selecting these expressions:" +
                 " '%s' from the join of these tables: '%s', filtered by these conditions: '%s'\n", name, exprs, tables, conds);

@@ -1,16 +1,12 @@
 package db;
 
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
-
 import java.io.*;
-import java.lang.reflect.Array;
-import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 
 public class Database {
-    private HashMap<String, Table> database;
+    public HashMap<String, Table> database;
 
     public Database() {
         database = new HashMap<String, Table>();
@@ -34,8 +30,8 @@ public class Database {
     public String load(String name) throws IOException{
         BufferedReader reader = new BufferedReader(new FileReader(name + ".tbl"));
         String firstLine = reader.readLine();
-        ArrayList<String> columnNames = new ArrayList<String>();
-        ArrayList<String> columnTypes = new ArrayList<String>();
+        ArrayList<String> columnNames = new ArrayList<>();
+        ArrayList<String> columnTypes = new ArrayList<>();
         boolean isend=false;
         while(!isend) {
             int firstIndex = firstLine.indexOf(" ");
@@ -59,7 +55,7 @@ public class Database {
         boolean isend2=false;
         while (nextLine!=null) { //runs per line
             int index = 0;
-            ArrayList<Object> newRow = new ArrayList<Object>();
+            ArrayList<Object> newRow = new ArrayList<>();
             while (!isend2) { //categorizes items inside each line
                 int commaIndex = nextLine.indexOf(",");
                 if(commaIndex==-1){
