@@ -23,7 +23,7 @@ public class Table {
         colnames = names;
         coltypes = types;
         columns = new HashMap<String, Column>();
-        ArrayList<String> first = new ArrayList<>();
+        ArrayList<Object> first = new ArrayList<>();
         for (int i = 0; i < names.size(); i++) {
             columns.put(names.get(i), new Column(names.get(i), types.get(i)));
             first.add(names.get(i) + " " + types.get(i));
