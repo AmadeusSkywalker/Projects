@@ -10,13 +10,13 @@ import java.util.HashMap;
 
 
 public class Database {
-    public HashMap<String, Table> database;
+    private HashMap<String, Table> database;
 
-    public Database() {
+    private Database() {
         database = new HashMap<String, Table>();
     }
 
-    public String createtable(String name, ArrayList<String> colnames, ArrayList<String> types) {
+    private String createtable(String name, ArrayList<String> colnames, ArrayList<String> types) {
         if (database.containsKey(name)) {
             throw new RuntimeException("Table already existed");
         }
@@ -31,7 +31,7 @@ public class Database {
         return "";
     }
 
-    public String load(String name) throws IOException{
+    private String load(String name) throws IOException{
         BufferedReader reader = new BufferedReader(new FileReader(name + ".tbl"));
         String firstLine = reader.readLine();
         ArrayList<String> columnNames = new ArrayList<>();
@@ -89,7 +89,7 @@ public class Database {
         return "";
     }
 
-    public String store(String name) throws IOException{
+    private String store(String name) throws IOException{
         File file = new File(name + ".tbl"); // "./" if filepath doesn't work
         BufferedWriter writer = new BufferedWriter(new FileWriter(file));
         Table currTable = database.get(name);
@@ -119,7 +119,7 @@ public class Database {
         return "";
     }
 
-    public String droptable(String name) {
+    private String droptable(String name) {
         if (database.containsKey(name)){
             database.remove(name);
             return"";
@@ -129,13 +129,13 @@ public class Database {
         }
     }
 
-    public String insertInto(String tablename, Row x) {
+    private String insertInto(String tablename, Row x) {
         Table changed=database.get(tablename); //find the table that we need to change
         changed.addRow(x); //go to the addRow method in the table class
         return "";
     }
 
-    public String print(String tablename) {
+    private String print(String tablename) {
         if (database.containsKey(tablename)) {
             Table changed = database.get(tablename);
             return changed.printtable();
@@ -145,7 +145,7 @@ public class Database {
         }
     }
 
-    public String select(String name, ArrayList<String> exprs, ArrayList<String> tableNames, ArrayList<String> conds) {
+    private String select(String name, ArrayList<String> exprs, ArrayList<String> tableNames, ArrayList<String> conds) {
         Table newTable = database.get(tableNames.get(0));
         for (int i = 1; i < tableNames.size(); i++) {
         //    newTable = Table.select(name, exprs, newTable, database.get(tableNames.get(i)), conds);
@@ -153,11 +153,11 @@ public class Database {
         return newTable.printtable();
     }
 
-    public HashMap<String,Table> getbody(){
+    private HashMap<String,Table> getbody(){
         return database;
     }
 
-    public String transact(String query) throws IOException {
+    private String transact(String query) throws IOException {
         return Parse.parse(query,this);
     }
 }
