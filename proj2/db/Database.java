@@ -136,7 +136,7 @@ public class Database {
             Table changed = database.get(tablename);
             return changed.printtable();
         } else {
-            throw new RuntimeException("No such table!");
+            throw new RuntimeException("ERROR:No such table!.*");
         }
     }
 

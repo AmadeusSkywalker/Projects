@@ -4,6 +4,7 @@ import java.awt.*;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.io.IOException;
+import java.util.*;
 
 
 import java.util.StringJoiner;
@@ -43,7 +44,7 @@ public class Parse {
     private static String eval(String query,Database x) {
         Matcher m;
         if ((m = CREATE_CMD.matcher(query)).matches()) {
-            createTable(m.group(1));
+            createTable(m.group(1),x);
             return"";
         } else if ((m = LOAD_CMD.matcher(query)).matches()) {
             try {
@@ -58,8 +59,8 @@ public class Parse {
             storeTable(m.group(1));
             return"";
         } else if ((m = DROP_CMD.matcher(query)).matches()) {
-            dropTable(m.group(1));
-            return "";
+            String name=dropTable(m.group(1));
+            return x.droptable(name);
         } else if ((m = INSERT_CMD.matcher(query)).matches()) {
             insertRow(m.group(1));
             return "";
@@ -75,10 +76,10 @@ public class Parse {
         }
     }
 
-    private static void createTable(String expr) {
+    private static void createTable(String expr,Database x) {
         Matcher m;
         if ((m = CREATE_NEW.matcher(expr)).matches()) {
-            createNewTable(m.group(1), m.group(2).split(COMMA));
+            createNewTable(m.group(1), m.group(2).split(COMMA),x);
         } else if ((m = CREATE_SEL.matcher(expr)).matches()) {
             createSelectedTable(m.group(1), m.group(2), m.group(3), m.group(4));
         } else {
@@ -86,14 +87,33 @@ public class Parse {
         }
     }
 
-    private static void createNewTable(String name, String[] cols) {
+    private static void createNewTable(String name, String[] cols,Database x) {
         StringJoiner joiner = new StringJoiner(", ");
         for (int i = 0; i < cols.length-1; i++) {
             joiner.add(cols[i]);
         }
 
-        String colSentence = joiner.toString() + " and " + cols[cols.length-1];
-        System.out.printf("You are trying to create a table named %s with the columns %s\n", name, colSentence);
+        String colSentence = joiner.toString() + " " + cols[cols.length-1];
+        ArrayList<String> names=new ArrayList<>();
+        ArrayList<String> types=new ArrayList<>();
+        boolean isend=false;
+        while(!isend){
+            int index1=colSentence.indexOf(" ");
+            String name1=colSentence.substring(0,index1);
+            names.add(name1);
+            colSentence=colSentence.substring(index1+1);
+            int index2=colSentence.indexOf(" ");
+            if(index2==-1){
+                index2=colSentence.length();
+                isend=true;
+            }
+            String type1=colSentence.substring(0,index2);
+            types.add(type1);
+            if(!isend){
+                colSentence=colSentence.substring(index2+1);
+            }
+        }
+        x.createtable(name,names,types);
     }
 
     private static void createSelectedTable(String name, String exprs, String tables, String conds) {
@@ -119,8 +139,8 @@ public class Parse {
         System.out.printf("You are trying to store the table named %s\n", name);
     }
 
-    private static void dropTable(String name) {
-        System.out.printf("You are trying to drop the table named %s\n", name);
+    private static String dropTable(String name) {
+        return name;
     }
 
     private static void insertRow(String expr) {
@@ -134,7 +154,6 @@ public class Parse {
     }
 
     private static String printTable(String name) {
-        System.out.printf("You are trying to print the table named %s\n", name);
         return name;
     }
 
