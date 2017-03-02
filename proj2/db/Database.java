@@ -1,6 +1,12 @@
 package db;
 
-import java.io.*;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -18,13 +24,13 @@ public class Database {
 
     public String createtable(String name, ArrayList<String> colnames, ArrayList<String> types) {
         if (database.containsKey(name)) {
-            throw new RuntimeException("Table already existed");
+            return "ERROR:Table already existed.";
         }
         if (types.size() == 0 || colnames.size() == 0) {
-            throw new RuntimeException("Empty table");
+            return "ERROR: Empty tables.";
         }
         if (types.size() != colnames.size()) {
-            throw new RuntimeException("Names and types number no match!");
+            return "ERROR: Names and types number no match!";
         }
         Table element = new Table(name, colnames, types);
         database.put(name, element); //put the newly created table in the database
@@ -125,7 +131,7 @@ public class Database {
             database.remove(name);
             return "";
         } else {
-            return "Error: No such table.*";
+            return "ERROR: No such table.";
         }
     }
 
