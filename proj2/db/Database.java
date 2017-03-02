@@ -157,6 +157,9 @@ public class Database {
         for (int i = 1; i < tableNames.size(); i++) {
             newTable = Table.join(name, newTable, database.get(tableNames.get(i)));
         }
+        if (exprs.get(0).equals("*")) {
+            return newTable;
+        }
         newTable = Table.select(name, exprs, newTable, conds);
         return newTable;
     }

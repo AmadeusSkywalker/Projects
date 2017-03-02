@@ -68,7 +68,9 @@ public class Table {
     }
 
     public static Table select(String name, ArrayList<String> exprs, Table t1, ArrayList<String> conds) {
-        //TODO check if it's an empty table
+        if (t1.getNumofrows() == 0) {
+            return t1;
+        }
         ArrayList<String> resultNames = new ArrayList<>();
         ArrayList<String> resultTypes = new ArrayList<>();
 
@@ -89,6 +91,9 @@ public class Table {
         }
 
         Table filteredTable = new Table(name, t1.colnames, t1.coltypes); //TODO check if empty
+        if (filteredTable.getNumofrows() == 0) {
+            return filteredTable;
+        }
         for (int row : legalRows) {
             filteredTable.addRow(t1.getRow(row));
         }
@@ -96,42 +101,38 @@ public class Table {
         if (exprs.get(0).equals("*")) {
             return filteredTable; //TODO make it return only valid rows
         }
-            ArrayList<TableItemCombiner> newColCombiners = new ArrayList<>();
-            ArrayList<ArrayList<Object>> newCols = new ArrayList<>();
-            for (String expr : exprs) {
-                newColCombiners.add(new TableItemCombiner(expr));
+        ArrayList<TableItemCombiner> newColCombiners = new ArrayList<>();
+        ArrayList<ArrayList<Object>> newCols = new ArrayList<>();
+        for (String expr : exprs) {
+            newColCombiners.add(new TableItemCombiner(expr));
+        }
+        for (TableItemCombiner ItemCombiner : newColCombiners) { //For every expression
+            ArrayList<Object> newCol = new ArrayList<>();
+            resultNames.add(ItemCombiner.resultName); //Adds the name of the new column
+
+            //Combines the two columns and adds them to the list of new columns
+            if (ItemCombiner.colTwo == null) {
+                ArrayList<Object> colOne = filteredTable.columns.get(ItemCombiner.colOne).body;
+                newCols.add(colOne);
+            } else {
+                ArrayList<Object> colOne = filteredTable.columns.get(ItemCombiner.colOne).body; //same length
+                ArrayList<Object> colTwo = filteredTable.columns.get(ItemCombiner.colTwo).body;
+                for (int i = 0; i < colOne.size(); i++) {
+                    newCol.add(ItemCombiner.combiner(colOne.get(i), colTwo.get(i)));
+
+                }
+                newCols.add(newCol);
             }
 
-
-
-
-            for (TableItemCombiner ItemCombiner : newColCombiners) { //For every expression
-                ArrayList<Object> newCol = new ArrayList<>();
-                resultNames.add(ItemCombiner.resultName); //Adds the name of the new column
-
-                //Combines the two columns and adds them to the list of new columns
-                if (ItemCombiner.colTwo == null) {
-                    ArrayList<Object> colOne = filteredTable.columns.get(ItemCombiner.colOne).body;
-                    newCols.add(colOne);
-                } else {
-                    ArrayList<Object> colOne = filteredTable.columns.get(ItemCombiner.colOne).body; //same length
-                    ArrayList<Object> colTwo = filteredTable.columns.get(ItemCombiner.colTwo).body;
-                    for (int i = 0; i < colOne.size(); i++) {
-                        newCol.add(ItemCombiner.combiner(colOne.get(i), colTwo.get(i)));
-
-                    }
-                    newCols.add(newCol);
-                }
-
-                if (newCol.get(0) instanceof String) {
-                    resultTypes.add("string");
-                } else if (newCol.get(0) instanceof Integer) {
-                    resultTypes.add("int");
-                } else if (newCol.get(0) instanceof Float) {
-                    resultTypes.add("float");
-                }
-
+            if (newCol.get(0) instanceof String) {
+                resultTypes.add("string");
+            } else if (newCol.get(0) instanceof Integer) {
+                resultTypes.add("int");
+            } else if (newCol.get(0) instanceof Float) {
+                resultTypes.add("float");
             }
+
+        }
         Table returnedTable = new Table(name, resultNames, resultTypes);
         for (int i = 0; i < newCols.get(0).size(); i++) {
             ArrayList<Object> newRow = new ArrayList<>();
@@ -143,6 +144,7 @@ public class Table {
         }
         return returnedTable;
     }
+
 
 
     public String printtable() {

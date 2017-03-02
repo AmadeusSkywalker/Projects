@@ -104,5 +104,8 @@ public class Teststructure {
         conds.add("money>1000");
         System.out.println(Table.select("fuckinghard", exprs, joined2, conds).printtable());
 */
+        String x="\"abcd";
+        String z=x.replace("\"","");
+        System.out.println(z);
     }
 }
