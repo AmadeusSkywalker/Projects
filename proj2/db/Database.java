@@ -159,7 +159,11 @@ public class Database {
         return database;
     }
 
-    public String transact(String query) throws IOException {
-        return Parse.parse(query, this);
+    public String transact(String query) {
+        try {
+            return Parse.parse(query, this);
+        } catch (IOException x) {
+            return "Transaction error";
+        }
     }
 }
