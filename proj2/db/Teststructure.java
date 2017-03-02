@@ -1,15 +1,17 @@
 package db;
+
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
 /**
  * Created by vip on 2/21/17.
  */
 public class Teststructure {
-    public static void main(String[]args) throws IOException{
+    public static void main(String[] args) throws IOException {
 
-        Database sql=new Database();
+        Database sql = new Database();
         //test of constructors of tables,rows,cols
         /*
         ArrayList names=new ArrayList<String>();
@@ -93,7 +95,7 @@ public class Teststructure {
         Table joined2=Table.join("fuckinghard",sql.getbody().get("table2"),sql.getbody().get("table3"));
         System.out.println(joined2.printtable());
         */
-        String result=sql.load("loadBasic2");
+        String result = sql.load("loadBasic2");
         System.out.println(result);
         /*
         ArrayList<String> exprs = new ArrayList<>();

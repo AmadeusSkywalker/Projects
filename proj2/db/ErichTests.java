@@ -8,7 +8,7 @@ import java.util.*;
  */
 public class ErichTests {
 
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args) throws IOException {
         Database db = new Database();
         Parse.parse("create table table1 as select x + y as b, x + z as a from t2 where x > y", db);
 

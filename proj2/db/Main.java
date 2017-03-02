@@ -5,8 +5,9 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 
 import db.Database;
+
 public class Main {
-    private static final String EXIT   = "exit";
+    private static final String EXIT = "exit";
     private static final String PROMPT = "> ";
 
     public static void main(String[] args) {
