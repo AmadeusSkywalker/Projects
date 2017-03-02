@@ -105,6 +105,9 @@ public class Parse {
                 isend = true;
             }
             String type1 = colSentence.substring(0, index2);
+            if (type1.contains(",")){
+                type1=type1.substring(0,type1.length()-1);
+            }
             types.add(type1);
             if (!isend) {
                 colSentence = colSentence.substring(index2 + 1);
@@ -119,7 +122,7 @@ public class Parse {
             int indOfComma = exprs.indexOf(",");
             String term = exprs.substring(0, indOfComma);
             if (!(term.contains(" as "))) {
-                throw new RuntimeException("Malformed column join: no as");
+                System.err.printf("Malformed column join: no as");
             }
             term = term.replace(" as ", "[as]");
             term = term.replaceAll("\\s+","");
@@ -127,7 +130,7 @@ public class Parse {
             exprs = exprs.substring(indOfComma + 1);
         }
         if (!(exprs.contains(" as "))) {
-            throw new RuntimeException("Malformed column join: no as");
+            System.err.printf("Malformed column join: no as");
         }
         exprs = exprs.replace(" as ", "[as]");
         exprs = exprs.replaceAll("\\s+","");
@@ -138,7 +141,7 @@ public class Parse {
             if (!(exprs.contains("%") || exprs.contains("+") || exprs.contains("-")
                     || (exprs.contains("*") && exprs.length() > 1) || exprs.contains("/"))
                     && !(exprs.length() >= (exprs.indexOf("[as]") + 4))) {
-                throw new RuntimeException("Malformed column join: You need an alias");
+                System.err.printf("Malformed column join: You need an alias");
             }
         }
 
@@ -161,7 +164,7 @@ public class Parse {
         for (String cond : conditions) {
             if (!(cond.contains(">") || cond.contains("<") || cond.contains("!=")
                     || cond.contains("==") || cond.contains(">="))) {
-                throw new RuntimeException("Malformed column condition: No comparator");
+                System.err.printf("Malformed column condition: No comparator");
             }
 
         }
