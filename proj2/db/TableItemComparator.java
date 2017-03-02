@@ -72,7 +72,12 @@ public class TableItemComparator {
 
     }
 
-    public boolean compare(Object item1, Object item2) {
+    public boolean compare(ArrayList<Object> row) {
+        Object item1 = row.get(tableKeys.indexOf(colOne));
+        Object item2 = thing2;
+        if (!(colTwo == null)) {
+            item2 = row.get(tableKeys.indexOf(colTwo));
+        }
         if ((item1 instanceof String && !(item2 instanceof String))
                 || (item2 instanceof String && !(item1 instanceof String))) {
             throw new RuntimeException("Cannot compare String with non-string");

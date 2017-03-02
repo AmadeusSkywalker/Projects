@@ -8,6 +8,7 @@ import java.util.ArrayList;
  */
 public class Teststructure {
     public static void main(String[]args) throws IOException{
+
         Database sql=new Database();
         //test of constructors of tables,rows,cols
         /*
@@ -94,5 +95,12 @@ public class Teststructure {
         */
         String result=sql.load("loadBasic2");
         System.out.println(result);
+        /*
+        ArrayList<String> exprs = new ArrayList<>();
+        exprs.add("cash+money[as]dollas");
+        ArrayList<String> conds = new ArrayList<>();
+        conds.add("money>1000");
+        System.out.println(Table.select("fuckinghard", exprs, joined2, conds).printtable());
+*/
     }
 }

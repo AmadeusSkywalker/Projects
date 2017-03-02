@@ -17,13 +17,17 @@ public class Table {
     int numofrows; //Accounts for the row of column headers, even though it's not in the row list
     int numofcols;
 
+    public Row getRow(int x) {
+        return rows.get(x + 1);
+    }
+
     public Table(String tablename, ArrayList<String> names, ArrayList<String> types) {
         //The table constructor creates a first row and add this row to the rows variable
         name = tablename;
         colnames = names;
-        coltypes = types;
+        coltypes=types;
         columns = new HashMap<String, Column>();
-        ArrayList<Object> first = new ArrayList<>();
+        ArrayList<String> first = new ArrayList<>();
         for (int i = 0; i < names.size(); i++) {
             columns.put(names.get(i), new Column(names.get(i), types.get(i)));
             first.add(names.get(i) + " " + types.get(i));
@@ -36,23 +40,25 @@ public class Table {
     }
 
     public void addRow(Row x) {
-        ArrayList<Object> rowbody = x.getbody();//get the body of the row we want to add, which is an arraylist
-        ArrayList<Object> newrow = new ArrayList();
+        ArrayList rowbody = x.getbody();//get the body of the row we want to add, which is an arraylist
+        ArrayList newrow = new ArrayList();
         int index = 0;  //this index is used to track the numofcols we have iterated through
         for (Column a : columns.values()) {
-            //when index is still less than the length of the newly added row, we just add elements of row to each column
+            //when index is still less than the length of the newly added row, we just add elements of row to each
+            // column
             // Also, we add elements to the new row
             if (index < rowbody.size()) {
                 Object m = rowbody.get(index);
-                a.addStuff((Comparable) m); //TODO check if comparable
+                a.addStuff((Comparable) m);
                 newrow.add(m);
                 index = index + 1;
             }
-            //after index is bigger than the size of rowbody but still less than numofcols, we add NOVALUE to the rest of cols
+            //after index is bigger than the size of rowbody but still less than numofcols, we add NOVALUE to
+            // the rest of cols
             //Also,we add elements to the new row
             else if (index < numofcols) {
                 Object h = new NOVALUE(a.getType()).getbody();
-                a.addStuff((Comparable) h); //TODO check if comparable
+                a.addStuff((Comparable) h);
                 newrow.add(h);
             }
         }
@@ -61,13 +67,91 @@ public class Table {
         rows.add(realrow);
     }
 
+    public static Table select(String name, ArrayList<String> exprs, Table t1, ArrayList<String> conds) {
+        //TODO check if it's an empty table
+        ArrayList<String> resultNames = new ArrayList<>();
+        ArrayList<String> resultTypes = new ArrayList<>();
+
+        ArrayList<Integer> legalRows = new ArrayList<>();
+        for (int i = 0; i < t1.getNumofrows(); i++) {
+            legalRows.add(i);
+        }
+        ArrayList<TableItemComparator> comparators = new ArrayList<>();
+        for (String cond : conds) {
+            comparators.add(new TableItemComparator(cond, t1.colnames, t1.coltypes));
+        }
+        for (TableItemComparator comparator : comparators) {
+            for (int row : legalRows) {
+                if (!(comparator.compare(t1.getRow(row).body))) { //TODO check stupid row number
+                    legalRows.remove(row);
+                }
+            }
+        }
+
+        Table filteredTable = new Table(name, t1.colnames, t1.coltypes); //TODO check if empty
+        for (int row : legalRows) {
+            filteredTable.addRow(t1.getRow(row));
+        }
+
+        if (exprs.get(0).equals("*")) {
+            return filteredTable; //TODO make it return only valid rows
+        }
+            ArrayList<TableItemCombiner> newColCombiners = new ArrayList<>();
+            ArrayList<ArrayList<Object>> newCols = new ArrayList<>();
+            for (String expr : exprs) {
+                newColCombiners.add(new TableItemCombiner(expr));
+            }
+
+
+
+
+            for (TableItemCombiner ItemCombiner : newColCombiners) { //For every expression
+                ArrayList<Object> newCol = new ArrayList<>();
+                resultNames.add(ItemCombiner.resultName); //Adds the name of the new column
+
+                //Combines the two columns and adds them to the list of new columns
+                if (ItemCombiner.colTwo == null) {
+                    ArrayList<Object> colOne = filteredTable.columns.get(ItemCombiner.colOne).body;
+                    newCols.add(colOne);
+                } else {
+                    ArrayList<Object> colOne = filteredTable.columns.get(ItemCombiner.colOne).body; //same length
+                    ArrayList<Object> colTwo = filteredTable.columns.get(ItemCombiner.colTwo).body;
+                    for (int i = 0; i < colOne.size(); i++) {
+                        newCol.add(ItemCombiner.combiner(colOne.get(i), colTwo.get(i)));
+
+                    }
+                    newCols.add(newCol);
+                }
+
+                if (newCol.get(0) instanceof String) {
+                    resultTypes.add("string");
+                } else if (newCol.get(0) instanceof Integer) {
+                    resultTypes.add("int");
+                } else if (newCol.get(0) instanceof Float) {
+                    resultTypes.add("float");
+                }
+
+            }
+        Table returnedTable = new Table(name, resultNames, resultTypes);
+        for (int i = 0; i < newCols.get(0).size(); i++) {
+            ArrayList<Object> newRow = new ArrayList<>();
+            for (ArrayList<Object> col : newCols) {
+                newRow.add(col.get(i));
+            }
+            Row trueNewRow = new Row(newRow, i);
+            returnedTable.addRow(trueNewRow);
+        }
+        return returnedTable;
+    }
+
+
     public String printtable() {
         String result = "";
         boolean isfirstrow=true;
         for (Row row : rows) {
             //printing the table row by row
             String currentrow = "";
-            ArrayList<Object> tobeprinted = row.getbody();
+            ArrayList tobeprinted = row.getbody();
             int index = 0;
             for (Object h : tobeprinted) {
                 //in each row, add the string representation of the object to the result
@@ -108,15 +192,15 @@ public class Table {
         return rows;
     }
 
-    public int getNumofrows() {
-        return numofrows;
+    public int getNumofrows(){
+        return numofrows - 1;
     }
 
-    int getNumofcols() {
+    int getNumofcols(){
         return numofcols;
     }
 
-    public HashMap<String, Column> getColumns() {
+    public HashMap<String, Column> getColumns(){
         return columns;
     }
 
@@ -157,21 +241,22 @@ public class Table {
     }
 
 
-    private static Table cartesianJoin(String name, Table t1, Table t2, ArrayList<String> names, ArrayList<String> types) {
+    private static Table cartesianJoin(String name, Table t1, Table t2, ArrayList<String> names,
+                                       ArrayList<String> types) {
         Table joined = new Table(name, names, types);
-        int index = 1;
+        int index=1;
         //for each new row, just add the previous rows together, and add the new row to the new table
-        for (int i = 1; i < t1.getNumofrows(); i++) {
-            for (int k = 1; k < t2.getNumofrows(); k++) {
-                Row x = t1.getrows().get(i);
-                Row y = t2.getrows().get(k);
-                ArrayList<Object> bodyx = x.getbody();
-                ArrayList<Object> bodyy = y.getbody();
-                ArrayList<Object> bigbody = new ArrayList();
+        for (int i=1;i<t1.getNumofrows();i++){
+            for (int k=1;k<t2.getNumofrows();k++){
+                Row x=t1.getrows().get(i);
+                Row y=t2.getrows().get(k);
+                ArrayList bodyx=x.getbody();
+                ArrayList bodyy=y.getbody();
+                ArrayList bigbody=new ArrayList();
                 bigbody.addAll(bodyx);
                 bigbody.addAll(bodyy);
-                Row xy = new Row(bigbody, index);
-                index = index + 1;
+                Row xy=new Row(bigbody,index);
+                index=index+1;
                 joined.addRow(xy);
             }
         }
@@ -181,7 +266,7 @@ public class Table {
     private static Table innerJoin(String name, Table t1, Table t2, ArrayList<String> samekeys,
                                    ArrayList<String> sametypes) {
         //Below line makes a new table with the correct arrangement of headers
-        Table result = Table.innerjoinhelper(name, t1, t2, samekeys, sametypes);
+        Table result=Table.innerjoinhelper(name,t1,t2,samekeys,sametypes);
         int newRowNums = 0;
         for (int i = 1; i < t1.numofrows; i++) {
             for (int j = 1; j < t2.numofrows; j++) {
@@ -217,8 +302,16 @@ public class Table {
     }
 
 
+
+
+
+
+
+
+
+
     private static Table innerjoinhelper(String name, Table t1, Table t2, ArrayList<String> samekeys,
-                                         ArrayList<String> sametypes) {
+                             ArrayList<String> sametypes){
         ArrayList<String> unsharedNames = new ArrayList<>();
         ArrayList<String> unsharedTypes = new ArrayList<>();
         for (String colName : t1.colnames) { //Adds all non-shared columns from left array to unsharedNames
@@ -227,22 +320,12 @@ public class Table {
                 unsharedTypes.add(t1.columns.get(colName).getType());
             }
         }
-        /*for (String colType : t1.coltypes) { //Adds all non-shared column types from left array to unsharedTypes
-            if (!sametypes.contains(colType)) {
-                unsharedTypes.add(colType);
-            }
-        }*/
         for (String colName : t2.colnames) { //Adds all non-shared columns from right array to unsharedNames
             if (!samekeys.contains(colName)) {
                 unsharedNames.add(colName);
                 unsharedTypes.add(t2.columns.get(colName).getType());
             }
         }
-        /*for (String colType : t2.coltypes) { //Adds all non-shared column types from right array to unsharedTypes
-            if (!sametypes.contains(colType)) {
-                unsharedTypes.add(colType);
-            }
-        }*/
         ArrayList<String> totalNames = new ArrayList<>();
         ArrayList<String> totalTypes = new ArrayList<>();
         totalNames.addAll(samekeys);

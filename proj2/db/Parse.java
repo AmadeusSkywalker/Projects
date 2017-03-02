@@ -1,14 +1,12 @@
 package db;
 
-import java.awt.*;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.io.IOException;
-import java.util.*;
 
 
 import java.util.StringJoiner;
-
+import java.util.ArrayList;
 public class Parse {
     // Various common constructs, simplifies parsing.
     private static final String REST  = "\\s*(.*)\\s*",
@@ -36,7 +34,7 @@ public class Parse {
                                  INSERT_CLS  = Pattern.compile("(\\S+)\\s+values\\s+(.+?" +
                                                "\\s*(?:,\\s*.+?\\s*)*)");
 
-    static String parse(String line,Database x) {  //put in the db package and rename the main function
+    static String parse(String line,Database x) throws IOException{  //put in the db package and rename the main function
         String result=eval(line,x);
         return result;  //Possible make all of the things below string return type??
     }
@@ -117,10 +115,21 @@ public class Parse {
     }
 
     private static void createSelectedTable(String name, String exprs, String tables, String conds) {
-        if ((exprs.contains("%") || exprs.contains("+") || exprs.contains("-")
-            || (exprs.contains("*") && exprs.length() > 1) || exprs.contains("/"))
-                && !exprs.contains(" as ") && exprs.length() >= (exprs.indexOf("as") + 3)) {
-            throw new RuntimeException("Malformed column join: You need an alias");
+        ArrayList<String> expressions = new ArrayList<>();
+        while (exprs.contains(",")) {
+            int indOfComma = exprs.indexOf(",");
+            expressions.add(exprs.substring(0, indOfComma));
+            exprs = exprs.substring(indOfComma + 1);
+        }
+        expressions.add(exprs);
+
+        for (String expr : expressions) {
+            if ((exprs.contains("%") || exprs.contains("+") || exprs.contains("-")
+                    || (exprs.contains("*") && exprs.length() > 1) || exprs.contains("/"))
+                    && !exprs.contains(" as ") && exprs.length() >= (exprs.indexOf("as") + 3)) {
+                throw new RuntimeException("Malformed column join: You need an alias");
+            }
+            expr = expr.replace(" as ", "[as]");
         }
 
         exprs = exprs.replaceAll("\\s+",""); //This and all instances from next line url
@@ -132,6 +141,7 @@ public class Parse {
     }
 
     private static String loadTable(String name) {
+        System.out.printf("You are trying to load the table named %s\n", name);
         return name;
     }
 

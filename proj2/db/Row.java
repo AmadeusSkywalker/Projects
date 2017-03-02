@@ -11,7 +11,7 @@ public class Row {
       ArrayList<Object> body;
       int index;
 
-      public Row(ArrayList<Object> x,int rownum){
+      public Row(ArrayList x,int rownum){
           body=x;
           index=rownum;
       }

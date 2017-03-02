@@ -34,8 +34,8 @@ public class TableItemCombiner {
     }
 
     private void cataloguer(String combiner) {
-        int asInd = combiner.indexOf("as");
-        resultName = combiner.substring(asInd + 2); //No spaces
+        int asInd = combiner.indexOf("[as]");
+        resultName = combiner.substring(asInd + 4); //No spaces
         combiner = combiner.substring(0, asInd); //Removes the "as ..."
         int opInd = combiner.indexOf(operation);
         colTwo = combiner.substring(opInd + 1); //gets the second name

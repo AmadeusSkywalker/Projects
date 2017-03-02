@@ -1,6 +1,8 @@
 package db;
 
 import java.io.*;
+import java.lang.reflect.Array;
+import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -86,7 +88,7 @@ public class Database {
         return "";
     }
 
-    public String store(String name) throws IOException {
+    public String store(String name) throws IOException{
         File file = new File(name + ".tbl"); // "./" if filepath doesn't work
         BufferedWriter writer = new BufferedWriter(new FileWriter(file));
         Table currTable = database.get(name);
@@ -117,16 +119,17 @@ public class Database {
     }
 
     public String droptable(String name) {
-        if (database.containsKey(name)) {
+        if (database.containsKey(name)){
             database.remove(name);
-            return "";
-        } else {
+            return"";
+        }
+        else{
             throw new RuntimeException("Hey!No such table!");
         }
     }
 
     public String insertInto(String tablename, Row x) {
-        Table changed = database.get(tablename); //find the table that we need to change
+        Table changed=database.get(tablename); //find the table that we need to change
         changed.addRow(x); //go to the addRow method in the table class
         return "";
     }
@@ -143,16 +146,17 @@ public class Database {
     public String select(String name, ArrayList<String> exprs, ArrayList<String> tableNames, ArrayList<String> conds) {
         Table newTable = database.get(tableNames.get(0));
         for (int i = 1; i < tableNames.size(); i++) {
-            //    newTable = Table.select(name, exprs, newTable, database.get(tableNames.get(i)), conds);
+            newTable = Table.join(name, newTable, database.get(tableNames.get(i)));
         }
+        newTable = Table.select(name, exprs, newTable, conds);
         return newTable.printtable();
     }
 
-    public HashMap<String, Table> getbody() {
+    public HashMap<String,Table> getbody(){
         return database;
     }
 
-    public String transact(String query) {
-        return Parse.parse(query, this);
+    public String transact(String query) throws IOException{
+        return Parse.parse(query,this);
     }
 }
