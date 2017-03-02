@@ -1,14 +1,12 @@
 package db;
 
 import java.io.*;
-import java.lang.reflect.Array;
-import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 
 public class Database {
-    public HashMap<String, Table> database;
+    private HashMap<String, Table> database;
 
     public Database() {
         database = new HashMap<String, Table>();
@@ -28,7 +26,7 @@ public class Database {
         if (types.size() != colnames.size()) {
             throw new RuntimeException("Names and types number no match!");
         }
-        Table element = new Table(name, colnames, types); //invoke the table constructor to create a new table
+        Table element = new Table(name, colnames, types);
         database.put(name, element); //put the newly created table in the database
         return "";
     }
@@ -146,7 +144,9 @@ public class Database {
         }
     }
 
-    public Table select(String name, ArrayList<String> exprs, ArrayList<String> tableNames, ArrayList<String> conds) {
+    public Table select(String name, ArrayList<String> exprs,
+                        ArrayList<String> tableNames,
+                        ArrayList<String> conds) {
         Table newTable = database.get(tableNames.get(0));
         for (int i = 1; i < tableNames.size(); i++) {
             newTable = Table.join(name, newTable, database.get(tableNames.get(i)));
