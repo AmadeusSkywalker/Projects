@@ -23,6 +23,9 @@ public class Database {
         return database;
     }
 
+    public void addTable(Table t1) {
+        getDatabase().put(t1.name, t1);
+    }
 
     public String createtable(String name, ArrayList<String> colnames, ArrayList<String> types) {
         if (database.containsKey(name)) {
@@ -44,7 +47,7 @@ public class Database {
             Table changed = database.get(tablename);
             return changed.printtable();
         } else {
-            return "ERROR: No such table!" + "\n";
+            return "ERROR: No such table!";
         }
     }
 
@@ -53,7 +56,7 @@ public class Database {
             database.remove(name);
             return "";
         } else {
-            return "ERROR: No such table." + "\n";
+            return "ERROR: No such table.";
         }
     }
 

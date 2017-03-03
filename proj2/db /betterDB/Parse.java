@@ -70,13 +70,9 @@ public class Parse {
         Matcher m;
         if ((m = CREATE_NEW.matcher(expr)).matches()) {
             createNewTable(m.group(1), m.group(2).split(COMMA), x);
-        }
-        /*
-        else if ((m = CREATE_SEL.matcher(expr)).matches()) {
+        } else if ((m = CREATE_SEL.matcher(expr)).matches()) {
             createSelectedTable(m.group(1), m.group(2), m.group(3), m.group(4), x);
-        }
-        */
-        else {
+        } else {
             System.err.printf("Malformed create: %s\n", expr);
         }
     }
@@ -112,7 +108,7 @@ public class Parse {
         x.createtable(name, names, types);
     }
 
-    /*
+
     private static void createSelectedTable(String name, String exprs, String tables, String conds, Database db) {
         ArrayList<String> expressions = new ArrayList<>();
         while (exprs.contains(",")) {
@@ -186,7 +182,7 @@ public class Parse {
 
         db.addTable(db.select(name, expressions, tableList, conditions));
     }
-    */
+
 
     private static String loadTable(String name) {
         return name;
