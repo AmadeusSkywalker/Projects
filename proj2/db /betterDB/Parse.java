@@ -83,6 +83,7 @@ public class Parse {
             joiner.add(cols[i]);
         }
         String colSentence = joiner.toString() + " " + cols[cols.length - 1];
+        System.out.println(colSentence);
         ArrayList<String> names = new ArrayList<>();
         ArrayList<String> types = new ArrayList<>();
         boolean isend = false;
@@ -91,6 +92,7 @@ public class Parse {
             String name1 = colSentence.substring(0, index1);
             names.add(name1);
             colSentence = colSentence.substring(index1 + 1);
+            colSentence=colSentence.trim();
             int index2 = colSentence.indexOf(" ");
             if (index2 == -1) {
                 index2 = colSentence.length();
@@ -103,6 +105,7 @@ public class Parse {
             types.add(type1);
             if (!isend) {
                 colSentence = colSentence.substring(index2 + 1);
+                colSentence=colSentence.trim();
             }
         }
         x.createtable(name, names, types);
