@@ -1,11 +1,7 @@
 package betterDB;
 
-import org.junit.Assert;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.*;
+import java.util.HashSet;
 
 /**
  * Created by ErichRathkamp on 3/1/17.
@@ -18,14 +14,6 @@ public class Table {
     String name;
     int numRows;
     int numCols;
-
-    public ArrayList<String> getColTypes(){
-        return colTypes;
-    }
-
-    public int getNumRows(){
-        return numRows;
-    }
 
     public Table(String tableName, ArrayList<String> names, ArrayList<String> types) {
         //The table constructor creates a first row and add this row to the rows variable
@@ -51,62 +39,6 @@ public class Table {
         colHeaders = headers;
         numCols = names.size();
         numRows = 0;
-    }
-
-    public String addRow(Row x) {
-        for (int i = 0; i < x.body.size(); i++) {
-            if (!(x.get(i).type.equals(colTypes.get(i)))) {
-                return "ERROR: Type of row item not match table";
-            }
-        }
-        rows.add(x);
-        numRows += 1;
-        return "";
-    }
-
-    public void addRow(ArrayList<TableItem> x) {
-        Row newRow = new Row(x);
-        addRow(newRow);
-    }
-
-    public String printtable() {
-        String result = "";
-
-        for (String header : colHeaders) {
-            result = result + header + ",";
-        }
-        //Cuts the last comma
-        result = result.substring(0, result.length() - 1);
-        result += '\n';
-
-        for (Row row : rows) {
-            //printing the table row by row
-            String currentRow = "";
-            int index = 0;
-
-            ArrayList<TableItem> toBePrinted = row.body;
-            for (TableItem element : toBePrinted) {  //TODO put NOVALUE and NaN representations in
-                //in each row, add the string representation of the TableItem to the result
-                if (element.type.equals("string")) {
-                    currentRow = currentRow + "'" + element.item.toString() + "'" + ",";
-                } else if (element.type.equals("int")) {
-                    currentRow = currentRow + element.item.toString() + ",";
-                } else if (element.type.equals("float")) {
-                    currentRow = currentRow + String.format(java.util.Locale.US,"%.3f", (Float) element.item) + ",";
-                } else {
-                    return "ERROR: Incorrect type in table";
-                }
-                //Cuts the last comma of a row
-                index = index + 1;
-                if (index == toBePrinted.size()) {
-                    currentRow = currentRow.substring(0, currentRow.length() - 1);
-                }
-
-
-                }
-            result = result + currentRow + '\n';
-        }
-        return result;
     }
 
     public static Table join(String name, Table t1, Table t2) {
@@ -150,10 +82,10 @@ public class Table {
         Table joined = new Table(name, names, types);
 
         //for each new row, just add the previous rows together, and add the new row to the new table
-        for (int i = 0; i < t1.numRows; i++){
+        for (int i = 0; i < t1.numRows; i++) {
             Row x = t1.rows.get(i);
 
-            for (int k = 0; k < t2.numRows; k++){
+            for (int k = 0; k < t2.numRows; k++) {
                 Row y = t2.rows.get(k);
                 ArrayList<TableItem> bigBody = new ArrayList<>();
                 bigBody.addAll(x.body);
@@ -168,7 +100,7 @@ public class Table {
     private static Table innerJoin(String name, Table t1, Table t2, ArrayList<String> samekeys,
                                    ArrayList<String> sametypes) {
         //Below line makes a new table with the correct arrangement of headers
-        Table result= innerjoinhelper(name,t1,t2,samekeys,sametypes);
+        Table result = innerjoinhelper(name, t1, t2, samekeys, sametypes);
 
         for (int i = 0; i < t1.numRows; i++) { //For each row in table 1
             for (int j = 0; j < t2.numRows; j++) { //For each row in table 2
@@ -205,7 +137,7 @@ public class Table {
     }
 
     private static Table innerjoinhelper(String name, Table t1, Table t2, ArrayList<String> samekeys,
-                                         ArrayList<String> sametypes){
+                                         ArrayList<String> sametypes) {
         ArrayList<String> unsharedNames = new ArrayList<>();
         ArrayList<String> unsharedTypes = new ArrayList<>();
 
@@ -231,6 +163,70 @@ public class Table {
 
         return new Table(name, totalNames, totalTypes);
 
+    }
+
+    public ArrayList<String> getColTypes() {
+        return colTypes;
+    }
+
+    public int getNumRows() {
+        return numRows;
+    }
+
+    public String addRow(Row x) {
+        for (int i = 0; i < x.body.size(); i++) {
+            if (!(x.get(i).type.equals(colTypes.get(i)))) {
+                return "ERROR: Type of row item not match table";
+            }
+        }
+        rows.add(x);
+        numRows += 1;
+        return "";
+    }
+
+    public void addRow(ArrayList<TableItem> x) {
+        Row newRow = new Row(x);
+        addRow(newRow);
+    }
+
+    public String printtable() {
+        String result = "";
+
+        for (String header : colHeaders) {
+            result = result + header + ",";
+        }
+        //Cuts the last comma
+        result = result.substring(0, result.length() - 1);
+        result += '\n';
+
+        for (Row row : rows) {
+            //printing the table row by row
+            String currentRow = "";
+            int index = 0;
+
+            ArrayList<TableItem> toBePrinted = row.body;
+            for (TableItem element : toBePrinted) {  //TODO put NOVALUE and NaN representations in
+                //in each row, add the string representation of the TableItem to the result
+                if (element.type.equals("string")) {
+                    currentRow = currentRow + "'" + element.item.toString() + "'" + ",";
+                } else if (element.type.equals("int")) {
+                    currentRow = currentRow + element.item.toString() + ",";
+                } else if (element.type.equals("float")) {
+                    currentRow = currentRow + String.format(java.util.Locale.US, "%.3f", (Float) element.item) + ",";
+                } else {
+                    return "ERROR: Incorrect type in table";
+                }
+                //Cuts the last comma of a row
+                index = index + 1;
+                if (index == toBePrinted.size()) {
+                    currentRow = currentRow.substring(0, currentRow.length() - 1);
+                }
+
+
+            }
+            result = result + currentRow + '\n';
+        }
+        return result;
     }
 
 }

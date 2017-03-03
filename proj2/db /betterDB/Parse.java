@@ -1,13 +1,11 @@
 package betterDB;
 
 
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 import java.io.IOException;
-
-
-import java.util.StringJoiner;
 import java.util.ArrayList;
+import java.util.StringJoiner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Parse {
     // Various common constructs, simplifies parsing.
@@ -47,23 +45,21 @@ public class Parse {
             createTable(m.group(1), x);
             return "";
         } else if ((m = LOAD_CMD.matcher(query)).matches()) {
-                String name = loadTable(m.group(1));
-                return x.load(name);
+            String name = loadTable(m.group(1));
+            return x.load(name);
         } else if ((m = STORE_CMD.matcher(query)).matches()) {
             return storeTable(m.group(1), x);
 
         } else if ((m = DROP_CMD.matcher(query)).matches()) {
             String name = dropTable(m.group(1));
             return x.droptable(name);
-        }
-        else if ((m = INSERT_CMD.matcher(query)).matches()) {
-            return insertRow(m.group(1),x);
-        }
-        else if ((m = PRINT_CMD.matcher(query)).matches()) {
+        } else if ((m = INSERT_CMD.matcher(query)).matches()) {
+            return insertRow(m.group(1), x);
+        } else if ((m = PRINT_CMD.matcher(query)).matches()) {
             String name = printTable(m.group(1));
             return x.print(name);
         } else if ((m = SELECT_CMD.matcher(query)).matches()) {
-            return select(m.group(1),x);
+            return select(m.group(1), x);
         } else {
             System.err.printf("Malformed query: %s\n", query);
             return "";
@@ -105,8 +101,8 @@ public class Parse {
                 isend = true;
             }
             String type1 = colSentence.substring(0, index2);
-            if (type1.contains(",")){
-                type1=type1.substring(0,type1.length()-1);
+            if (type1.contains(",")) {
+                type1 = type1.substring(0, type1.length() - 1);
             }
             types.add(type1);
             if (!isend) {
@@ -196,7 +192,7 @@ public class Parse {
         return name;
     }
 
-    private static String storeTable (String name, Database db) {
+    private static String storeTable(String name, Database db) {
         db.store(name);
         return "";
     }
@@ -205,11 +201,11 @@ public class Parse {
         return name;
     }
 
-    private static String insertRow(String expr,Database x){
+    private static String insertRow(String expr, Database x) {
         try {
             Matcher m = INSERT_CLS.matcher(expr);
             if (!m.matches()) {
-                return "ERROR: Malformed insert: %s\n" + expr+"\n";
+                return "ERROR: Malformed insert: %s\n" + expr + "\n";
             }
             int index1 = expr.indexOf(" ");
             String tablename = expr.substring(0, index1);
@@ -226,26 +222,26 @@ public class Parse {
             while (!isend) {
                 if (checkindex == coltypes.size()) {
                     if (!expr.equals("")) {
-                        return "ERROR: Row doesn't match table"+"\n";
+                        return "ERROR: Row doesn't match table" + "\n";
                     }
                     break;
                 }
                 if (expr.substring(0, 1).equals("")) {
                     isend = true;
                     if (checkindex < coltypes.size()) {
-                        return "ERROR: Row doesn't match table"+"\n";
+                        return "ERROR: Row doesn't match table" + "\n";
                     }
                 }
                 if (expr.substring(0, 1).equals("'")) {
                     if (!coltypes.get(checkindex).equals("string")) {
-                        return "ERROR: Row doesn't match table"+"\n";
+                        return "ERROR: Row doesn't match table" + "\n";
                     } else {
                         expr = expr.substring(1);
                         int quoteindex = expr.indexOf("'");
                         String tobeadd = expr.substring(0, quoteindex);
                         TableItem realtobeadd = new TableItem(tobeadd);
                         rowcontent.add(realtobeadd);
-                        expr=expr.substring(quoteindex+1);
+                        expr = expr.substring(quoteindex + 1);
                         int commaindex = expr.indexOf(",");
                         expr = expr.substring(commaindex + 1);
                         expr = expr.trim();
@@ -255,14 +251,14 @@ public class Parse {
                     String tobeadd = expr.substring(0, commaindex);
                     if (tobeadd.contains(".")) {
                         if (!coltypes.get(checkindex).equals("float")) {
-                            return "ERROR: Row doesn't match type"+"\n";
+                            return "ERROR: Row doesn't match type" + "\n";
                         }
                         float realthing = Float.valueOf(tobeadd);
                         TableItem realstuff = new TableItem(realthing);
                         rowcontent.add(realstuff);
                     } else {
                         if (!coltypes.get(checkindex).equals("int")) {
-                            return "ERROR: Row doesn't match type"+"\n";
+                            return "ERROR: Row doesn't match type" + "\n";
                         }
                         int realthing = Integer.valueOf(tobeadd);
                         TableItem realstuff = new TableItem(realthing);
@@ -275,8 +271,8 @@ public class Parse {
             }
             t1.addRow(rowcontent);
             return "";
-        }catch (RuntimeException error){
-            return "Error: Malformed Dataentry"+"\n";
+        } catch (RuntimeException error) {
+            return "Error: Malformed Dataentry" + "\n";
         }
     }
 
@@ -301,21 +297,21 @@ public class Parse {
             String term = exprs.substring(0, indOfComma);
             if ((term.contains("%") || term.contains("+") || term.contains("-")
                     || (term.contains("*") && term.length() > 1) || exprs.contains("/"))
-                    && !(term.contains(" as "))){
+                    && !(term.contains(" as "))) {
                 System.err.printf("Malformed column join: no as");
             }
             term = term.replace(" as ", "[as]");
-            term = term.replaceAll("\\s+","");
+            term = term.replaceAll("\\s+", "");
             expressions.add(term);
             exprs = exprs.substring(indOfComma + 1);
         }
         if ((exprs.contains("%") || exprs.contains("+") || exprs.contains("-")
                 || (exprs.contains("*") && exprs.length() > 1) || exprs.contains("/"))
-                && !(exprs.contains(" as "))){
+                && !(exprs.contains(" as "))) {
             System.err.printf("Malformed column join: no as");
         }
         exprs = exprs.replace(" as ", "[as]");
-        exprs = exprs.replaceAll("\\s+","");
+        exprs = exprs.replaceAll("\\s+", "");
         expressions.add(exprs);
 
 
@@ -336,14 +332,13 @@ public class Parse {
             int indOfAnd = conds.indexOf(" and ");
             String term = conds.substring(0, indOfAnd);
             conds = conds.substring(indOfAnd + 5);
-            term = term.replaceAll("\\s+","");
+            term = term.replaceAll("\\s+", "");
             conditions.add(term);
         }
         if (conds != null) {
-            conds = conds.replaceAll("\\s+","");
+            conds = conds.replaceAll("\\s+", "");
             conditions.add(conds);
         }
-
 
 
         for (String cond : conditions) {
@@ -358,11 +353,11 @@ public class Parse {
         while (tables.contains(",")) {
             int indOfComma = tables.indexOf(",");
             String term = tables.substring(0, indOfComma);
-            term = term.replaceAll("\\s+","");
+            term = term.replaceAll("\\s+", "");
             tableList.add(term);
             tables = tables.substring(indOfComma + 1);
         }
-        tables = tables.replaceAll("\\s+","");
+        tables = tables.replaceAll("\\s+", "");
         tableList.add(tables);
 
         return db.select("dummy", expressions, tableList, conditions).printtable();

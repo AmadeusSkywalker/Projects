@@ -1,10 +1,8 @@
 package betterDB;
 
 import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.IOException;
-
-import betterDB.Database;
+import java.io.InputStreamReader;
 
 public class Main {
     private static final String EXIT = "exit";

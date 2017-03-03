@@ -4,7 +4,7 @@ package betterDB;
  * Created by ErichRathkamp on 3/2/17.
  */
 public class CombinerComparatorTests {
-    public static void main (String[] args) {
+    public static void main(String[] args) {
         TableItemCombiner TIC = new TableItemCombiner("x+y[as]col1");
         System.out.println(TIC.resultName);
         System.out.println(TIC.colOne);

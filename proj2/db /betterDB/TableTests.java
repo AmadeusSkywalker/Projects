@@ -1,7 +1,7 @@
 package betterDB;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+
 /**
  * Created by ErichRathkamp on 3/1/17.
  */

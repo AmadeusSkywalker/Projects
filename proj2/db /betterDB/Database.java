@@ -1,10 +1,13 @@
 package betterDB;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.io.*;
 
 /**
  * Created by ErichRathkamp on 3/1/17.
@@ -16,7 +19,7 @@ public class Database {
         database = new HashMap<String, Table>();
     }
 
-    public HashMap<String, Table> getDatabase(){
+    public HashMap<String, Table> getDatabase() {
         return database;
     }
 
@@ -41,7 +44,7 @@ public class Database {
             Table changed = database.get(tablename);
             return changed.printtable();
         } else {
-            return "ERROR: No such table!"+"\n";
+            return "ERROR: No such table!" + "\n";
         }
     }
 
@@ -50,7 +53,7 @@ public class Database {
             database.remove(name);
             return "";
         } else {
-            return "ERROR: No such table."+"\n";
+            return "ERROR: No such table." + "\n";
         }
     }
 

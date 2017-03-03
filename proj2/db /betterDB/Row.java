@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class Row {
     ArrayList<TableItem> body;
 
-    public Row(ArrayList<TableItem> x){
+    public Row(ArrayList<TableItem> x) {
         body = x;
     }
 

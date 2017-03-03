@@ -1,7 +1,5 @@
 package betterDB;
 
-import javafx.scene.control.Tab;
-
 /**
  * Created by ErichRathkamp on 3/1/17.
  */
