@@ -206,35 +206,77 @@ public class Parse {
     }
 
     private static String insertRow(String expr,Database x) {
-        //TODO:Try to deal with error cases! Also, single quotes!
+        //TODO:make loadbasic2 works!
         Matcher m = INSERT_CLS.matcher(expr);
         if (!m.matches()) {
             return "ERROR: Malformed insert: %s\n" + expr;
-
         }
+
         int index1=expr.indexOf(" ");
         String tablename=expr.substring(0,index1);
         Table t1=x.getbody().get(tablename);
+        ArrayList<String> coltypes=t1.getcoltypes();
         int rownum=t1.getNumofcols();
         expr=expr.substring(index1+1);
-        expr.trim();
+        expr=expr.trim();
         int index2=expr.indexOf(" ");
         expr=expr.substring(index2+1);
-        expr.trim();
+        expr=expr.trim();
+        System.out.println(expr);
+        int checkindex=0;
         ArrayList<Object> rowcontent=new ArrayList<>();
         boolean isend=false;
         while(!isend){
-            int index=expr.indexOf(" ");
-            if(index==-1){
-                index=expr.length();
-                isend=true;
+            if(checkindex==coltypes.size()){
+                if(!expr.equals("")){
+                    return "ERROR: Row doesn't match table";
+                }
+                break;
             }
-            String tobeadd=expr.substring(0,index);
-            tobeadd=tobeadd.replace("\"","");
-            rowcontent.add(tobeadd);
-            if(!isend){
-                expr=expr.substring(index+1);
-                expr.trim();
+            if (expr.substring(0,1).equals("")){
+                isend=true;
+                if(checkindex<coltypes.size()){
+                    return "ERROR: Row doesn't match table";
+                }
+            }
+            if(expr.substring(0,1).equals("'")){
+                if(!coltypes.get(checkindex).equals("string")){
+                    return "ERROR: Row doesn't match table";
+                }
+                else{
+                    expr=expr.substring(1);
+                    int quoteindex=expr.indexOf("'");
+                    String tobeadd=expr.substring(0,quoteindex);
+                    rowcontent.add(tobeadd);
+                    expr=expr.substring(quoteindex+1);
+                    int fuckcomma=expr.indexOf(",");
+                    expr=expr.substring(fuckcomma+1);
+                    expr=expr.trim();
+                }
+            }
+            else{
+                int spaceindex=expr.indexOf(",");
+                String tobeadd=expr.substring(0,spaceindex);
+                if(tobeadd.contains(".")){
+                    if(!coltypes.get(checkindex).equals("float")){
+                        return "ERROR: Row doesn't match type";
+                    }
+                    float realthing=Float.valueOf(tobeadd);
+                    rowcontent.add(realthing);
+                }
+                else{
+                    if(!coltypes.get(checkindex).equals("int")){
+                        return "ERROR: Row doesn't match type";
+                    }
+                    int realthing=Integer.valueOf(tobeadd);
+                    rowcontent.add(realthing);
+                }
+                expr=expr.substring(spaceindex+1);
+                expr=expr.trim();
+            }
+            checkindex+=1;
+            if(checkindex>coltypes.size()){
+                return "ERROR: Row doesn't match type";
             }
         }
         Row newrow=new Row(rowcontent,rownum);

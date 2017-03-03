@@ -1,4 +1,2 @@
-a string, b string
-'hello','there'
-'my','name'
-'is','matt'
+a int, b int
+1,2

@@ -13,7 +13,7 @@ public class Teststructure {
 
         Database sql = new Database();
         //test of constructors of tables,rows,cols
-
+        /*
         ArrayList names=new ArrayList<String>();
         names.add("school");
         names.add("scores");
@@ -117,10 +117,14 @@ public class Teststructure {
 //        sql.insertInto("table4", row22);
 
         System.out.println(Parse.parse("select * from table2, table3", sql));
-
+         */
 
 //        String x="\"abcd";
 //        String z=x.replace("\"","");
 //        System.out.println(z);
+        float realthing=Float.valueOf("2.1     ");
+        System.out.println(realthing);
+        sql.load("loadBasic2");
+        sql.transact("insert into fans values 1,2");
     }
 }
