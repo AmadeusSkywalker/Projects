@@ -83,11 +83,11 @@ public class Parse {
             joiner.add(cols[i]);
         }
         String colSentence = joiner.toString() + " " + cols[cols.length - 1];
-        System.out.println(colSentence);
         ArrayList<String> names = new ArrayList<>();
         ArrayList<String> types = new ArrayList<>();
         boolean isend = false;
         while (!isend) {
+            colSentence=colSentence.trim();
             int index1 = colSentence.indexOf(" ");
             String name1 = colSentence.substring(0, index1);
             names.add(name1);
