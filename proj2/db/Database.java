@@ -172,7 +172,9 @@ public class Database {
         try {
             return Parse.parse(query, this);
         } catch (IOException x) {
-            return "Transaction error";
+            return "ERROR: Transaction error";
+        } catch (RuntimeException y) {
+            return "ERROR: RunTimeError";
         }
     }
 }

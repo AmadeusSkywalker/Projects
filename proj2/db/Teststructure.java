@@ -13,7 +13,7 @@ public class Teststructure {
 
         Database sql = new Database();
         //test of constructors of tables,rows,cols
-        /*
+
         ArrayList names=new ArrayList<String>();
         names.add("school");
         names.add("scores");
@@ -93,19 +93,34 @@ public class Teststructure {
         System.out.println(sql.print("table3"));
 
         Table joined2=Table.join("fuckinghard",sql.getbody().get("table2"),sql.getbody().get("table3"));
+        sql.addTable(joined2);
         System.out.println(joined2.printtable());
-        */
-        String result = sql.load("loadBasic2");
-        System.out.println(result);
-        /*
+
+//        String result = sql.load("loadBasic2");
+//        System.out.println(result);
+
         ArrayList<String> exprs = new ArrayList<>();
         exprs.add("cash+money[as]dollas");
         ArrayList<String> conds = new ArrayList<>();
         conds.add("money>1000");
         System.out.println(Table.select("fuckinghard", exprs, joined2, conds).printtable());
-*/
-        String x="\"abcd";
-        String z=x.replace("\"","");
-        System.out.println(z);
+
+        ArrayList iRow1 = new ArrayList();
+        iRow1.add("hello");
+        iRow1.add("there");
+        Row irow1 = new Row(iRow1, 1);
+        ArrayList iRow2 = new ArrayList();
+        sql.insertInto("table4", irow1);
+        iRow2.add("hello");
+        iRow2.add("where");
+        Row irow2 = new Row(iRow2, 2);
+        sql.insertInto("table4", row22);
+
+        System.out.println(Parse.parse("select * from table2, table3", sql));
+
+
+//        String x="\"abcd";
+//        String z=x.replace("\"","");
+//        System.out.println(z);
     }
 }

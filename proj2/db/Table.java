@@ -78,29 +78,32 @@ public class Table {
         for (int i = 0; i < t1.getNumofrows(); i++) {
             legalRows.add(i);
         }
-        ArrayList<TableItemComparator> comparators = new ArrayList<>();
-        for (String cond : conds) {
-            comparators.add(new TableItemComparator(cond, t1.colnames, t1.coltypes));
-        }
-        for (TableItemComparator comparator : comparators) {
-            for (int row : legalRows) {
-                if (!(comparator.compare(t1.getRow(row).body))) { //TODO check stupid row number
-                    legalRows.remove(row);
+
+        if (!(conds.isEmpty())) {
+            ArrayList<TableItemComparator> comparators = new ArrayList<>();
+            for (String cond : conds) {
+                comparators.add(new TableItemComparator(cond, t1.colnames, t1.coltypes));
+            }
+            for (TableItemComparator comparator : comparators) {
+                for (int row : legalRows) {
+                    if (!(comparator.compare(t1.getRow(row).body))) { //TODO check stupid row number
+                        legalRows.remove(row);
+                    }
                 }
             }
         }
-
         Table filteredTable = new Table(name, t1.colnames, t1.coltypes); //TODO check if empty
+
+        if (!(legalRows.isEmpty())) {
+            for (int row : legalRows) {
+                filteredTable.addRow(t1.getRow(row));
+            }
+        }
+
         if (filteredTable.getNumofrows() == 0) {
             return filteredTable;
         }
-        for (int row : legalRows) {
-            filteredTable.addRow(t1.getRow(row));
-        }
 
-        if (exprs.get(0).equals("*")) {
-            return filteredTable; //TODO make it return only valid rows
-        }
         ArrayList<TableItemCombiner> newColCombiners = new ArrayList<>();
         ArrayList<ArrayList<Object>> newCols = new ArrayList<>();
         for (String expr : exprs) {
@@ -160,8 +163,13 @@ public class Table {
                 if (!isfirstrow) {
                     if (h instanceof String) {
                         currentrow = currentrow + "'" + h.toString() + "'" + ",";
-                    } else {
+                    } else if (h instanceof Integer){
                         currentrow = currentrow + h.toString() + ",";
+                    } else if (h instanceof Float){
+                        currentrow = currentrow + String.format(java.util.Locale.US,"%.3f", h) + ",";
+                        //copied from stackoverflow
+                    } else {
+                        return "ERROR: Incorrect type in table";
                     }
                     index = index + 1;
                     if (index == tobeprinted.size()) {
@@ -219,7 +227,7 @@ public class Table {
         //find the same keys that both tables share
         for (int i = 0; i < t1names.size(); i++) {
             for (int k = 0; k < t2names.size(); k++) {
-                if (t1names.get(i) == t2names.get(k)) {
+                if (t1names.get(i).equals(t2names.get(k))) {
                     samekeys.add(t1names.get(i));
                     sameTypes.add(t1types.get(i));
                 }

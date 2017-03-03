@@ -54,20 +54,18 @@ public class Parse {
                 return errormess;
             }
         } else if ((m = STORE_CMD.matcher(query)).matches()) {
-            storeTable(m.group(1));
-            return "";
+            return storeTable(m.group(1), x);
+
         } else if ((m = DROP_CMD.matcher(query)).matches()) {
             String name = dropTable(m.group(1));
             return x.droptable(name);
         } else if ((m = INSERT_CMD.matcher(query)).matches()) {
-            insertRow(m.group(1),x);
-            return "";
+            return insertRow(m.group(1),x);
         } else if ((m = PRINT_CMD.matcher(query)).matches()) {
             String name = printTable(m.group(1));
             return x.print(name);
         } else if ((m = SELECT_CMD.matcher(query)).matches()) {
-            select(m.group(1),x);
-            return "";
+            return select(m.group(1),x);
         } else {
             System.err.printf("Malformed query: %s\n", query);
             return "";
@@ -121,7 +119,9 @@ public class Parse {
         while (exprs.contains(",")) {
             int indOfComma = exprs.indexOf(",");
             String term = exprs.substring(0, indOfComma);
-            if (!(term.contains(" as "))) {
+            if ((term.contains("%") || term.contains("+") || term.contains("-")
+                    || (term.contains("*") && term.length() > 1) || exprs.contains("/"))
+            && !(term.contains(" as "))){
                 System.err.printf("Malformed column join: no as");
             }
             term = term.replace(" as ", "[as]");
@@ -129,7 +129,9 @@ public class Parse {
             expressions.add(term);
             exprs = exprs.substring(indOfComma + 1);
         }
-        if (!(exprs.contains(" as "))) {
+        if ((exprs.contains("%") || exprs.contains("+") || exprs.contains("-")
+                || (exprs.contains("*") && exprs.length() > 1) || exprs.contains("/"))
+                && !(exprs.contains(" as "))){
             System.err.printf("Malformed column join: no as");
         }
         exprs = exprs.replace(" as ", "[as]");
@@ -138,7 +140,7 @@ public class Parse {
 
 
         for (String expr : expressions) {
-            if (!(exprs.contains("%") || exprs.contains("+") || exprs.contains("-")
+            if ((exprs.contains("%") || exprs.contains("+") || exprs.contains("-")
                     || (exprs.contains("*") && exprs.length() > 1) || exprs.contains("/"))
                     && !(exprs.length() >= (exprs.indexOf("[as]") + 4))) {
                 System.err.printf("Malformed column join: You need an alias");
@@ -150,15 +152,18 @@ public class Parse {
         //Also spaces and newlines are for losers
 
         ArrayList<String> conditions = new ArrayList<>();
-        while (conds.contains(" and ")) {
+        while (conds != null && conds.contains(" and ")) {
             int indOfAnd = conds.indexOf(" and ");
             String term = conds.substring(0, indOfAnd);
             conds = conds.substring(indOfAnd + 5);
             term = term.replaceAll("\\s+","");
             conditions.add(term);
         }
-        conds = conds.replaceAll("\\s+","");
-        conditions.add(conds);
+        if (conds != null) {
+            conds = conds.replaceAll("\\s+","");
+            conditions.add(conds);
+        }
+
 
 
         for (String cond : conditions) {
@@ -187,20 +192,25 @@ public class Parse {
         return name;
     }
 
-    private static void storeTable(String name) {
-        System.out.printf("You are trying to store the table named %s\n", name);
+    private static String storeTable(String name, Database db) {
+        try {
+            db.store(name);
+        } catch (IOException x) {
+            return "ERROR: Storing failed";
+        }
+        return "";
     }
 
     private static String dropTable(String name) {
         return name;
     }
 
-    private static void insertRow(String expr,Database x) {
+    private static String insertRow(String expr,Database x) {
         //TODO:Try to deal with error cases! Also, single quotes!
         Matcher m = INSERT_CLS.matcher(expr);
         if (!m.matches()) {
-            System.err.printf("Malformed insert: %s\n", expr);
-            return;
+            return "ERROR: Malformed insert: %s\n" + expr;
+
         }
         int index1=expr.indexOf(" ");
         String tablename=expr.substring(0,index1);
@@ -228,38 +238,46 @@ public class Parse {
             }
         }
         Row newrow=new Row(rowcontent,rownum);
-        t1.addRow(newrow);
+        try {
+            t1.addRow(newrow);
+        } catch (RuntimeException h) {
+            return "ERROR: Mismatched columns";
+        }
+        return "";
     }
 
     private static String printTable(String name) {
         return name;
     }
 
-    private static void select(String expr, Database db) {
+    private static String select(String expr, Database db) {
         Matcher m = SELECT_CLS.matcher(expr);
         if (!m.matches()) {
-            System.err.printf("Malformed select: %s\n", expr);
-            return;
+            return "ERROR: " + "Malformed select: %s\n" + expr;
         }
 
-        select(m.group(1), m.group(2), m.group(3), db);
+        return select(m.group(1), m.group(2), m.group(3), db);
     }
 
-    private static void select(String exprs, String tables, String conds, Database db) {
+    private static String select(String exprs, String tables, String conds, Database db) {
         ArrayList<String> expressions = new ArrayList<>();
         while (exprs.contains(",")) {
             int indOfComma = exprs.indexOf(",");
             String term = exprs.substring(0, indOfComma);
-            if (!(term.contains(" as "))) {
-                throw new RuntimeException("Malformed column join: no as");
+            if ((term.contains("%") || term.contains("+") || term.contains("-")
+                    || (term.contains("*") && term.length() > 1) || exprs.contains("/"))
+                    && !(term.contains(" as "))){
+                System.err.printf("Malformed column join: no as");
             }
             term = term.replace(" as ", "[as]");
             term = term.replaceAll("\\s+","");
             expressions.add(term);
             exprs = exprs.substring(indOfComma + 1);
         }
-        if (!(exprs.contains(" as "))) {
-            throw new RuntimeException("Malformed column join: no as");
+        if ((exprs.contains("%") || exprs.contains("+") || exprs.contains("-")
+                || (exprs.contains("*") && exprs.length() > 1) || exprs.contains("/"))
+                && !(exprs.contains(" as "))){
+            System.err.printf("Malformed column join: no as");
         }
         exprs = exprs.replace(" as ", "[as]");
         exprs = exprs.replaceAll("\\s+","");
@@ -267,10 +285,10 @@ public class Parse {
 
 
         for (String expr : expressions) {
-            if (!(exprs.contains("%") || exprs.contains("+") || exprs.contains("-")
+            if ((exprs.contains("%") || exprs.contains("+") || exprs.contains("-")
                     || (exprs.contains("*") && exprs.length() > 1) || exprs.contains("/"))
                     && !(exprs.length() >= (exprs.indexOf("[as]") + 4))) {
-                throw new RuntimeException("Malformed column join: You need an alias");
+                System.err.printf("Malformed column join: You need an alias");
             }
         }
 
@@ -279,21 +297,24 @@ public class Parse {
         //Also spaces and newlines are for losers
 
         ArrayList<String> conditions = new ArrayList<>();
-        while (conds.contains(" and ")) {
+        while (conds != null && conds.contains(" and ")) {
             int indOfAnd = conds.indexOf(" and ");
             String term = conds.substring(0, indOfAnd);
             conds = conds.substring(indOfAnd + 5);
             term = term.replaceAll("\\s+","");
             conditions.add(term);
         }
-        conds = conds.replaceAll("\\s+","");
-        conditions.add(conds);
+        if (conds != null) {
+            conds = conds.replaceAll("\\s+","");
+            conditions.add(conds);
+        }
+
 
 
         for (String cond : conditions) {
             if (!(cond.contains(">") || cond.contains("<") || cond.contains("!=")
                     || cond.contains("==") || cond.contains(">="))) {
-                throw new RuntimeException("Malformed column condition: No comparator");
+                System.err.printf("Malformed column condition: No comparator");
             }
 
         }
@@ -309,6 +330,6 @@ public class Parse {
         tables = tables.replaceAll("\\s+","");
         tableList.add(tables);
 
-        db.select("dummy", expressions, tableList, conditions).printtable();
+        return db.select("dummy", expressions, tableList, conditions).printtable();
     }
 }

@@ -10,7 +10,7 @@ public class ErichTests {
 
     public static void main(String[] args) throws IOException {
         Database db = new Database();
-        Parse.parse("create table table1 as select x + y as b, x + z as a from t2 where x > y", db);
+        Parse.parse("create table table1 as select * from t1, t2", db);
 
         TableItemCombiner tic1 = new TableItemCombiner("x+yasa");
         System.out.println(tic1.operation);
