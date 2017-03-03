@@ -135,6 +135,7 @@ public class Database {
                     nextLine = nextLine.substring(commaIndex + 1);
                 }
             }
+            isend2=false;
             Row realNewRow = new Row(newRow);
             insertInto(name, realNewRow);
             nextLine = reader.readLine();
