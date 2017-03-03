@@ -10,7 +10,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
+/**
+ * Created by ErichRathkamp on 3/1/17.
+ */
 public class Database {
     private HashMap<String, Table> database;
 
@@ -18,23 +20,45 @@ public class Database {
         database = new HashMap<String, Table>();
     }
 
+    public HashMap<String, Table> getDatabase() {
+        return database;
+    }
+
     public void addTable(Table t1) {
-        database.put(t1.name, t1);
+        getDatabase().put(t1.name, t1);
     }
 
     public String createtable(String name, ArrayList<String> colnames, ArrayList<String> types) {
         if (database.containsKey(name)) {
-            return "ERROR:Table already existed.";
+            return "ERROR: Table already existed";
         }
         if (types.size() == 0 || colnames.size() == 0) {
-            return "ERROR: Empty tables.";
+            return "ERROR: Empty table";
         }
         if (types.size() != colnames.size()) {
-            return "ERROR: Names and types number no match!";
+            return "ERROR: Names and types size does not match!";
         }
         Table element = new Table(name, colnames, types);
         database.put(name, element); //put the newly created table in the database
         return "";
+    }
+
+    public String print(String tablename) {
+        if (database.containsKey(tablename)) {
+            Table changed = database.get(tablename);
+            return changed.printtable();
+        } else {
+            return "ERROR: No such table!";
+        }
+    }
+
+    public String droptable(String name) {
+        if (database.containsKey(name)) {
+            database.remove(name);
+            return "";
+        } else {
+            return "ERROR: No such table.";
+        }
     }
 
     public String load(String name) throws IOException {
@@ -56,17 +80,14 @@ public class Database {
             columnTypes.add(colType);
             if (!isend) {
                 firstLine = firstLine.substring(secondIndex + 1);
-                firstLine = firstLine.trim();
             }
         }
         createtable(name, columnNames, columnTypes);
-
         String nextLine = reader.readLine();
-        int rowNum = 1; //Slot 0 taken by header row
         boolean isend2 = false;
         while (nextLine != null) { //runs per line
             int index = 0;
-            ArrayList<Object> newRow = new ArrayList<>();
+            ArrayList<TableItem> newRow = new ArrayList<>();
             while (!isend2) { //categorizes items inside each line
                 int commaIndex = nextLine.indexOf(",");
                 if (commaIndex == -1) {
@@ -75,12 +96,39 @@ public class Database {
                 }
                 String firstItem = nextLine.substring(0, commaIndex);
                 if (columnTypes.get(index).equals("string")) {
+                    if (firstItem.charAt(0) != '\''
+                            || firstItem.charAt(firstItem.length() - 1) != '\'') {
+                        return "ERROR: Incorrect String format";
+                    }
                     firstItem = firstItem.substring(1, firstItem.length() - 1);
-                    newRow.add(firstItem);
+                    TableItem newItem = new TableItem(firstItem);
+                    if (firstItem.equals("NaN")) {
+                        return "ERROR: String cannot be NaN";
+                    } else if (firstItem.equals("NOVALUE")) {
+                        newItem.NOVALUE = true;
+                        newItem.item = "";
+                    }
+                    newRow.add(newItem);
                 } else if (columnTypes.get(index).equals("float")) {
-                    newRow.add(Float.valueOf(firstItem));
+                    TableItem newItem = new TableItem(Float.valueOf(firstItem));
+                    if (firstItem.equals("NaN")) {
+                        newItem.NaN = true;
+                    } else if (firstItem.equals("NOVALUE")) {
+                        newItem.NOVALUE = true;
+                        newItem.item = new Float(0.0);
+                    }
+                    newRow.add(newItem);
+                } else if (columnTypes.get(index).equals("int")) {
+                    TableItem newItem = new TableItem(Integer.valueOf(firstItem));
+                    if (firstItem.equals("NaN")) {
+                        return "ERROR: String cannot be NaN";
+                    } else if (firstItem.equals("NOVALUE")) {
+                        newItem.NOVALUE = true;
+                        newItem.item = "";
+                    }
+                    newRow.add(newItem);
                 } else {
-                    newRow.add(Integer.valueOf(firstItem));
+                    return "ERROR: Incorrect loaded col type";
                 }
                 index++;
                 if (!isend2) {
@@ -88,66 +136,75 @@ public class Database {
                 }
             }
             isend2 = false;
-            Row realNewRow = new Row(newRow, rowNum);
-            rowNum++;
+            Row realNewRow = new Row(newRow);
             insertInto(name, realNewRow);
             nextLine = reader.readLine();
         }
         return "";
     }
 
-    public String store(String name) throws IOException {
-        File file = new File(name + ".tbl"); // "./" if filepath doesn't work
-        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-        Table currTable = database.get(name);
-        ArrayList<String> headNames = currTable.getcolnames();
-        ArrayList<String> headTypes = currTable.getcoltypes();
+    public String store(String name) {
+        try {
+            File file = new File(name + ".tbl"); // "./" if filepath doesn't work
+            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+            Table currTable = database.get(name);
+            ArrayList<String> headNames = currTable.colNames;
+            ArrayList<String> headTypes = currTable.colTypes;
 
-        for (int i = 0; i < headNames.size(); i++) {
-            writer.write(headTypes.get(i) + " ");
-            writer.write(headNames.get(i) + ",");
-        }
-        writer.newLine();
-        int numCols = currTable.getNumofcols();
-        ArrayList<Row> rowList = currTable.getrows();
-        for (int i = 0; i < currTable.getNumofrows() - 1; i++) {
-            for (Object item : rowList.get(i).getbody()) {
-                if (item instanceof Integer || item instanceof Float) {
-                    writer.write(item.toString());
-                } else if (item instanceof String) {
-                    writer.write((String) item);
-                }
-                if (i != numCols) {
+            for (int i = 0; i < headNames.size(); i++) {
+                writer.write(headNames.get(i) + " ");
+                writer.write(headTypes.get(i));
+                if (i != headNames.size() - 1) {
                     writer.write(",");
                 }
             }
             writer.newLine();
-        }
-        return "";
-    }
-
-    public String droptable(String name) {
-        if (database.containsKey(name)) {
-            database.remove(name);
+            int numCols = currTable.numCols;
+            ArrayList<Row> rowList = currTable.rows;
+            for (int i = 0; i < currTable.numRows; i++) { //For every row
+                for (int j = 0; j < rowList.get(i).body.size(); j++) { //For every item in row
+                    TableItem tItem = rowList.get(i).body.get(j);
+                    if (tItem.type.equals("int") || tItem.type.equals("float")) {
+                        if (tItem.NaN) {
+                            writer.write("NaN");
+                        } else if (tItem.NOVALUE) {
+                            writer.write("NOVALUE");
+                        } else {
+                            writer.write(tItem.item.toString());
+                        }
+                    } else if (tItem.type.equals("string")) {
+                        if (tItem.NOVALUE) {
+                            writer.write("NOVALUE");
+                        } else {
+                            writer.write("'" + (String) tItem.item + "'");
+                        }
+                    }
+                    if (!(j == rowList.get(i).body.size() - 1)) { //TODO fix this
+                        writer.write(",");
+                    }
+                }
+                if (i < currTable.numRows - 1) {
+                    writer.newLine();
+                }
+            }
+            writer.flush();
+            writer.close();
             return "";
-        } else {
-            return "ERROR: No such table.";
+        } catch (IOException x) {
+            return "ERROR: Store Table Failed";
         }
     }
 
-    public String insertInto(String tablename, Row x) {
-        Table changed = database.get(tablename); //find the table that we need to change
+    public String insertInto(String tableName, Row x) {
+        Table changed = database.get(tableName); //find the table that we need to change
         changed.addRow(x); //go to the addRow method in the table class
         return "";
     }
 
-    public String print(String tablename) {
-        if (database.containsKey(tablename)) {
-            Table changed = database.get(tablename);
-            return changed.printtable();
-        } else {
-            return "ERROR:No such table!.*";
-        }
+    public String insertInto(String tableName, ArrayList<TableItem> x) {
+        Table changed = database.get(tableName);
+        changed.addRow(x);
+        return "";
     }
 
     public Table select(String name, ArrayList<String> exprs,
@@ -160,12 +217,8 @@ public class Database {
         if (exprs.get(0).equals("*")) {
             return newTable;
         }
-        newTable = Table.select(name, exprs, newTable, conds);
-        return newTable;
-    }
-
-    public HashMap<String, Table> getbody() {
-        return database;
+        return newTable; //TODO CHANGE THIS
+//        return newTable.select(name, exprs, newTable, conds);
     }
 
     public String transact(String query) {
@@ -177,4 +230,5 @@ public class Database {
             return "ERROR: RunTimeError";
         }
     }
+
 }

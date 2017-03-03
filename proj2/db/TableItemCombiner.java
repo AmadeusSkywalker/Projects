@@ -1,5 +1,7 @@
 package db;
 
+import db.TableItem;
+
 /**
  * Created by ErichRathkamp on 2/27/17.
  */
@@ -10,10 +12,7 @@ public class TableItemCombiner {
     String resultName;
 
     public TableItemCombiner(String combiner) {
-        if (combiner.contains("%")) {
-            operation = "%";
-            cataloguer(combiner);
-        } else if (combiner.contains("+")) {
+        if (combiner.contains("+")) {
             operation = "+";
             cataloguer(combiner);
         } else if (combiner.contains("-")) {
@@ -43,71 +42,82 @@ public class TableItemCombiner {
 
     }
 
-    public Object combiner(Object item1, Object item2) {
-        if (item1 instanceof String && !(item2 instanceof String)) {
+    public TableItem combiner(TableItem item1, TableItem item2) {
+        if (item1.type.equals("string") && !(item2.type.equals("string"))) {
             throw new RuntimeException("Invalid comparison between non-string and String: " + item1);
-        } else if (item2 instanceof String && !(item1 instanceof String)) {
+        } else if (item2.type.equals("string") && !(item1.type.equals("string"))) {
             throw new RuntimeException("Invalid comparison between non-string and String: " + item2);
-        } else if (item1 instanceof String && !(operation.equals("+"))) {
+        } else if (item1.type.equals("string") && !(operation.equals("+"))) {
             throw new RuntimeException("Invalid operation: you may only add Strings");
         }
-        if (item1 == null || item2 == null) {
-            return null; //NaN
+        if (item1.NaN || item2.NaN) {
+            return new TableItem(null);
         }
 
-        if (item1 instanceof String) { //Item 2 will always be String in this condition
-            return (String) item1 + item2;
-        } else if (item1 instanceof Integer && item2 instanceof Integer) {
+        if (item1.type.equals("string")) { //Item 2 will always be String in this condition
+            return new TableItem((String) item1.item + item2.item);
+        } else if (item1.type.equals("int") && item2.type.equals("int")) {
             if (operation.equals("+")) {
-                return (Integer) item1 + (Integer) item2;
+                return new TableItem((Integer) item1.item + (Integer) item2.item);
             } else if (operation.equals("-")) {
-                return (Integer) item1 - (Integer) item2;
+                return new TableItem((Integer) item1.item - (Integer) item2.item);
             } else if (operation.equals("*")) {
-                return (Integer) item1 * (Integer) item2;
+                return new TableItem((Integer) item1.item * (Integer) item2.item);
             } else if (operation.equals("/")) {
-                return (Integer) item1 / (Integer) item2;
-            } else if (operation.equals("%")) {
-                return (Integer) item1 / (Integer) item2;
+                if ((Integer) item2.item == 0) { //If divide by 0 error
+                    return new TableItem(null);
+                } else {
+                    return new TableItem((Integer) item1.item / (Integer) item2.item);
+                }
             }
 
-        } else if (item1 instanceof Float && item2 instanceof Float) {
+        } else if (item1.type.equals("float") && item2.type.equals("float")) {
             if (operation.equals("+")) {
-                return (Float) item1 + (Float) item2;
+                return new TableItem((Float) item1.item + (Float) item2.item);
             } else if (operation.equals("-")) {
-                return (Float) item1 - (Float) item2;
+                return new TableItem((Float) item1.item - (Float) item2.item);
             } else if (operation.equals("*")) {
-                return (Float) item1 * (Float) item2;
+                return new TableItem((Float) item1.item * (Float) item2.item);
             } else if (operation.equals("/")) {
-                return (Float) item1 / (Float) item2;
-            } else if (operation.equals("%")) {
-                return (Float) item1 / (Float) item2;
+                if (((Float) item2.item).equals(new Float(0))) { //If divide by 0 error
+                    return new TableItem(null);
+                } else {
+                    return new TableItem((Float) item1.item / (Float) item2.item);
+                }
             }
-        } else if (item1 instanceof Float && item2 instanceof Integer) {
+
+        } else if (item1.type.equals("float") && item2.type.equals("int")) {
             if (operation.equals("+")) {
-                return (Float) item1 + (Integer) item2;
+                return new TableItem((Float) item1.item + (Integer) item2.item);
             } else if (operation.equals("-")) {
-                return (Float) item1 - (Integer) item2;
+                return new TableItem((Float) item1.item - (Integer) item2.item);
             } else if (operation.equals("*")) {
-                return (Float) item1 * (Integer) item2;
+                return new TableItem((Float) item1.item * (Integer) item2.item);
             } else if (operation.equals("/")) {
-                return (Float) item1 / (Integer) item2;
-            } else if (operation.equals("%")) {
-                return (Float) item1 / (Integer) item2;
+                if (((Integer) item2.item).equals(new Integer(0))) { //If divide by 0 error
+                    return new TableItem(null);
+                } else {
+                    return new TableItem((Float) item1.item / (Integer) item2.item);
+                }
             }
-        } else if (item1 instanceof Integer && item2 instanceof Float) {
+
+        } else if (item1.type.equals("int") && item2.type.equals("float")) {
             if (operation.equals("+")) {
-                return (Integer) item1 + (Float) item2;
+                return new TableItem((Integer) item1.item + (Float) item2.item);
             } else if (operation.equals("-")) {
-                return (Integer) item1 - (Float) item2;
+                return new TableItem((Integer) item1.item - (Float) item2.item);
             } else if (operation.equals("*")) {
-                return (Integer) item1 * (Float) item2;
+                return new TableItem((Integer) item1.item * (Float) item2.item);
             } else if (operation.equals("/")) {
-                return (Integer) item1 / (Float) item2;
-            } else if (operation.equals("%")) {
-                return (Integer) item1 / (Float) item2;
+                if (((Float) item2.item).equals(new Float(0))) { //If divide by 0 error
+                    return new TableItem(null);
+                } else {
+                    return new TableItem((Integer) item1.item / (Float) item2.item);
+                }
             }
         }
-        return "Unhandled Item Type";
+
+        throw new RuntimeException("ERROR: Invalid combiner element types");
     }
 
 
