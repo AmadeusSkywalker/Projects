@@ -102,7 +102,7 @@ public class Teststructure {
         ArrayList<String> exprs = new ArrayList<>();
         exprs.add("cash+money[as]dollas");
         ArrayList<String> conds = new ArrayList<>();
-        conds.add("money>1000");
+        conds.add("dollas>1000");
         System.out.println(Table.select("fuckinghard", exprs, joined2, conds).printtable());
 
         ArrayList iRow1 = new ArrayList();
@@ -110,11 +110,11 @@ public class Teststructure {
         iRow1.add("there");
         Row irow1 = new Row(iRow1, 1);
         ArrayList iRow2 = new ArrayList();
-        sql.insertInto("table4", irow1);
+//        sql.insertInto("table4", irow1);
         iRow2.add("hello");
         iRow2.add("where");
         Row irow2 = new Row(iRow2, 2);
-        sql.insertInto("table4", row22);
+//        sql.insertInto("table4", row22);
 
         System.out.println(Parse.parse("select * from table2, table3", sql));
 

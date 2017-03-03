@@ -68,41 +68,12 @@ public class Table {
     }
 
     public static Table select(String name, ArrayList<String> exprs, Table t1, ArrayList<String> conds) {
+
         if (t1.getNumofrows() == 0) {
             return t1;
         }
         ArrayList<String> resultNames = new ArrayList<>();
         ArrayList<String> resultTypes = new ArrayList<>();
-
-        ArrayList<Integer> legalRows = new ArrayList<>();
-        for (int i = 0; i < t1.getNumofrows(); i++) {
-            legalRows.add(i);
-        }
-
-        if (!(conds.isEmpty())) {
-            ArrayList<TableItemComparator> comparators = new ArrayList<>();
-            for (String cond : conds) {
-                comparators.add(new TableItemComparator(cond, t1.colnames, t1.coltypes));
-            }
-            for (TableItemComparator comparator : comparators) {
-                for (int row : legalRows) {
-                    if (!(comparator.compare(t1.getRow(row).body))) { //TODO check stupid row number
-                        legalRows.remove(row);
-                    }
-                }
-            }
-        }
-        Table filteredTable = new Table(name, t1.colnames, t1.coltypes); //TODO check if empty
-
-        if (!(legalRows.isEmpty())) {
-            for (int row : legalRows) {
-                filteredTable.addRow(t1.getRow(row));
-            }
-        }
-
-        if (filteredTable.getNumofrows() == 0) {
-            return filteredTable;
-        }
 
         ArrayList<TableItemCombiner> newColCombiners = new ArrayList<>();
         ArrayList<ArrayList<Object>> newCols = new ArrayList<>();
@@ -115,11 +86,11 @@ public class Table {
 
             //Combines the two columns and adds them to the list of new columns
             if (ItemCombiner.colTwo == null) {
-                ArrayList<Object> colOne = filteredTable.columns.get(ItemCombiner.colOne).body;
+                ArrayList<Object> colOne = t1.columns.get(ItemCombiner.colOne).body;
                 newCols.add(colOne);
             } else {
-                ArrayList<Object> colOne = filteredTable.columns.get(ItemCombiner.colOne).body; //same length
-                ArrayList<Object> colTwo = filteredTable.columns.get(ItemCombiner.colTwo).body;
+                ArrayList<Object> colOne = t1.columns.get(ItemCombiner.colOne).body; //same length
+                ArrayList<Object> colTwo = t1.columns.get(ItemCombiner.colTwo).body;
                 for (int i = 0; i < colOne.size(); i++) {
                     newCol.add(ItemCombiner.combiner(colOne.get(i), colTwo.get(i)));
 
@@ -136,6 +107,7 @@ public class Table {
             }
 
         }
+
         Table returnedTable = new Table(name, resultNames, resultTypes);
         for (int i = 0; i < newCols.get(0).size(); i++) {
             ArrayList<Object> newRow = new ArrayList<>();
@@ -145,7 +117,38 @@ public class Table {
             Row trueNewRow = new Row(newRow, i);
             returnedTable.addRow(trueNewRow);
         }
-        return returnedTable;
+
+        ArrayList<Integer> legalRows = new ArrayList<>(); //TODO move this down below
+        for (int i = 0; i < returnedTable.getNumofrows(); i++) {
+            legalRows.add(i);
+        }
+
+        if (!(conds.isEmpty())) {
+            ArrayList<TableItemComparator> comparators = new ArrayList<>();
+            for (String cond : conds) {
+                comparators.add(new TableItemComparator(cond,
+                        returnedTable.colnames, returnedTable.coltypes));
+            }
+            for (TableItemComparator comparator : comparators) {
+                for (int row : legalRows) {
+                    if (!(comparator.compare(returnedTable.getRow(row).body))) {
+                        //TODO check stupid row number
+                        legalRows.remove(row);
+                    }
+                }
+            }
+        } else {
+            return returnedTable;
+        }
+        Table filteredTable = new Table(name, returnedTable.colnames, returnedTable.coltypes);
+        //TODO check if empty
+
+        if (!(legalRows.isEmpty())) {
+            for (int row : legalRows) {
+                filteredTable.addRow(returnedTable.getRow(row));
+            }
+        }
+        return filteredTable;
     }
 
 
@@ -320,17 +323,19 @@ public class Table {
 
 
 
-    private static Table innerjoinhelper(String name, Table t1, Table t2, ArrayList<String> samekeys,
-                             ArrayList<String> sametypes){
+    private static Table innerjoinhelper(String name, Table t1, Table t2,
+                                         ArrayList<String> samekeys,
+                                         ArrayList<String> sametypes) {
+
         ArrayList<String> unsharedNames = new ArrayList<>();
         ArrayList<String> unsharedTypes = new ArrayList<>();
-        for (String colName : t1.colnames) { //Adds all non-shared columns from left array to unsharedNames
+        for (String colName : t1.colnames) { //Adds all non-shared columns from left array
             if (!samekeys.contains(colName)) {
                 unsharedNames.add(colName);
                 unsharedTypes.add(t1.columns.get(colName).getType());
             }
         }
-        for (String colName : t2.colnames) { //Adds all non-shared columns from right array to unsharedNames
+        for (String colName : t2.colnames) { //Adds all non-shared columns from right array
             if (!samekeys.contains(colName)) {
                 unsharedNames.add(colName);
                 unsharedTypes.add(t2.columns.get(colName).getType());
