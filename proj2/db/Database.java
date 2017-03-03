@@ -135,13 +135,14 @@ public class Database {
                     nextLine = nextLine.substring(commaIndex + 1);
                 }
             }
-            isend2 = false;
             Row realNewRow = new Row(newRow);
             insertInto(name, realNewRow);
             nextLine = reader.readLine();
         }
         return "";
     }
+
+    //todo:YOU DELETED ISEND2=FALSE BETWEEN 137 AND 138
 
     public String store(String name) {
         try {

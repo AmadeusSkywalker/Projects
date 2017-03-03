@@ -44,14 +44,13 @@ public class Parse {
     private static String eval(String query, Database x) {
         Matcher m;
         if ((m = CREATE_CMD.matcher(query)).matches()) {
-            createTable(m.group(1), x);
-            return "";
+            return createTable(m.group(1), x);
         } else if ((m = LOAD_CMD.matcher(query)).matches()) {
             try {
                 String name = loadTable(m.group(1));
                 return x.load(name);
             }catch (IOException error){
-                return "ERROR : load failed";
+                return "ERROR: load failed";
             }
         } else if ((m = STORE_CMD.matcher(query)).matches()) {
             return storeTable(m.group(1), x);
@@ -72,18 +71,19 @@ public class Parse {
         }
     }
 
-    private static void createTable(String expr, Database x) {
+    private static String createTable(String expr, Database x) {
         Matcher m;
         if ((m = CREATE_NEW.matcher(expr)).matches()) {
-            createNewTable(m.group(1), m.group(2).split(COMMA), x);
+            return createNewTable(m.group(1), m.group(2).split(COMMA), x);
         } else if ((m = CREATE_SEL.matcher(expr)).matches()) {
-            createSelectedTable(m.group(1), m.group(2), m.group(3), m.group(4), x);
+            return createSelectedTable(m.group(1), m.group(2), m.group(3), m.group(4), x);
         } else {
             System.err.printf("Malformed create: %s\n", expr);
+            return "";
         }
     }
 
-    private static void createNewTable(String name, String[] cols, Database x) {
+    private static String createNewTable(String name, String[] cols, Database x) {
         StringJoiner joiner = new StringJoiner(", ");
         for (int i = 0; i < cols.length - 1; i++) {
             joiner.add(cols[i]);
@@ -108,6 +108,9 @@ public class Parse {
             if (type1.contains(",")) {
                 type1 = type1.substring(0, type1.length() - 1);
             }
+            if(!type1.equals("int")&&!type1.equals("float")&&!type1.equals("string")){
+                return "ERROR: You give a wrong type";
+            }
             types.add(type1);
             if (!isend) {
                 colSentence = colSentence.substring(index2 + 1);
@@ -115,10 +118,11 @@ public class Parse {
             }
         }
         x.createtable(name, names, types);
+        return"";
     }
 
 
-    private static void createSelectedTable(String name, String exprs, String tables, String conds, Database db) {
+    private static String createSelectedTable(String name, String exprs, String tables, String conds, Database db) {
         ArrayList<String> expressions = new ArrayList<>();
         while (exprs.contains(",")) {
             int indOfComma = exprs.indexOf(",");
@@ -190,6 +194,7 @@ public class Parse {
         tableList.add(tables);
 
         db.addTable(db.select(name, expressions, tableList, conditions));
+        return "";
     }
 
 

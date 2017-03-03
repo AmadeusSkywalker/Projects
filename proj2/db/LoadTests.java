@@ -2,11 +2,13 @@ package db;
 
 import db.Table;
 
+import java.io.IOException;
+
 /**
  * Created by ErichRathkamp on 3/2/17.
  */
 public class LoadTests {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException{
         Database sql = new Database();
         sql.load("fans");
         System.out.println(sql.print("fans"));
