@@ -63,6 +63,11 @@ public class Database {
 
     public String load(String name) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(name + ".tbl"));
+        String result = load(reader, name);
+        return result;
+    }
+
+    public String load(BufferedReader reader, String name) throws IOException {
         String firstLine = reader.readLine();
         ArrayList<String> columnNames = new ArrayList<>();
         ArrayList<String> columnTypes = new ArrayList<>();
@@ -135,7 +140,7 @@ public class Database {
                     nextLine = nextLine.substring(commaIndex + 1);
                 }
             }
-            isend2=false;
+            isend2 = false;
             Row realNewRow = new Row(newRow);
             insertInto(name, realNewRow);
             nextLine = reader.readLine();
