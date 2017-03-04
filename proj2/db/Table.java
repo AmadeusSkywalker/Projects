@@ -147,7 +147,7 @@ public class Table {
                 unsharedTypes.add(t1.colTypes.get(i));
             }
         }
-        for (int i = 0; i < t1.colNames.size(); i++) { //Adds all non-shared columns from t2
+        for (int i = 0; i < t2.colNames.size(); i++) { //Adds all non-shared columns from t2
             if (!samekeys.contains(t2.colNames.get(i))) {
                 unsharedNames.add(t2.colNames.get(i));
                 unsharedTypes.add(t2.colTypes.get(i));
