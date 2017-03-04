@@ -121,8 +121,8 @@ public class Database {
                 }
                 String firstItem = nextLine.substring(0, commaIndex);
                 firstItem = firstItem.trim();
-                if (firstItem.charAt(0) != '\''
-                        || firstItem.charAt(firstItem.length() - 1) != '\'') {
+                if (firstItem.charAt(0) == '\''
+                        || firstItem.charAt(firstItem.length() - 1) == '\'') {
                     if (!columnTypes.get(index).equals("string")) {
                         return "ERROR: Type doesn't match";
                     }
