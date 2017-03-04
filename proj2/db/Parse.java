@@ -258,6 +258,10 @@ public class Parse {
                     }
                 } else {
                     int commaindex = expr.indexOf(",");
+                    if(commaindex==-1){
+                        commaindex=expr.length();
+                        isend=true;
+                    }
                     String tobeadd = expr.substring(0, commaindex);
                     if (tobeadd.contains(".")) {
                         if (!coltypes.get(checkindex).equals("float")) {
@@ -274,8 +278,10 @@ public class Parse {
                         TableItem realstuff = new TableItem(realthing);
                         rowcontent.add(realstuff);
                     }
-                    expr = expr.substring(commaindex + 1);
-                    expr = expr.trim();
+                    if(commaindex!=expr.length()){
+                        expr = expr.substring(commaindex + 1);
+                        expr = expr.trim();
+                    }
                 }
                 checkindex += 1;
             }
