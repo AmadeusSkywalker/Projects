@@ -96,7 +96,8 @@ public class Database {
         return load3(reader, name, columnTypes);
     }
 
-    private String load3(BufferedReader reader, String name, ArrayList<String> columnTypes) throws IOException {
+    private String load3(BufferedReader reader, String name,
+                         ArrayList<String> columnTypes) throws IOException {
         String nextLine = reader.readLine();
         nextLine = nextLine.trim();
         boolean isend2 = false;
@@ -115,12 +116,13 @@ public class Database {
                     commaIndex = nextLine.length();
                     isend2 = true;
                     if (checkindex + 1 != columnTypes.size()) {
-                        return "ERROR : No match";
+                        return "ERROR: No match";
                     }
                 }
                 String firstItem = nextLine.substring(0, commaIndex);
                 firstItem = firstItem.trim();
-                if (firstItem.substring(0, 1).equals("'")) {
+                if (firstItem.charAt(0) != '\''
+                        || firstItem.charAt(firstItem.length() - 1) != '\'') {
                     if (!columnTypes.get(index).equals("string")) {
                         return "ERROR: Type doesn't match";
                     }
