@@ -93,10 +93,75 @@ public class Database {
             }
         }
         createtable(name, columnNames, columnTypes);
-        return load4(reader, name, columnTypes);
+        return load3(reader, name, columnTypes);
     }
 
-    //todo print out the error in catch module so that gradescope gives more meaningful feedback
+
+    private String load3(BufferedReader reader, String name,
+                         ArrayList<String> columnTypes) throws IOException {
+        String nextLine = reader.readLine();
+        nextLine = nextLine.trim();
+        boolean isend2 = false;
+        while (nextLine != null) { //runs per line
+            int index = 0;
+            ArrayList<TableItem> newRow = new ArrayList<>();
+            while (!isend2) { //categorizes items inside each line
+                int commaIndex = nextLine.indexOf(",");
+                if (commaIndex == -1) {
+                    commaIndex = nextLine.length();
+                    isend2 = true;
+                }
+                String firstItem = nextLine.substring(0, commaIndex);
+                firstItem = firstItem.trim();
+                if (columnTypes.get(index).equals("string")) {
+                    if (firstItem.charAt(0) != '\''
+                            || firstItem.charAt(firstItem.length() - 1) != '\'') {
+                        return "ERROR: Incorrect String format";
+                    }
+                    firstItem = firstItem.substring(1, firstItem.length() - 1);
+                    TableItem newItem = new TableItem(firstItem);
+                    if (firstItem.equals("NaN")) {
+                        return "ERROR: String cannot be NaN";
+                    } else if (firstItem.equals("NOVALUE")) {
+                        newItem.NOVALUE = true;
+                        newItem.item = "";
+                    }
+                    newRow.add(newItem);
+                } else if (columnTypes.get(index).equals("float")) {
+                    TableItem newItem = new TableItem(Float.valueOf(firstItem));
+                    if (firstItem.equals("NaN")) {
+                        newItem.NaN = true;
+                    } else if (firstItem.equals("NOVALUE")) {
+                        newItem.NOVALUE = true;
+                        newItem.item = new Float(0.0);
+                    }
+                    newRow.add(newItem);
+                } else if (columnTypes.get(index).equals("int")) {
+                    TableItem newItem = new TableItem(Integer.valueOf(firstItem));
+                    if (firstItem.equals("NaN")) {
+                        return "ERROR: String cannot be NaN";
+                    } else if (firstItem.equals("NOVALUE")) {
+                        newItem.NOVALUE = true;
+                        newItem.item = "";
+                    }
+                    newRow.add(newItem);
+                } else {
+                    return "ERROR: Incorrect loaded col type";
+                }
+                index++;
+                if (!isend2) {
+                    nextLine = nextLine.substring(commaIndex + 1);
+                }
+            }
+            isend2 = false;
+            Row realNewRow = new Row(newRow);
+            insertInto(name, realNewRow);
+            nextLine = reader.readLine();
+        }
+        return "";
+    }
+
+    /*
     private String load4(BufferedReader reader, String name,
                          ArrayList<String> columnTypes) throws IOException {
         String nextLine = reader.readLine();
@@ -170,7 +235,7 @@ public class Database {
         }
         return "";
     }
-
+*/
 
     public String store(String name) {
         try {
@@ -256,7 +321,7 @@ public class Database {
         } catch (IOException x) {
             return "ERROR: Transaction error";
         } catch (RuntimeException y) {
-            return y.getMessage();
+            return "ERROR: runtime error";
         }
     }
 
