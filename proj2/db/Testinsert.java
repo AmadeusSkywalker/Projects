@@ -16,7 +16,9 @@ public class Testinsert {
         sql.transact("create table t (x string)");
         sql.transact("create table t1 (a    string   ,  b   string  ,    c    string  ,  d  string)");
         */
+        sql.transact("load t1");
         sql.transact("create table t1 (money int)");
         sql.transact("insert into t1 values      -2147483648");
+        sql.transact("load loadBasic2");
     }
 }

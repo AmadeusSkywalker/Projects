@@ -63,81 +63,108 @@ public class Database {
 
     public String load(String name) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(name + ".tbl"));
-        String result = load(reader, name);
+        String result = load2(reader, name);
         return result;
     }
 
-    public String load(BufferedReader reader, String name) throws IOException {
+    public String load2(BufferedReader reader, String name) throws IOException {
         String firstLine = reader.readLine();
         ArrayList<String> columnNames = new ArrayList<>();
         ArrayList<String> columnTypes = new ArrayList<>();
         boolean isend = false;
         while (!isend) {
+            firstLine = firstLine.trim();
             int firstIndex = firstLine.indexOf(" ");
+            String colName = firstLine.substring(0, firstIndex);
+            columnNames.add(colName);
+            firstLine = firstLine.substring(firstIndex + 1);
+            firstLine = firstLine.trim();
             int secondIndex = firstLine.indexOf(",");
             if (secondIndex == -1) {
                 secondIndex = firstLine.length();
                 isend = true;
             }
-            String colName = firstLine.substring(0, firstIndex);
-            String colType = firstLine.substring(firstIndex + 1, secondIndex);
-            columnNames.add(colName);
+            String colType = firstLine.substring(0, secondIndex);
+            colType = colType.trim();
             columnTypes.add(colType);
             if (!isend) {
                 firstLine = firstLine.substring(secondIndex + 1);
+                firstLine = firstLine.trim();
             }
         }
         createtable(name, columnNames, columnTypes);
+        return load3(reader, name, columnTypes);
+    }
+
+    private String load3(BufferedReader reader, String name, ArrayList<String> columnTypes) throws IOException {
         String nextLine = reader.readLine();
+        nextLine = nextLine.trim();
         boolean isend2 = false;
         while (nextLine != null) { //runs per line
             int index = 0;
+            int checkindex = 0;
             ArrayList<TableItem> newRow = new ArrayList<>();
             while (!isend2) { //categorizes items inside each line
+                if (checkindex == columnTypes.size()) {
+                    if (!nextLine.equals("")) {
+                        return "ERROR : No match";
+                    }
+                }
                 int commaIndex = nextLine.indexOf(",");
                 if (commaIndex == -1) {
                     commaIndex = nextLine.length();
                     isend2 = true;
+                    if (checkindex + 1 != columnTypes.size()) {
+                        return "ERROR : No match";
+                    }
                 }
                 String firstItem = nextLine.substring(0, commaIndex);
-                if (columnTypes.get(index).equals("string")) {
-                    if (firstItem.charAt(0) != '\''
-                            || firstItem.charAt(firstItem.length() - 1) != '\'') {
-                        return "ERROR: Incorrect String format";
+                firstItem = firstItem.trim();
+                if (firstItem.substring(0, 1).equals("'")) {
+                    if (!columnTypes.get(index).equals("string")) {
+                        return "ERROR: Type doesn't match";
                     }
                     firstItem = firstItem.substring(1, firstItem.length() - 1);
-                    TableItem newItem = new TableItem(firstItem);
+                    TableItem newitem = new TableItem(firstItem);
                     if (firstItem.equals("NaN")) {
                         return "ERROR: String cannot be NaN";
                     } else if (firstItem.equals("NOVALUE")) {
-                        newItem.NOVALUE = true;
-                        newItem.item = "";
+                        newitem.NOVALUE = true;
+                        newitem.item = "";
                     }
-                    newRow.add(newItem);
-                } else if (columnTypes.get(index).equals("float")) {
-                    TableItem newItem = new TableItem(Float.valueOf(firstItem));
-                    if (firstItem.equals("NaN")) {
-                        newItem.NaN = true;
-                    } else if (firstItem.equals("NOVALUE")) {
-                        newItem.NOVALUE = true;
-                        newItem.item = new Float(0.0);
-                    }
-                    newRow.add(newItem);
-                } else if (columnTypes.get(index).equals("int")) {
-                    TableItem newItem = new TableItem(Integer.valueOf(firstItem));
-                    if (firstItem.equals("NaN")) {
-                        return "ERROR: String cannot be NaN";
-                    } else if (firstItem.equals("NOVALUE")) {
-                        newItem.NOVALUE = true;
-                        newItem.item = "";
-                    }
-                    newRow.add(newItem);
+                    newRow.add(newitem);
                 } else {
-                    return "ERROR: Incorrect loaded col type";
+                    if (firstItem.contains(".")) {
+                        if (!columnTypes.get(index).equals("float")) {
+                            return "ERROR: Type doesn't match";
+                        }
+                        TableItem newItem = new TableItem(Float.valueOf(firstItem));
+                        if (firstItem.equals("NaN")) {
+                            newItem.NaN = true;
+                        } else if (firstItem.equals("NOVALUE")) {
+                            newItem.NOVALUE = true;
+                            newItem.item = new Float(0.0);
+                        }
+                        newRow.add(newItem);
+                    } else {
+                        if (!columnTypes.get(index).equals("int")) {
+                            return "ERROR: Type doesn't match";
+                        }
+                        TableItem newItem = new TableItem(Integer.valueOf(firstItem));
+                        if (firstItem.equals("NaN")) {
+                            return "ERROR: String cannot be NaN";
+                        } else if (firstItem.equals("NOVALUE")) {
+                            newItem.NOVALUE = true;
+                            newItem.item = new Integer(0);
+                        }
+                        newRow.add(newItem);
+                    }
                 }
                 index++;
+                checkindex++;
                 if (!isend2) {
                     nextLine = nextLine.substring(commaIndex + 1);
+                    nextLine = nextLine.trim();
                 }
             }
             isend2 = false;
@@ -147,8 +174,53 @@ public class Database {
         }
         return "";
     }
+                    /*
+                    if (columnTypes.get(index).equals("string")) {
+                        if (firstItem.charAt(0) != '\''
+                                || firstItem.charAt(firstItem.length() - 1) != '\'') {
+                            return "ERROR: Incorrect String format";
+                        }
+                        firstItem = firstItem.substring(1, firstItem.length() - 1);
+                        TableItem newItem = new TableItem(firstItem);
+                        if (firstItem.equals("NaN")) {
+                            return "ERROR: String cannot be NaN";
+                        } else if (firstItem.equals("NOVALUE")) {
+                            newItem.NOVALUE = true;
+                            newItem.item = "";
+                        }
+                        newRow.add(newItem);
+                    } else if (columnTypes.get(index).equals("float")) {
+                        TableItem newItem = new TableItem(Float.valueOf(firstItem));
+                        if (firstItem.equals("NaN")) {
+                            newItem.NaN = true;
+                        } else if (firstItem.equals("NOVALUE")) {
+                            newItem.NOVALUE = true;
+                            newItem.item = new Float(0.0);
+                        }
+                        newRow.add(newItem);
+                    } else if (columnTypes.get(index).equals("int")) {
+                        TableItem newItem = new TableItem(Integer.valueOf(firstItem));
+                        if (firstItem.equals("NaN")) {
+                            return "ERROR: String cannot be NaN";
+                        } else if (firstItem.equals("NOVALUE")) {
+                            newItem.NOVALUE = true;
+                            newItem.item = "";
+                        }
+                        newRow.add(newItem);
+                    } else {
+                        return "ERROR: Incorrect loaded col type";
+                    }
+                    index++;
+                    if (!isend2) {
+                        nextLine = nextLine.substring(commaIndex + 1);
+                    }
+                }
+                isend2 = false;
+                Row realNewRow = new Row(newRow);
+                insertInto(name, realNewRow);
+                nextLine = reader.readLine();
+                */
 
-    //todo:YOU DELETED ISEND2=FALSE BETWEEN 137 AND 138
 
     public String store(String name) {
         try {
