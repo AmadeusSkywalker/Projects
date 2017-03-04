@@ -67,7 +67,7 @@ public class Parse {
             return select(m.group(1), x);
         } else {
             System.err.printf("Malformed query: %s\n", query);
-            return "ERROR: Malformed commands received";
+            return "";
         }
     }
 

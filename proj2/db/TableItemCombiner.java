@@ -1,23 +1,17 @@
 package db;
 
 import db.TableItem;
-import java.util.ArrayList;
 
 /**
  * Created by ErichRathkamp on 2/27/17.
  */
 public class TableItemCombiner {
-    ArrayList<String> tableKeys;
-    ArrayList<String> tableTypes;
     String operation;
     String colOne;
     String colTwo = null; //If colTwo is null, then don't use combiner method
     String resultName;
-    Object thing2 = false;
 
-    public TableItemCombiner(String combiner, ArrayList<String> keys, ArrayList<String> types) {
-        tableKeys = keys;
-        tableTypes = types;
+    public TableItemCombiner(String combiner) {
         if (combiner.contains("+")) {
             operation = "+";
             cataloguer(combiner);
@@ -31,15 +25,10 @@ public class TableItemCombiner {
             operation = "/";
             cataloguer(combiner);
         } else if (combiner.equals("")) {
-            throw new RuntimeException("ERROR: Invalid combiner");
+            throw new RuntimeException("Invalid combiner");
         } else {
             operation = "identity";
-            if (tableKeys.contains(combiner)) {
-                colOne = combiner;
-            } else {
-                throw new RuntimeException("ERROR: Column not in table");
-            }
-
+            colOne = combiner;
         }
     }
 
@@ -47,44 +36,19 @@ public class TableItemCombiner {
         int asInd = combiner.indexOf("[as]");
         resultName = combiner.substring(asInd + 4); //No spaces
         combiner = combiner.substring(0, asInd); //Removes the "as ..."
-        int opInd = combiner.indexOf(operation); //Index of +, -, etc
-        String thing = combiner.substring(opInd + 1); //gets the second name
+        int opInd = combiner.indexOf(operation);
+        colTwo = combiner.substring(opInd + 1); //gets the second name
         colOne = combiner.substring(0, opInd);
-        if (!tableKeys.contains(colOne)) {
-            throw new RuntimeException("ERROR: Column not in table");
-        }
-        if (tableKeys.contains(thing)) {
-            colTwo = thing;
 
-        } else {
-            if (thing.substring(0, 1).equals("'")) { //Type is string
-                thing2 = thing.substring(1, thing.length() - 1);
-            } else if (tableTypes.get(tableKeys.indexOf(colOne)).equals("float")) {
-                thing2 = Float.valueOf(thing);
-            } else if (tableTypes.get(tableKeys.indexOf(colOne)).equals("int")) {
-                thing2 = Integer.valueOf(thing);
-            } else {
-                throw new RuntimeException("ERROR: Tried to compare things that we don't handle");
-            }
-        }
     }
 
-    public TableItem combiner(Row row) {
-        TableItem item1 = row.get(tableKeys.indexOf(colOne));
-        TableItem item2;
-
-        if (colTwo != null) { //If there's a second row instead of a literal
-            item2 = row.get(tableKeys.indexOf(colTwo));
-        } else {
-            item2 = new TableItem(thing2);
-        }
-
+    public TableItem combiner(TableItem item1, TableItem item2) {
         if (item1.type.equals("string") && !(item2.type.equals("string"))) {
-            throw new RuntimeException("ERROR: Invalid comparison between non-string and String: " + item1);
+            throw new RuntimeException("Invalid comparison between non-string and String: " + item1);
         } else if (item2.type.equals("string") && !(item1.type.equals("string"))) {
-            throw new RuntimeException("ERROR: Invalid comparison between non-string and String: " + item2);
+            throw new RuntimeException("Invalid comparison between non-string and String: " + item2);
         } else if (item1.type.equals("string") && !(operation.equals("+"))) {
-            throw new RuntimeException("ERROR: Invalid operation: you may only add Strings");
+            throw new RuntimeException("Invalid operation: you may only add Strings");
         }
         if (item1.NaN || item2.NaN) {
             return new TableItem(null);
@@ -155,4 +119,6 @@ public class TableItemCombiner {
 
         throw new RuntimeException("ERROR: Invalid combiner element types");
     }
+
+
 }
