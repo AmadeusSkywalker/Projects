@@ -93,7 +93,7 @@ public class Database {
             }
         }
         createtable(name, columnNames, columnTypes);
-        return load3(reader, name, columnTypes);
+        return load4(reader, name, columnTypes);
     }
 
     private String load3(BufferedReader reader, String name,
@@ -108,7 +108,7 @@ public class Database {
             while (!isend2) { //categorizes items inside each line
                 if (checkindex == columnTypes.size()) {
                     if (!nextLine.equals("")) {
-                        return "ERROR : No match";
+                        return "ERROR: No match";
                     }
                 }
                 int commaIndex = nextLine.indexOf(",");
@@ -176,7 +176,32 @@ public class Database {
         }
         return "";
     }
-                    /*
+
+    private String load4(BufferedReader reader, String name,
+                         ArrayList<String> columnTypes) throws IOException {
+            String nextLine = reader.readLine();
+            nextLine = nextLine.trim();
+            boolean isend2 = false;
+            while (nextLine != null) { //runs per line
+                int index = 0;
+                int checkindex = 0;
+                ArrayList<TableItem> newRow = new ArrayList<>();
+                while (!isend2) { //categorizes items inside each line
+                    if (checkindex == columnTypes.size()) {
+                        if (!nextLine.equals("")) {
+                            return "ERROR: No match";
+                        }
+                    }
+                    int commaIndex = nextLine.indexOf(",");
+                    if (commaIndex == -1) {
+                        commaIndex = nextLine.length();
+                        isend2 = true;
+                        if (checkindex + 1 != columnTypes.size()) {
+                            return "ERROR: No match";
+                        }
+                    }
+                    String firstItem = nextLine.substring(0, commaIndex);
+                    firstItem = firstItem.trim();
                     if (columnTypes.get(index).equals("string")) {
                         if (firstItem.charAt(0) != '\''
                                 || firstItem.charAt(firstItem.length() - 1) != '\'') {
@@ -213,6 +238,7 @@ public class Database {
                         return "ERROR: Incorrect loaded col type";
                     }
                     index++;
+                    checkindex++;
                     if (!isend2) {
                         nextLine = nextLine.substring(commaIndex + 1);
                     }
@@ -221,7 +247,9 @@ public class Database {
                 Row realNewRow = new Row(newRow);
                 insertInto(name, realNewRow);
                 nextLine = reader.readLine();
-                */
+            }
+            return "";
+    }
 
 
     public String store(String name) {
