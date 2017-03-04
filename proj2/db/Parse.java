@@ -79,7 +79,7 @@ public class Parse {
             return createSelectedTable(m.group(1), m.group(2), m.group(3), m.group(4), x);
         } else {
             System.err.printf("Malformed create: %s\n", expr);
-            return "";
+            return "ERROR: You need to have the right format";
         }
     }
 
