@@ -112,10 +112,10 @@ public class Loadhelp {
                     }
                     newRow.add(newItem);
                 } else if (columnTypes.get(index).equals("int")) {
-                    for (char c : firstItem.toCharArray()) {
-                        if (!Character.isDigit(c)) {
-                            return "ERROR: Not a valid integer format";
-                        }
+                    try{
+                        int temp=Integer.parseInt(firstItem);
+                    }catch(NumberFormatException ex){
+                        return "ERROR: Should have a int here";
                     }
                     TableItem newItem = new TableItem(Integer.valueOf(firstItem));
                     if (firstItem.equals("NaN")) {
