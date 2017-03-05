@@ -208,11 +208,26 @@ public class Table {
             for (TableItem element : toBePrinted) {  //TODO put NOVALUE and NaN representations in
                 //in each row, add the string representation of the TableItem to the result
                 if (element.type.equals("string")) {
-                    currentRow = currentRow + "'" + element.item.toString() + "'" + ",";
+                    if(!element.NOVALUE){
+                        currentRow = currentRow + "'" + element.item.toString() + "'" + ",";
+                    }
+                    else{
+                        currentRow=currentRow+"NOVALUE"+",";
+                    }
                 } else if (element.type.equals("int")) {
-                    currentRow = currentRow + element.item.toString() + ",";
+                    if(!element.NOVALUE) {
+                        currentRow = currentRow + element.item.toString() + ",";
+                    }
+                    else{
+                        currentRow=currentRow+"NOVALUE"+",";
+                    }
                 } else if (element.type.equals("float")) {
-                    currentRow = currentRow + String.format(java.util.Locale.US, "%.3f", (Float) element.item) + ",";
+                    if(!element.NOVALUE){
+                        currentRow = currentRow + String.format(java.util.Locale.US, "%.3f", (Float) element.item) + ",";
+                    }
+                    else{
+                        currentRow=currentRow+"NOVALUE"+",";
+                    }
                 } else {
                     return "ERROR: Incorrect type in table";
                 }
