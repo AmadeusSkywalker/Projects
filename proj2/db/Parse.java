@@ -59,7 +59,7 @@ public class Parse {
             String name = dropTable(m.group(1));
             return x.droptable(name);
         } else if ((m = INSERT_CMD.matcher(query)).matches()) {
-            return insertRow(m.group(1), x);
+            return insertRow1(m.group(1), x);
         } else if ((m = PRINT_CMD.matcher(query)).matches()) {
             String name = printTable(m.group(1));
             return x.print(name);
@@ -288,6 +288,107 @@ public class Parse {
             t1.addRow(rowcontent);
             return "";
         } catch (RuntimeException error) {
+            return "Error: Malformed Dataentry" + "\n";
+        }
+    }
+
+    private static String insertRow1(String expr,Database x){
+        try {
+            Matcher m = INSERT_CLS.matcher(expr);
+            if (!m.matches()) {
+                return "ERROR: Malformed insert: %s\n" + expr + "\n";
+            }
+            int index1 = expr.indexOf(" ");
+            String tablename = expr.substring(0, index1);
+            Table t1 = x.getDatabase().get(tablename);
+            ArrayList<String> coltypes = t1.getColTypes();
+            expr = expr.substring(index1 + 1);
+            expr = expr.trim();
+            int index2 = expr.indexOf(" ");
+            expr = expr.substring(index2 + 1);
+            expr = expr.trim();
+            ArrayList<TableItem> rowcontent = new ArrayList<>();
+            int checkindex = 0;
+            boolean isend = false;
+            while(!isend){
+                if (checkindex == coltypes.size()) {
+                    if (!expr.equals("")) {
+                        return "ERROR: You have too many" + "\n";
+                    }
+                    break;
+                }
+                if (expr.substring(0, 1).equals("")) {
+                    isend = true;
+                    if (checkindex < coltypes.size()) {
+                        return "ERROR: You don't have enough" + "\n";
+                    }
+                }
+                else {
+                    int commaindex=expr.indexOf(",");
+                    if(commaindex==-1){
+                        commaindex=expr.length();
+                        isend=true;
+                    }
+                    String tobeadd=expr.substring(0,commaindex);
+                    tobeadd=tobeadd.trim();
+                    if (coltypes.get(checkindex).equals("string")) {
+                        if (tobeadd.equals("NaN")) {
+                            return "ERROR: String cannot be NaN";
+                        } else if (tobeadd.equals("NOVALUE")) {
+                            TableItem newitem = new TableItem(tobeadd);
+                            newitem.NOVALUE = true;
+                            newitem.item = "";
+                            rowcontent.add(newitem);
+                        }
+                        else {
+                            if (tobeadd.charAt(0) != '\''
+                                    || tobeadd.charAt(tobeadd.length() - 1) != '\'') {
+                                return "ERROR: Incorrect String format";
+                            } else {
+                                tobeadd = tobeadd.substring(1, tobeadd.length() - 1);
+                                TableItem newitem = new TableItem(tobeadd);
+                                rowcontent.add(newitem);
+                            }
+                        }
+                    }else if (coltypes.get(checkindex).equals("float")) {
+                        try{
+                            float temp=Float.parseFloat(tobeadd);
+                        }catch(NumberFormatException ex){
+                            return "ERROR: Should have a float here";
+                        }
+                        TableItem newItem = new TableItem(Float.valueOf(tobeadd));
+                        if (tobeadd.equals("NaN")) {
+                            newItem.NaN = true;
+                        } else if (tobeadd.equals("NOVALUE")) {
+                            newItem.NOVALUE = true;
+                            newItem.item = new Float(0.0);
+                        }
+                        rowcontent.add(newItem);
+                    }else if (coltypes.get(checkindex).equals("int")) {
+                        try{
+                            int temp=Integer.parseInt(tobeadd);
+                        }catch(NumberFormatException ex){
+                            return "ERROR: Should have a int here";
+                        }
+                        TableItem newItem = new TableItem(Integer.valueOf(tobeadd));
+                        if (tobeadd.equals("NaN")) {
+                            return "ERROR: String cannot be NaN";
+                        } else if (tobeadd.equals("NOVALUE")) {
+                            newItem.NOVALUE = true;
+                            newItem.item = new Integer(0);
+                        }
+                        rowcontent.add(newItem);
+                    }
+                    if(commaindex!=expr.length()){
+                        expr = expr.substring(commaindex + 1);
+                        expr = expr.trim();
+                    }
+                }
+                checkindex=checkindex+1;
+            }
+            t1.addRow(rowcontent);
+            return " ";
+        }catch (RuntimeException ex){
             return "Error: Malformed Dataentry" + "\n";
         }
     }
