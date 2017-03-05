@@ -1,2 +1,30 @@
-   School string,   Scores int
+1  
+ School string,   Scores int
   'UCLA' ,    1
+
+
+2
+   school    ,    scores 
+    ‘UCLA    ,   ‘1’
+
+3
+  School  string 
+
+4
+   School wrongtype
+
+5     
+    school string  money int
+
+6
+   School string,  scores int
+    ‘UCLA’  ,
+     ‘UCLA’  ,  1,  7
+    ‘UCLA’   1
+    ‘UCLA’1  (to be considered)
+
+7 
+   school string, scores float
+   ‘UCLA’    7  
+      
+

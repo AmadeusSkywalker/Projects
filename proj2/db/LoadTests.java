@@ -10,14 +10,14 @@ import java.io.IOException;
 public class LoadTests {
     public static void main(String[] args) throws IOException{
         Database sql = new Database();
-        sql.load("fans");
+        sql.load("fans",sql);
         System.out.println(sql.print("fans"));
         sql.store("fans");
 
-        sql.load("joint1");
+        sql.load("joint1",sql);
         System.out.println(sql.print("joint1"));
 
-        sql.load("joint2");
+        sql.load("joint2",sql);
         System.out.println(sql.print("joint2"));
         Table t1 = sql.getDatabase().get("joint1");
         Table t2 = sql.getDatabase().get("joint2");

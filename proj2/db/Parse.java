@@ -48,7 +48,7 @@ public class Parse {
         } else if ((m = LOAD_CMD.matcher(query)).matches()) {
             try {
                 String name = loadTable(m.group(1));
-                return x.load(name);
+                return x.load(name,x);
             }catch (IOException error){
                 return "ERROR: load failed";
             }
@@ -302,11 +302,13 @@ public class Parse {
         if (!m.matches()) {
             return "ERROR: " + "Malformed select: %s\n" + expr;
         }
-
         return select(m.group(1), m.group(2), m.group(3), db);
     }
 
     private static String select(String exprs, String tables, String conds, Database db) {
+        System.out.println(exprs);
+        System.out.println(tables);
+        System.out.println(conds);
         ArrayList<String> expressions = new ArrayList<>();
         while (exprs.contains(",")) {
             int indOfComma = exprs.indexOf(",");

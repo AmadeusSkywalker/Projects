@@ -1,6 +1,5 @@
 package db;
 
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -61,12 +60,12 @@ public class Database {
         }
     }
 
-    public String load(String name) throws IOException {
+    public String load(String name,Database x) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(name + ".tbl"));
-        String result = load(reader, name);
+        String result = Loadhelp.load(reader, name,x);
         return result;
     }
-
+    /*
     public String load(BufferedReader reader, String name) throws IOException {
         String firstLine = reader.readLine();
         ArrayList<String> columnNames = new ArrayList<>();
@@ -147,95 +146,94 @@ public class Database {
         }
         return "";
     }
+    */
 
-    //todo:YOU DELETED ISEND2=FALSE BETWEEN 137 AND 138
+        public String store (String name){
+            try {
+                File file = new File(name + ".tbl"); // "./" if filepath doesn't work
+                BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+                Table currTable = database.get(name);
+                ArrayList<String> headNames = currTable.colNames;
+                ArrayList<String> headTypes = currTable.colTypes;
 
-    public String store(String name) {
-        try {
-            File file = new File(name + ".tbl"); // "./" if filepath doesn't work
-            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-            Table currTable = database.get(name);
-            ArrayList<String> headNames = currTable.colNames;
-            ArrayList<String> headTypes = currTable.colTypes;
-
-            for (int i = 0; i < headNames.size(); i++) {
-                writer.write(headNames.get(i) + " ");
-                writer.write(headTypes.get(i));
-                if (i != headNames.size() - 1) {
-                    writer.write(",");
-                }
-            }
-            writer.newLine();
-            int numCols = currTable.numCols;
-            ArrayList<Row> rowList = currTable.rows;
-            for (int i = 0; i < currTable.numRows; i++) { //For every row
-                for (int j = 0; j < rowList.get(i).body.size(); j++) { //For every item in row
-                    TableItem tItem = rowList.get(i).body.get(j);
-                    if (tItem.type.equals("int") || tItem.type.equals("float")) {
-                        if (tItem.NaN) {
-                            writer.write("NaN");
-                        } else if (tItem.NOVALUE) {
-                            writer.write("NOVALUE");
-                        } else {
-                            writer.write(tItem.item.toString());
-                        }
-                    } else if (tItem.type.equals("string")) {
-                        if (tItem.NOVALUE) {
-                            writer.write("NOVALUE");
-                        } else {
-                            writer.write("'" + (String) tItem.item + "'");
-                        }
-                    }
-                    if (!(j == rowList.get(i).body.size() - 1)) { //TODO fix this
+                for (int i = 0; i < headNames.size(); i++) {
+                    writer.write(headNames.get(i) + " ");
+                    writer.write(headTypes.get(i));
+                    if (i != headNames.size() - 1) {
                         writer.write(",");
                     }
                 }
-                if (i < currTable.numRows - 1) {
-                    writer.newLine();
+                writer.newLine();
+                int numCols = currTable.numCols;
+                ArrayList<Row> rowList = currTable.rows;
+                for (int i = 0; i < currTable.numRows; i++) { //For every row
+                    for (int j = 0; j < rowList.get(i).body.size(); j++) { //For every item in row
+                        TableItem tItem = rowList.get(i).body.get(j);
+                        if (tItem.type.equals("int") || tItem.type.equals("float")) {
+                            if (tItem.NaN) {
+                                writer.write("NaN");
+                            } else if (tItem.NOVALUE) {
+                                writer.write("NOVALUE");
+                            } else {
+                                writer.write(tItem.item.toString());
+                            }
+                        } else if (tItem.type.equals("string")) {
+                            if (tItem.NOVALUE) {
+                                writer.write("NOVALUE");
+                            } else {
+                                writer.write("'" + (String) tItem.item + "'");
+                            }
+                        }
+                        if (!(j == rowList.get(i).body.size() - 1)) { //TODO fix this
+                            writer.write(",");
+                        }
+                    }
+                    if (i < currTable.numRows - 1) {
+                        writer.newLine();
+                    }
                 }
+                writer.flush();
+                writer.close();
+                return "";
+            } catch (IOException x) {
+                return "ERROR: Store Table Failed";
             }
-            writer.flush();
-            writer.close();
+        }
+
+        public String insertInto (String tableName, Row x){
+            Table changed = database.get(tableName); //find the table that we need to change
+            changed.addRow(x); //go to the addRow method in the table class
             return "";
-        } catch (IOException x) {
-            return "ERROR: Store Table Failed";
         }
-    }
 
-    public String insertInto(String tableName, Row x) {
-        Table changed = database.get(tableName); //find the table that we need to change
-        changed.addRow(x); //go to the addRow method in the table class
-        return "";
-    }
-
-    public String insertInto(String tableName, ArrayList<TableItem> x) {
-        Table changed = database.get(tableName);
-        changed.addRow(x);
-        return "";
-    }
-
-    public Table select(String name, ArrayList<String> exprs,
-                        ArrayList<String> tableNames,
-                        ArrayList<String> conds) {
-        Table newTable = database.get(tableNames.get(0));
-        for (int i = 1; i < tableNames.size(); i++) {
-            newTable = Table.join(name, newTable, database.get(tableNames.get(i)));
+        public String insertInto (String tableName, ArrayList < TableItem > x){
+            Table changed = database.get(tableName);
+            changed.addRow(x);
+            return "";
         }
-        if (exprs.get(0).equals("*")) {
-            return newTable;
-        }
-        return newTable; //TODO CHANGE THIS
+
+        public Table select (String name, ArrayList < String > exprs,
+                ArrayList < String > tableNames,
+                ArrayList < String > conds){
+            Table newTable = database.get(tableNames.get(0));
+            for (int i = 1; i < tableNames.size(); i++) {
+                newTable = Table.join(name, newTable, database.get(tableNames.get(i)));
+            }
+            if (exprs.get(0).equals("*")) {
+                return newTable;
+            }
+            return newTable; //TODO CHANGE THIS
 //        return newTable.select(name, exprs, newTable, conds);
-    }
-
-    public String transact(String query) {
-        try {
-            return Parse.parse(query, this);
-        } catch (IOException x) {
-            return "ERROR: Transaction error";
-        } catch (RuntimeException y) {
-            return "ERROR: RunTimeError";
         }
-    }
 
-}
+        public String transact (String query){
+            try {
+                return Parse.parse(query, this);
+            } catch (IOException x) {
+                return "ERROR: Transaction error";
+            } catch (RuntimeException y) {
+                return "ERROR: RunTimeError";
+            }
+        }
+
+    }
