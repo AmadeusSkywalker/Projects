@@ -98,33 +98,49 @@ public class Loadhelp {
                         }
                     }
                 } else if (columnTypes.get(index).equals("float")) {
+                    boolean isnovalue=false;
                     try{
                         float temp=Float.parseFloat(firstItem);
                     }catch(NumberFormatException ex){
-                        return "ERROR: Should have a float here";
+                        if (!firstItem.equals("NOVALUE")) {
+                            return "ERROR: Should have a float here";
+                        } else {
+                            TableItem newItem = new TableItem(new Float(0.0));
+                            newItem.NOVALUE = true;
+                            newItem.item = new Float(0.0);
+                            newRow.add(newItem);
+                            isnovalue = true;
+                        }
                     }
-                    TableItem newItem = new TableItem(Float.valueOf(firstItem));
-                    if (firstItem.equals("NaN")) {
-                        newItem.NaN = true;
-                    } else if (firstItem.equals("NOVALUE")) {
-                        newItem.NOVALUE = true;
-                        newItem.item = new Float(0.0);
+                    if(!isnovalue) {
+                        TableItem newItem = new TableItem(Float.valueOf(firstItem));
+                        if (firstItem.equals("NaN")) {
+                            newItem.NaN = true;
+                        }
+                        newRow.add(newItem);
                     }
-                    newRow.add(newItem);
                 } else if (columnTypes.get(index).equals("int")) {
+                    boolean isnovalue=false;
                     try{
                         int temp=Integer.parseInt(firstItem);
                     }catch(NumberFormatException ex){
-                        return "ERROR: Should have a int here";
+                        if (!firstItem.equals("NOVALUE")) {
+                            return "ERROR: Should have a int here";
+                        } else {
+                            TableItem newItem = new TableItem(new Integer(0));
+                            newItem.NOVALUE = true;
+                            newItem.item = new Integer(0);
+                            newRow.add(newItem);
+                            isnovalue = true;
+                        }
                     }
-                    TableItem newItem = new TableItem(Integer.valueOf(firstItem));
-                    if (firstItem.equals("NaN")) {
-                        return "ERROR: String cannot be NaN";
-                    } else if (firstItem.equals("NOVALUE")) {
-                        newItem.NOVALUE = true;
-                        newItem.item = new Integer(0);
+                    if(!isnovalue) {
+                        TableItem newItem = new TableItem(Integer.valueOf(firstItem));
+                        if (firstItem.equals("NaN")) {
+                            return "ERROR: String cannot be NaN";
+                        }
+                        newRow.add(newItem);
                     }
-                    newRow.add(newItem);
                 }
                 index=index+1;
                 checkindex=checkindex+1;

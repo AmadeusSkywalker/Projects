@@ -1,2 +1,2 @@
-   school  string  , scores   int
-     'UCLA'     ,  1 
+   school  string  , scores   int,  cash float
+     'UCLA'     ,  1 ,   3.14

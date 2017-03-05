@@ -221,8 +221,6 @@ public class Table {
                 if (index == toBePrinted.size()) {
                     currentRow = currentRow.substring(0, currentRow.length() - 1);
                 }
-
-
             }
             result = result + currentRow + '\n';
         }
