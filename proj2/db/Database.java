@@ -98,7 +98,7 @@ public class Database {
                         writer.write("NOVALUE");
                     } else if (tItem.type.equals("int") || tItem.type.equals("float")) {
                         if (tItem.type.equals("float")) {
-                            writer.write(tItem.item.toString());  //TODO format for float
+                            writer.write(String.format("%.3f", (Float) tItem.item));
                         } else {
                             writer.write(tItem.item.toString());
                         }
@@ -140,9 +140,12 @@ public class Database {
     public Table select(String name, ArrayList<String> exprs,
                         ArrayList<String> tableNames,
                         ArrayList<String> conds) {
-        if (!database.containsKey(tableNames.get(0))) {
-            throw new RuntimeException("ERROR: Tried to select from nonexistent table");
+        for (int i = 0; i < tableNames.size(); i++) {
+            if (!database.containsKey(tableNames.get(i))) {
+                throw new RuntimeException("ERROR: Tried to select from nonexistent table");
+            }
         }
+
         Table newTable = database.get(tableNames.get(0));
         for (int i = 1; i < tableNames.size(); i++) {
             newTable = Table.join(name, newTable, database.get(tableNames.get(i)));

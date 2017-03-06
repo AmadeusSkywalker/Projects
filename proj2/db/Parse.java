@@ -65,7 +65,7 @@ public class Parse {
             return select(m.group(1), x);
         } else {
             System.err.printf("Malformed query: %s\n", query);
-            return "";
+            return "ERROR: Malformed query";
         }
     }
 
@@ -205,8 +205,7 @@ public class Parse {
     }
 
     private static String storeTable(String name, Database db) {
-        db.store(name);
-        return "";
+        return db.store(name);
     }
 
     private static String dropTable(String name) {
@@ -218,7 +217,8 @@ public class Parse {
         try {
             Matcher m = INSERT_CLS.matcher(expr);
             if (!m.matches()) {
-                return "ERROR: Malformed insert: %s\n" + expr + "\n";
+                return "ERROR: Malformed insert.";
+                //return "ERROR: Malformed insert: %s\n" + expr + "\n";
             }
             int index1 = expr.indexOf(" ");
             String tablename = expr.substring(0, index1);
@@ -328,7 +328,7 @@ public class Parse {
             t1.addRow(rowcontent);
             return " ";
         }catch (RuntimeException ex){
-            return "Error: Malformed Dataentry" + "\n";
+            return "ERROR: Malformed Dataentry" + "\n";
         }
     }
 

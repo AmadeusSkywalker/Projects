@@ -80,6 +80,9 @@ public class TableItemCombiner {
         } else {
             item2 = new TableItem(thing2); //If it's a literal
         }
+        if (item1.NaN || item2.NaN) {
+            return new TableItem(null);
+        }
 
         if (item1.type.equals("string") && !(item2.type.equals("string"))) {
             throw new RuntimeException("ERROR: Invalid comparison between non-string and String: " + item1);
@@ -88,9 +91,7 @@ public class TableItemCombiner {
         } else if (item1.type.equals("string") && !(operation.equals("+"))) {
             throw new RuntimeException("ERROR: Invalid operation: you may only add Strings");
         }
-        if (item1.NaN || item2.NaN) {
-            return new TableItem(null);
-        }
+
 
         if (item1.type.equals("string")) { //Item 2 will always be String in this condition
             return new TableItem((String) item1.item + item2.item);

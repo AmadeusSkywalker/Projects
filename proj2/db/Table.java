@@ -104,9 +104,11 @@ public class Table {
 
     public Table select(String name, ArrayList<String> exprs, ArrayList<String> conds) {
         Table t1 = this;
+        /*
         if (t1.numRows == 0) {
             return t1;
-        }
+
+        } */
         ArrayList<String> resultNames = new ArrayList<>();
         ArrayList<String> resultTypes = new ArrayList<>();
 
@@ -136,6 +138,7 @@ public class Table {
 
         //Below creates table from the combination of expressions
         Table exprTable = new Table(name, resultNames, resultTypes);
+
         //For every column in list of new columns
         for (int i = 0; i < newCols.get(0).size(); i++) {
             ArrayList<TableItem> newRow = new ArrayList<>();
@@ -144,6 +147,10 @@ public class Table {
                 newRow.add(col.get(i));
             }
             exprTable.addRow(newRow);
+        }
+
+        if (exprTable.numRows == 0) {
+            return exprTable;
         }
 
         ArrayList<Integer> legalRows = new ArrayList<>();
