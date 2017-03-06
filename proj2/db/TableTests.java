@@ -1,11 +1,6 @@
 package db;
 
-import db.Database;
-import db.Table;
-import db.TableItem;
-
 import java.util.ArrayList;
-
 /**
  * Created by ErichRathkamp on 3/1/17.
  */
@@ -52,6 +47,11 @@ public class TableTests {
         System.out.println(sql.print("table1"));
         System.out.println(sql.print("table2"));
         System.out.println(Table.join("dummy", T1, T2).printtable());
+
         sql.store("table1");
+
+
+
+
     }
 }

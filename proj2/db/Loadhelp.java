@@ -1,7 +1,6 @@
 package db;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -9,7 +8,7 @@ import java.util.ArrayList;
  * Created by vip on 3/4/17.
  */
 public class Loadhelp {
-    public static String load(BufferedReader reader, String name,Database x) throws IOException {
+    public static String load(BufferedReader reader, String name, Database x) throws IOException {
         String firstLine = reader.readLine();
         ArrayList<String> columnNames = new ArrayList<>();
         ArrayList<String> columnTypes = new ArrayList<>();

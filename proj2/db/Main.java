@@ -1,6 +1,6 @@
 package db;
 
-import db.Database;
+import trueAmadeu.Database;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,7 +13,7 @@ public class Main {
     public static void main(String[] args) {
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-            Database db = new Database();
+            trueAmadeu.Database db = new Database();
             System.out.print(PROMPT);
 
             String line = "";
@@ -33,7 +33,9 @@ public class Main {
 
             in.close();
         } catch (IOException x) {
-            System.out.println("Couldn't read file");
+            System.out.println("ERROR: Couldn't read file");
+        } catch (RuntimeException y) {
+            System.out.println(y.getMessage());  //TODO check if actually prints right thing
         }
     }
 }

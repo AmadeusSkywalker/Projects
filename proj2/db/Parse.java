@@ -1,8 +1,5 @@
 package db;
 
-
-import db.Database;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.StringJoiner;
@@ -36,7 +33,7 @@ public class Parse {
             INSERT_CLS = Pattern.compile("(\\S+)\\s+values\\s+(.+?" +
                     "\\s*(?:,\\s*.+?\\s*)*)");
 
-    static String parse(String line, Database x) throws IOException {  //put in the db package and rename the main function
+    static String parse(String line, Database x) throws IOException {  //put in the Old_db package and rename the main function
         String result = eval(line, x);
         return result;  //Possible make all of the things below string return type??
     }
@@ -48,10 +45,11 @@ public class Parse {
         } else if ((m = LOAD_CMD.matcher(query)).matches()) {
             try {
                 String name = loadTable(m.group(1));
-                return x.load(name,x);
-            }catch (IOException error){
-                return "ERROR: load failed";
+                return x.load(name, x);
+            } catch (IOException y) {
+                return "ERROR: Load failed";
             }
+
         } else if ((m = STORE_CMD.matcher(query)).matches()) {
             return storeTable(m.group(1), x);
 
@@ -122,7 +120,7 @@ public class Parse {
     }
 
 
-    private static String createSelectedTable(String name, String exprs, String tables, String conds, Database db) {
+    private static String createSelectedTable(String name, String exprs, String tables, String conds, Database dab) {
         ArrayList<String> expressions = new ArrayList<>();
         while (exprs.contains(",")) {
             int indOfComma = exprs.indexOf(",");
@@ -193,7 +191,11 @@ public class Parse {
         tables = tables.replaceAll("\\s+","");
         tableList.add(tables);
 
-        db.addTable(db.select(name, expressions, tableList, conditions));
+        try {
+            dab.addTable(dab.select(name, expressions, tableList, conditions));
+        } catch (RuntimeException x) {
+            return x.getMessage();
+        }
         return "";
     }
 
@@ -211,86 +213,6 @@ public class Parse {
         return name;
     }
 
-    private static String insertRow(String expr, Database x) {
-        try {
-            Matcher m = INSERT_CLS.matcher(expr);
-            if (!m.matches()) {
-                return "ERROR: Malformed insert: %s\n" + expr + "\n";
-            }
-            int index1 = expr.indexOf(" ");
-            String tablename = expr.substring(0, index1);
-            Table t1 = x.getDatabase().get(tablename);
-            ArrayList<String> coltypes = t1.getColTypes();
-            expr = expr.substring(index1 + 1);
-            expr = expr.trim();
-            int index2 = expr.indexOf(" ");
-            expr = expr.substring(index2 + 1);
-            expr = expr.trim();
-            ArrayList<TableItem> rowcontent = new ArrayList<>();
-            int checkindex = 0;
-            boolean isend = false;
-            while (!isend) {
-                if (checkindex == coltypes.size()) {
-                    if (!expr.equals("")) {
-                        return "ERROR: Row doesn't match table" + "\n";
-                    }
-                    break;
-                }
-                if (expr.substring(0, 1).equals("")) {
-                    isend = true;
-                    if (checkindex < coltypes.size()) {
-                        return "ERROR: Row doesn't match table" + "\n";
-                    }
-                }
-                if (expr.substring(0, 1).equals("'")) {
-                    if (!coltypes.get(checkindex).equals("string")) {
-                        return "ERROR: Row doesn't match table" + "\n";
-                    } else {
-                        expr = expr.substring(1);
-                        int quoteindex = expr.indexOf("'");
-                        String tobeadd = expr.substring(0, quoteindex);
-                        TableItem realtobeadd = new TableItem(tobeadd);
-                        rowcontent.add(realtobeadd);
-                        expr = expr.substring(quoteindex + 1);
-                        int commaindex = expr.indexOf(",");
-                        expr = expr.substring(commaindex + 1);
-                        expr = expr.trim();
-                    }
-                } else {
-                    int commaindex = expr.indexOf(",");
-                    if(commaindex==-1){
-                        commaindex=expr.length();
-                        isend=true;
-                    }
-                    String tobeadd = expr.substring(0, commaindex);
-                    if (tobeadd.contains(".")) {
-                        if (!coltypes.get(checkindex).equals("float")) {
-                            return "ERROR: Row doesn't match type" + "\n";
-                        }
-                        float realthing = Float.valueOf(tobeadd);
-                        TableItem realstuff = new TableItem(realthing);
-                        rowcontent.add(realstuff);
-                    } else {
-                        if (!coltypes.get(checkindex).equals("int")) {
-                            return "ERROR: Row doesn't match type" + "\n";
-                        }
-                        int realthing = Integer.valueOf(tobeadd);
-                        TableItem realstuff = new TableItem(realthing);
-                        rowcontent.add(realstuff);
-                    }
-                    if(commaindex!=expr.length()){
-                        expr = expr.substring(commaindex + 1);
-                        expr = expr.trim();
-                    }
-                }
-                checkindex += 1;
-            }
-            t1.addRow(rowcontent);
-            return "";
-        } catch (RuntimeException error) {
-            return "Error: Malformed Dataentry" + "\n";
-        }
-    }
 
     private static String insertRow1(String expr,Database x){
         try {
@@ -301,7 +223,7 @@ public class Parse {
             int index1 = expr.indexOf(" ");
             String tablename = expr.substring(0, index1);
             Table t1 = x.getDatabase().get(tablename);
-            ArrayList<String> coltypes = t1.getColTypes();
+            ArrayList<String> coltypes = t1.colTypes;
             expr = expr.substring(index1 + 1);
             expr = expr.trim();
             int index2 = expr.indexOf(" ");

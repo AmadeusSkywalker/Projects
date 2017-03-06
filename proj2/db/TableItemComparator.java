@@ -2,13 +2,8 @@ package db;
 
 import java.util.ArrayList;
 
-/**
- * Created by vip on 3/3/17.
- */
+//Example: "x>=y" or "x>=4"
 public class TableItemComparator {
-
-
-    //Example: "x>=y" or "x>=4"
     ArrayList<String> tableKeys;
     ArrayList<String> tableTypes;
     String operation;
@@ -28,7 +23,7 @@ public class TableItemComparator {
         } else if (comparator.contains(">") && !(comparator.contains(">="))) {
             operation = ">";
             cataloguer(comparator);
-        } else if (comparator.contains("<") && !(comparator.contains(">="))) {
+        } else if (comparator.contains("<") && !(comparator.contains("<="))) {
             operation = "<";
             cataloguer(comparator);
         } else if (comparator.contains("<=")) {
@@ -37,11 +32,8 @@ public class TableItemComparator {
         } else if (comparator.contains(">=")) {
             operation = ">=";
             cataloguer(comparator);
-        } else if (!(comparator.equals(""))) { //Make it initialize with empty string if null
-            throw new RuntimeException("Invalid comparator");
-        } else {
-            operation = "identity";
-            colOne = comparator;
+        } else { //Make it initialize with empty string if null
+            throw new RuntimeException("ERROR: Invalid comparator");
         }
     }
 
@@ -65,27 +57,31 @@ public class TableItemComparator {
             } else if (tableTypes.get(tableKeys.indexOf(colOne)).equals("int")) {
                 thing2 = Integer.valueOf(thing);
             } else {
-                throw new RuntimeException("Tried to compare things that we don't handle");
+                throw new RuntimeException("ERROR: Tried to compare things that we don't handle");
             }
 
         }
 
 
+
     }
 
-    public boolean compare(ArrayList<TableItem> row) {
+    public boolean compare(Row row) {
         TableItem item1 = row.get(tableKeys.indexOf(colOne));
         TableItem item2;
         if (!(colTwo == null)) {
-            item2 = row.get(tableKeys.indexOf(colTwo));
+            item2 = row.get(tableKeys.indexOf(colTwo)); //Second item is in row
         } else {
-            item2 = new TableItem(thing2);
+            item2 = new TableItem(thing2); //If second item is a literal
         }
 
         if ((item1.type.equals("string") && !item2.type.equals("string"))
                 || (item2.type.equals("string") && !item1.type.equals("string"))) {
-            throw new RuntimeException("Cannot compare String with non-string");
+            throw new RuntimeException("ERROR: Cannot compare String with non-string");
         } else {
+            if (item1.NOVALUE || item2.NOVALUE) {
+                return false;
+            }
             int compareVal = compareHelper(item1, item2); //Should be the only necessary case
             return compareToConvert(compareVal);
         }
@@ -136,16 +132,45 @@ public class TableItemComparator {
     }
 
     private int compareHelper(TableItem item1, TableItem item2) {
-        if (item1 == null && item2 == null) {
+        if (item1.NaN && item2.NaN) {
             return 0;
-        } else if (item1 == null) {
+        } else if (item1.NaN) {
             return 1;
-        } else if (item2 == null) {
+        } else if (item2.NaN) {
             return -1;
         } else {
-            return ((Comparable) item1).compareTo(item2); //Item1 and Item2 always Comparable
+            if (item1.type.equals("float") && item2.type.equals("float")) {
+                if ((Float) item1.item > (Float) item2.item) {
+                    return 1;
+                } else if ((Float) item1.item < (Float) item2.item) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            } else if (item1.type.equals("float") && item2.type.equals("int")) {
+                if ((Float) item1.item > (Integer) item2.item) {
+                    return 1;
+                } else if ((Float) item1.item < (Integer) item2.item) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            } else if (item1.type.equals("int") && item2.type.equals("float")) {
+                if ((Integer) item1.item > (Float) item2.item) {
+                    return 1;
+                } else if ((Integer) item1.item < (Float) item2.item) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            } else if (item1.type.equals("int") && item2.type.equals("int")) {
+                return (Integer) item1.item - (Integer) item2.item;
+            } else if (item1.type.equals("string") && item2.type.equals("string")) {
+                return ((String) item1.item).compareTo((String) item2.item);
+            } else {
+                throw new RuntimeException("ERROR: Tried to compare bad types");
+            }
+
         }
     }
 }
-
-

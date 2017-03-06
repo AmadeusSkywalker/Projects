@@ -1,7 +1,7 @@
 package db;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.*;
 
 /**
  * Created by ErichRathkamp on 3/1/17.
@@ -39,6 +39,152 @@ public class Table {
         colHeaders = headers;
         numCols = names.size();
         numRows = 0;
+    }
+
+    public String addRow(Row x) {
+        for (int i = 0; i < x.body.size(); i++) {
+            if (!(x.get(i).type.equals(colTypes.get(i)))) {
+                return "ERROR: Type of row item not match table";
+            }
+        }
+        rows.add(x);
+        numRows += 1;
+        return "";
+    }
+
+    public String addRow(ArrayList<TableItem> x) {
+        Row newRow = new Row(x);
+        return addRow(newRow);
+    }
+
+    public String printtable() {
+        String result = "";
+
+        for (String header : colHeaders) {
+            result = result + header + ",";
+        }
+        //Cuts the last comma
+        result = result.substring(0, result.length() - 1);
+        result += '\n';
+
+        for (Row row : rows) {
+            //printing the table row by row
+            String currentRow = "";
+            int index = 0;
+
+            ArrayList<TableItem> toBePrinted = row.body;
+            for (TableItem element : toBePrinted) {
+                //in each row, add the string representation of the TableItem to the result
+                if (element.NOVALUE) {
+                    currentRow = currentRow + "NOVALUE" + ",";
+                } else if (element.NaN) {
+                    currentRow = currentRow + "NaN" + ",";
+                } else if (element.type.equals("string")) {
+                    currentRow = currentRow + "'" + element.item.toString() + "'" + ",";
+                } else if (element.type.equals("int")) {
+                    currentRow = currentRow + element.item.toString() + ",";
+                } else if (element.type.equals("float")) {
+                    currentRow = currentRow + String.format(java.util.Locale.US,"%.3f", (Float) element.item) + ",";
+                    //I am relatively satisfied with this formatting working
+                } else {
+                    return "ERROR: Incorrect type in table";
+                }
+                //Cuts the last comma of a row
+                index = index + 1;
+                if (index == toBePrinted.size()) {
+                    currentRow = currentRow.substring(0, currentRow.length() - 1);
+                }
+
+
+                }
+            result = result + currentRow + '\n';
+        }
+        return result;
+    }
+
+    public Table select(String name, ArrayList<String> exprs, ArrayList<String> conds) {
+        Table t1 = this;
+        if (t1.numRows == 0) {
+            return t1;
+        }
+        ArrayList<String> resultNames = new ArrayList<>();
+        ArrayList<String> resultTypes = new ArrayList<>();
+
+        ArrayList<TableItemCombiner> newColCombiners = new ArrayList<>();
+        ArrayList<ArrayList<TableItem>> newCols = new ArrayList<>();
+        for (String expr : exprs) {
+            newColCombiners.add(new TableItemCombiner(expr, t1.colNames, t1.colTypes));
+        }
+        for (TableItemCombiner ItemCombiner : newColCombiners) { //For every expression
+            ArrayList<TableItem> newCol = new ArrayList<>();
+            resultNames.add(ItemCombiner.resultName);  //Adds name of new column
+
+            //Combines the two columns and adds them to the list
+            for (Row row : t1.rows) {
+                newCol.add(ItemCombiner.combiner(row)); //TODO check if this is right
+            }
+            newCols.add(newCol);
+
+            if (newCol.get(0).type.equals("string")) {
+                resultTypes.add("string");
+            } else if (newCol.get(0).type.equals("int")) {
+                resultTypes.add("int");
+            } else if (newCol.get(0).type.equals("float")) {
+                resultTypes.add("float");
+            }
+        }
+
+        //Below creates table from the combination of expressions
+        Table exprTable = new Table(name, resultNames, resultTypes);
+        //For every column in list of new columns
+        for (int i = 0; i < newCols.get(0).size(); i++) {
+            ArrayList<TableItem> newRow = new ArrayList<>();
+            //Put the ith element if each column into a row
+            for (ArrayList<TableItem> col : newCols) {
+                newRow.add(col.get(i));
+            }
+            exprTable.addRow(newRow);
+        }
+
+        ArrayList<Integer> legalRows = new ArrayList<>();
+        for (int i = 0; i < exprTable.numRows; i++) {
+            legalRows.add(i);
+        }
+
+        ArrayList<Integer> legalRows2 = new ArrayList<>();
+
+        if (!(conds.isEmpty())) {
+            ArrayList<TableItemComparator> comparators = new ArrayList<>();
+            for (String cond : conds) {
+                comparators.add(new TableItemComparator(cond,
+                        exprTable.colNames, exprTable.colTypes));
+            }
+
+            for (TableItemComparator comparator : comparators) {
+                for (int row : legalRows) {
+                    if ((comparator.compare(exprTable.rows.get(row)))) { //If cond is true
+                        if (!(legalRows2.contains(row))) {  //If true row not already in the list
+                            legalRows2.add(row);
+                        }
+                    } else if (legalRows2.contains(row)) {
+                        legalRows2.remove(row);
+                    }
+                }
+            }
+        } else {
+            return exprTable;
+        }
+
+        Table filteredTable = new Table(name, exprTable.colNames, exprTable.colTypes);
+
+        if (!(legalRows2.isEmpty())) {
+            for (int row : legalRows2) {
+                filteredTable.addRow(exprTable.rows.get(row));
+            }
+        }
+        return filteredTable;
+
+
     }
 
     public static Table join(String name, Table t1, Table t2) {
@@ -82,10 +228,10 @@ public class Table {
         Table joined = new Table(name, names, types);
 
         //for each new row, just add the previous rows together, and add the new row to the new table
-        for (int i = 0; i < t1.numRows; i++) {
+        for (int i = 0; i < t1.numRows; i++){
             Row x = t1.rows.get(i);
 
-            for (int k = 0; k < t2.numRows; k++) {
+            for (int k = 0; k < t2.numRows; k++){
                 Row y = t2.rows.get(k);
                 ArrayList<TableItem> bigBody = new ArrayList<>();
                 bigBody.addAll(x.body);
@@ -100,7 +246,7 @@ public class Table {
     private static Table innerJoin(String name, Table t1, Table t2, ArrayList<String> samekeys,
                                    ArrayList<String> sametypes) {
         //Below line makes a new table with the correct arrangement of headers
-        Table result = innerjoinhelper(name, t1, t2, samekeys, sametypes);
+        Table result= innerjoinhelper(name,t1,t2,samekeys,sametypes);
 
         for (int i = 0; i < t1.numRows; i++) { //For each row in table 1
             for (int j = 0; j < t2.numRows; j++) { //For each row in table 2
@@ -137,7 +283,7 @@ public class Table {
     }
 
     private static Table innerjoinhelper(String name, Table t1, Table t2, ArrayList<String> samekeys,
-                                         ArrayList<String> sametypes) {
+                                         ArrayList<String> sametypes){
         ArrayList<String> unsharedNames = new ArrayList<>();
         ArrayList<String> unsharedTypes = new ArrayList<>();
 
@@ -164,84 +310,6 @@ public class Table {
         return new Table(name, totalNames, totalTypes);
 
     }
-
-    public ArrayList<String> getColTypes() {
-        return colTypes;
-    }
-
-    public int getNumRows() {
-        return numRows;
-    }
-
-    public String addRow(Row x) {
-        for (int i = 0; i < x.body.size(); i++) {
-            if (!(x.get(i).type.equals(colTypes.get(i)))) {
-                return "ERROR: Type of row item not match table";
-            }
-        }
-        rows.add(x);
-        numRows += 1;
-        return "";
-    }
-
-    public void addRow(ArrayList<TableItem> x) {
-        Row newRow = new Row(x);
-        addRow(newRow);
-    }
-
-    public String printtable() {
-        String result = "";
-
-        for (String header : colHeaders) {
-            result = result + header + ",";
-        }
-        //Cuts the last comma
-        result = result.substring(0, result.length() - 1);
-        result += '\n';
-
-        for (Row row : rows) {
-            //printing the table row by row
-            String currentRow = "";
-            int index = 0;
-
-            ArrayList<TableItem> toBePrinted = row.body;
-            for (TableItem element : toBePrinted) {  //TODO put NOVALUE and NaN representations in
-                //in each row, add the string representation of the TableItem to the result
-                if (element.type.equals("string")) {
-                    if(!element.NOVALUE){
-                        currentRow = currentRow + "'" + element.item.toString() + "'" + ",";
-                    }
-                    else{
-                        currentRow=currentRow+"NOVALUE"+",";
-                    }
-                } else if (element.type.equals("int")) {
-                    if(!element.NOVALUE) {
-                        currentRow = currentRow + element.item.toString() + ",";
-                    }
-                    else{
-                        currentRow=currentRow+"NOVALUE"+",";
-                    }
-                } else if (element.type.equals("float")) {
-                    if(!element.NOVALUE){
-                        currentRow = currentRow + String.format(java.util.Locale.US, "%.3f", (Float) element.item) + ",";
-                    }
-                    else{
-                        currentRow=currentRow+"NOVALUE"+",";
-                    }
-                } else {
-                    return "ERROR: Incorrect type in table";
-                }
-                //Cuts the last comma of a row
-                index = index + 1;
-                if (index == toBePrinted.size()) {
-                    currentRow = currentRow.substring(0, currentRow.length() - 1);
-                }
-            }
-            result = result + currentRow + '\n';
-        }
-        return result;
-    }
-
 
 }
 
