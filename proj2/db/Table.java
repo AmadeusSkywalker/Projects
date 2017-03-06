@@ -151,7 +151,6 @@ public class Table {
             }
             exprTable.addRow(newRow);
         }
-
         if (exprTable.numRows == 0) {
             return exprTable;
         }
@@ -160,7 +159,6 @@ public class Table {
         for (int i = 0; i < exprTable.numRows; i++) {
             legalRows.add(i);
         }
-
         ArrayList<Integer> legalRows2 = new ArrayList<>();
         ArrayList<Integer> removedrows=new ArrayList<>();
         if (!(conds.isEmpty())) {
@@ -171,14 +169,14 @@ public class Table {
             }
 
             for (TableItemComparator comparator : comparators) {
-                for (int row : legalRows) {
-                    if ((comparator.compare(exprTable.rows.get(row)))) { //If cond is true
-                        if (!(legalRows2.contains(row))&&!(removedrows.contains(row))) {  //If true row not already in the list
+                for (int row=0;row<legalRows.size();row++) {
+                    if ((comparator.compare(exprTable.rows.get(row)))) {//If cond is true
+                        if (!legalRows2.contains(row) && !removedrows.contains(row)) {//If true row not already in the list
                             legalRows2.add(row);
                         }
                     } else{
                         if (legalRows2.contains(row)) {
-                            legalRows2.remove(row);
+                            legalRows2.remove(new Integer(row));
                         }
                         if(!removedrows.contains(row)){
                             removedrows.add(row);
