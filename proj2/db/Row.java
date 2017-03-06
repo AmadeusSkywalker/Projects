@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Created by ErichRathkamp on 3/1/17.
  */
-class Row {
+public class Row {
     ArrayList<TableItem> body;
 
     public Row(ArrayList<TableItem> x){

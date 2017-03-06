@@ -3,7 +3,7 @@ package db;
 /**
  * Created by ErichRathkamp on 3/1/17.
  */
-class TableItem {
+public class TableItem {
     String type;
     Object item;
     boolean NaN = false;

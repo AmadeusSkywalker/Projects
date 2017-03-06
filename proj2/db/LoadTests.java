@@ -44,5 +44,12 @@ public class LoadTests {
         Parse.parse("create table table1 as select * from joint1, joint2", sql);
         System.out.println(sql.print("table1"));
 
+        sql.transact("load t1");
+        sql.transact("select a from t1");
+
+        //System.out.println(Parse.parse("select jamie from joint1", sql));
+
+        //Parse.parse("create table s as select x,y/y as y from t", sql);
+
     }
 }

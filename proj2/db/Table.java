@@ -84,7 +84,7 @@ public class Table {
                 } else if (element.type.equals("int")) {
                     currentRow = currentRow + element.item.toString() + ",";
                 } else if (element.type.equals("float")) {
-                    currentRow = currentRow + String.format(java.util.Locale.US,"%.3f", (Float) element.item) + ",";
+                    currentRow = currentRow + String.format(java.util.Locale.US, "%.3f", (Float) element.item) + ",";
                     //I am relatively satisfied with this formatting working
                 } else {
                     return "ERROR: Incorrect type in table";
@@ -96,7 +96,7 @@ public class Table {
                 }
 
 
-                }
+            }
             result = result + currentRow + '\n';
         }
         return result;
@@ -105,8 +105,8 @@ public class Table {
     public Table select(String name, ArrayList<String> exprs, ArrayList<String> conds) {
         Table t1 = this;
         /*
-        if (t1.numRows == 0) {
-            return t1;
+        if (t1.tbl.numRows == 0) {
+            return t1.tbl;
 
         } */
         ArrayList<String> resultNames = new ArrayList<>();
@@ -127,7 +127,9 @@ public class Table {
             }
             newCols.add(newCol);
 
-            if (newCol.get(0).type.equals("string")) {
+            if (t1.numRows == 0) {
+                resultTypes.add(t1.colTypes.get(t1.colNames.indexOf(ItemCombiner.colOne)));
+            } else if (newCol.get(0).type.equals("string")) {
                 resultTypes.add("string");
             } else if (newCol.get(0).type.equals("int")) {
                 resultTypes.add("int");
@@ -138,6 +140,7 @@ public class Table {
 
         //Below creates table from the combination of expressions
         Table exprTable = new Table(name, resultNames, resultTypes);
+
 
         //For every column in list of new columns
         for (int i = 0; i < newCols.get(0).size(); i++) {
@@ -159,7 +162,7 @@ public class Table {
         }
 
         ArrayList<Integer> legalRows2 = new ArrayList<>();
-
+        ArrayList<Integer> removedrows=new ArrayList<>();
         if (!(conds.isEmpty())) {
             ArrayList<TableItemComparator> comparators = new ArrayList<>();
             for (String cond : conds) {
@@ -170,11 +173,16 @@ public class Table {
             for (TableItemComparator comparator : comparators) {
                 for (int row : legalRows) {
                     if ((comparator.compare(exprTable.rows.get(row)))) { //If cond is true
-                        if (!(legalRows2.contains(row))) {  //If true row not already in the list
+                        if (!(legalRows2.contains(row))&&!(removedrows.contains(row))) {  //If true row not already in the list
                             legalRows2.add(row);
                         }
-                    } else if (legalRows2.contains(row)) {
-                        legalRows2.remove(row);
+                    } else{
+                        if (legalRows2.contains(row)) {
+                            legalRows2.remove(row);
+                        }
+                        if(!removedrows.contains(row)){
+                            removedrows.add(row);
+                        }
                     }
                 }
             }
@@ -183,6 +191,7 @@ public class Table {
         }
 
         Table filteredTable = new Table(name, exprTable.colNames, exprTable.colTypes);
+
 
         if (!(legalRows2.isEmpty())) {
             for (int row : legalRows2) {
@@ -211,7 +220,7 @@ public class Table {
             }
         }
 
-        //Catalogues every name and type in t1
+        //Catalogues every name and type in t1.tbl
         for (int i = 0; i < t1names.size(); i++) {
             allkeys.add(t1names.get(i));
             alltypes.add(t1types.get(i));
@@ -235,10 +244,10 @@ public class Table {
         Table joined = new Table(name, names, types);
 
         //for each new row, just add the previous rows together, and add the new row to the new table
-        for (int i = 0; i < t1.numRows; i++){
+        for (int i = 0; i < t1.numRows; i++) {
             Row x = t1.rows.get(i);
 
-            for (int k = 0; k < t2.numRows; k++){
+            for (int k = 0; k < t2.numRows; k++) {
                 Row y = t2.rows.get(k);
                 ArrayList<TableItem> bigBody = new ArrayList<>();
                 bigBody.addAll(x.body);
@@ -253,7 +262,7 @@ public class Table {
     private static Table innerJoin(String name, Table t1, Table t2, ArrayList<String> samekeys,
                                    ArrayList<String> sametypes) {
         //Below line makes a new table with the correct arrangement of headers
-        Table result= innerjoinhelper(name,t1,t2,samekeys,sametypes);
+        Table result = innerjoinhelper(name, t1, t2, samekeys, sametypes);
 
         for (int i = 0; i < t1.numRows; i++) { //For each row in table 1
             for (int j = 0; j < t2.numRows; j++) { //For each row in table 2
@@ -290,11 +299,11 @@ public class Table {
     }
 
     private static Table innerjoinhelper(String name, Table t1, Table t2, ArrayList<String> samekeys,
-                                         ArrayList<String> sametypes){
+                                         ArrayList<String> sametypes) {
         ArrayList<String> unsharedNames = new ArrayList<>();
         ArrayList<String> unsharedTypes = new ArrayList<>();
 
-        for (int i = 0; i < t1.colNames.size(); i++) { //Adds all non-shared columns from t1
+        for (int i = 0; i < t1.colNames.size(); i++) { //Adds all non-shared columns from t1.tbl
             if (!(samekeys.contains(t1.colNames.get(i)))) {
                 unsharedNames.add(t1.colNames.get(i));
                 unsharedTypes.add(t1.colTypes.get(i));
