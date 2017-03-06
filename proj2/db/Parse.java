@@ -91,12 +91,12 @@ public class Parse {
         ArrayList<String> types = new ArrayList<>();
         boolean isend = false;
         while (!isend) {
-            colSentence=colSentence.trim();
+            colSentence = colSentence.trim();
             int index1 = colSentence.indexOf(" ");
             String name1 = colSentence.substring(0, index1);
             names.add(name1);
             colSentence = colSentence.substring(index1 + 1);
-            colSentence=colSentence.trim();
+            colSentence = colSentence.trim();
             int index2 = colSentence.indexOf(" ");
             if (index2 == -1) {
                 index2 = colSentence.length();
@@ -106,17 +106,17 @@ public class Parse {
             if (type1.contains(",")) {
                 type1 = type1.substring(0, type1.length() - 1);
             }
-            if(!type1.equals("int")&&!type1.equals("float")&&!type1.equals("string")){
+            if (!type1.equals("int") && !type1.equals("float") && !type1.equals("string")) {
                 return "ERROR: You give a wrong type";
             }
             types.add(type1);
             if (!isend) {
                 colSentence = colSentence.substring(index2 + 1);
-                colSentence=colSentence.trim();
+                colSentence = colSentence.trim();
             }
         }
         x.createtable(name, names, types);
-        return"";
+        return "";
     }
 
 
@@ -127,21 +127,21 @@ public class Parse {
             String term = exprs.substring(0, indOfComma);
             if ((term.contains("%") || term.contains("+") || term.contains("-")
                     || (term.contains("*") && term.length() > 1) || exprs.contains("/"))
-            && !(term.contains(" as "))){
+                    && !(term.contains(" as "))) {
                 System.err.printf("Malformed column join: no as");
             }
             term = term.replace(" as ", "[as]");
-            term = term.replaceAll("\\s+","");
+            term = term.replaceAll("\\s+", "");
             expressions.add(term);
             exprs = exprs.substring(indOfComma + 1);
         }
         if ((exprs.contains("%") || exprs.contains("+") || exprs.contains("-")
                 || (exprs.contains("*") && exprs.length() > 1) || exprs.contains("/"))
-                && !(exprs.contains(" as "))){
+                && !(exprs.contains(" as "))) {
             System.err.printf("Malformed column join: no as");
         }
         exprs = exprs.replace(" as ", "[as]");
-        exprs = exprs.replaceAll("\\s+","");
+        exprs = exprs.replaceAll("\\s+", "");
         expressions.add(exprs);
 
 
@@ -162,14 +162,13 @@ public class Parse {
             int indOfAnd = conds.indexOf(" and ");
             String term = conds.substring(0, indOfAnd);
             conds = conds.substring(indOfAnd + 5);
-            term = term.replaceAll("\\s+","");
+            term = term.replaceAll("\\s+", "");
             conditions.add(term);
         }
         if (conds != null) {
-            conds = conds.replaceAll("\\s+","");
+            conds = conds.replaceAll("\\s+", "");
             conditions.add(conds);
         }
-
 
 
         for (String cond : conditions) {
@@ -184,11 +183,11 @@ public class Parse {
         while (tables.contains(",")) {
             int indOfComma = tables.indexOf(",");
             String term = tables.substring(0, indOfComma);
-            term = term.replaceAll("\\s+","");
+            term = term.replaceAll("\\s+", "");
             tableList.add(term);
             tables = tables.substring(indOfComma + 1);
         }
-        tables = tables.replaceAll("\\s+","");
+        tables = tables.replaceAll("\\s+", "");
         tableList.add(tables);
 
         try {
@@ -213,7 +212,7 @@ public class Parse {
     }
 
 
-    private static String insertRow1(String expr,Database x){
+    private static String insertRow1(String expr, Database x) {
         try {
             Matcher m = INSERT_CLS.matcher(expr);
             if (!m.matches()) {
@@ -232,27 +231,26 @@ public class Parse {
             ArrayList<TableItem> rowcontent = new ArrayList<>();
             int checkindex = 0;
             boolean isend = false;
-            while(!isend){
+            while (!isend) {
                 if (checkindex == coltypes.size()) {
                     if (!expr.equals("")) {
-                        return "ERROR: You have too many" + "\n";
+                        return "ERROR: You have too many";
                     }
                     break;
                 }
                 if (expr.substring(0, 1).equals("")) {
                     isend = true;
                     if (checkindex < coltypes.size()) {
-                        return "ERROR: You don't have enough" + "\n";
+                        return "ERROR: You don't have enough";
                     }
-                }
-                else {
-                    int commaindex=expr.indexOf(",");
-                    if(commaindex==-1){
-                        commaindex=expr.length();
-                        isend=true;
+                } else {
+                    int commaindex = expr.indexOf(",");
+                    if (commaindex == -1) {
+                        commaindex = expr.length();
+                        isend = true;
                     }
-                    String tobeadd=expr.substring(0,commaindex);
-                    tobeadd=tobeadd.trim();
+                    String tobeadd = expr.substring(0, commaindex);
+                    tobeadd = tobeadd.trim();
                     if (coltypes.get(checkindex).equals("string")) {
                         if (tobeadd.equals("NaN")) {
                             return "ERROR: String cannot be NaN";
@@ -261,8 +259,7 @@ public class Parse {
                             newitem.NOVALUE = true;
                             newitem.item = "";
                             rowcontent.add(newitem);
-                        }
-                        else {
+                        } else {
                             if (tobeadd.charAt(0) != '\''
                                     || tobeadd.charAt(tobeadd.length() - 1) != '\'') {
                                 return "ERROR: Incorrect String format";
@@ -272,30 +269,29 @@ public class Parse {
                                 rowcontent.add(newitem);
                             }
                         }
-                    }else if (coltypes.get(checkindex).equals("float")) {
-                        boolean isnovalue=false;
-                        try{
-                            float temp=Float.parseFloat(tobeadd);
-                        }catch(NumberFormatException ex){
-                            if(!tobeadd.equals("NOVALUE")){
+                    } else if (coltypes.get(checkindex).equals("float")) {
+                        boolean isnovalue = false;
+                        try {
+                            float temp = Float.parseFloat(tobeadd);
+                        } catch (NumberFormatException ex) {
+                            if (!tobeadd.equals("NOVALUE")) {
                                 return "ERROR: Should have a float here";
-                            }
-                            else{
-                                TableItem newItem=new TableItem(new Float(0.0));
+                            } else {
+                                TableItem newItem = new TableItem(new Float(0.0));
                                 newItem.NOVALUE = true;
                                 newItem.item = new Float(0.0);
                                 rowcontent.add(newItem);
-                                isnovalue=true;
+                                isnovalue = true;
                             }
                         }
-                        if(!isnovalue) {
+                        if (!isnovalue) {
                             TableItem newItem = new TableItem(Float.valueOf(tobeadd));
                             if (tobeadd.equals("NaN")) {
                                 newItem.NaN = true;
                             }
                             rowcontent.add(newItem);
                         }
-                    }else if (coltypes.get(checkindex).equals("int")) {
+                    } else if (coltypes.get(checkindex).equals("int")) {
                         boolean isnovalue = false;
                         try {
                             int temp = Integer.parseInt(tobeadd);
@@ -318,17 +314,17 @@ public class Parse {
                             rowcontent.add(newItem);
                         }
                     }
-                    if(commaindex!=expr.length()){
+                    if (commaindex != expr.length()) {
                         expr = expr.substring(commaindex + 1);
                         expr = expr.trim();
                     }
                 }
-                checkindex=checkindex+1;
+                checkindex = checkindex + 1;
             }
             t1.addRow(rowcontent);
             return " ";
-        }catch (RuntimeException ex){
-            return "ERROR: Malformed Dataentry" + "\n";
+        } catch (RuntimeException ex) {
+            return "ERROR: Malformed Dataentry";
         }
     }
 
@@ -340,7 +336,8 @@ public class Parse {
     private static String select(String expr, Database db) {
         Matcher m = SELECT_CLS.matcher(expr);
         if (!m.matches()) {
-            return "ERROR: " + "Malformed select: %s\n" + expr;
+            return "ERROR: Malformed select.";
+            //return "ERROR: " + "Malformed select: %s\n" + expr;
         }
         return select(m.group(1), m.group(2), m.group(3), db);
     }
