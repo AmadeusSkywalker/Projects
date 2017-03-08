@@ -141,7 +141,6 @@ public class Table {
         //Below creates table from the combination of expressions
         Table exprTable = new Table(name, resultNames, resultTypes);
 
-
         //For every column in list of new columns
         for (int i = 0; i < newCols.get(0).size(); i++) {
             ArrayList<TableItem> newRow = new ArrayList<>();
@@ -151,6 +150,7 @@ public class Table {
             }
             exprTable.addRow(newRow);
         }
+
         if (exprTable.numRows == 0) {
             return exprTable;
         }
@@ -159,8 +159,10 @@ public class Table {
         for (int i = 0; i < exprTable.numRows; i++) {
             legalRows.add(i);
         }
+
         ArrayList<Integer> legalRows2 = new ArrayList<>();
-        ArrayList<Integer> removedrows=new ArrayList<>();
+        ArrayList<Integer> removedRows = new ArrayList<>();
+
         if (!(conds.isEmpty())) {
             ArrayList<TableItemComparator> comparators = new ArrayList<>();
             for (String cond : conds) {
@@ -169,17 +171,17 @@ public class Table {
             }
 
             for (TableItemComparator comparator : comparators) {
-                for (int row=0;row<legalRows.size();row++) {
-                    if ((comparator.compare(exprTable.rows.get(row)))) {//If cond is true
-                        if (!legalRows2.contains(row) && !removedrows.contains(row)) {//If true row not already in the list
+                for (int row : legalRows) {
+                    if ((comparator.compare(exprTable.rows.get(row)))) { //If cond is true
+                        if (!legalRows2.contains(row) && !removedRows.contains(row)) {  //If true row not already in the list
                             legalRows2.add(row);
                         }
-                    } else{
+                    } else {
                         if (legalRows2.contains(row)) {
                             legalRows2.remove(new Integer(row));
                         }
-                        if(!removedrows.contains(row)){
-                            removedrows.add(row);
+                        if (!removedRows.contains(row)) {
+                            removedRows.add(row);
                         }
                     }
                 }
@@ -189,7 +191,6 @@ public class Table {
         }
 
         Table filteredTable = new Table(name, exprTable.colNames, exprTable.colTypes);
-
 
         if (!(legalRows2.isEmpty())) {
             for (int row : legalRows2) {

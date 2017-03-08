@@ -47,6 +47,13 @@ public class LoadTests {
         sql.transact("load t1");
         sql.transact("select a from t1");
 
+        sql.transact("load records");
+        sql.transact("load teams");
+        sql.transact("create table teamrecords as select * from teams, records");
+        sql.transact("print teamrecords");
+        sql.transact("select TeamName,Sport,Season,Wins,Losses from teamrecords where " +
+                "TeamName > Sport and Wins > Losses");
+
         //System.out.println(Parse.parse("select jamie from joint1", sql));
 
         //Parse.parse("create table s as select x,y/y as y from t", sql);

@@ -74,14 +74,14 @@ public class TableItemComparator {
         } else {
             item2 = new TableItem(thing2); //If second item is a literal
         }
-
+        if (item1.NOVALUE || item2.NOVALUE) { //Moved out of if clause below
+            return false;
+        }
+        //TODO add case for if it's NaN up here
         if ((item1.type.equals("string") && !item2.type.equals("string"))
                 || (item2.type.equals("string") && !item1.type.equals("string"))) {
             throw new RuntimeException("ERROR: Cannot compare String with non-string");
         } else {
-            if (item1.NOVALUE || item2.NOVALUE) {
-                return false;
-            }
             int compareVal = compareHelper(item1, item2); //Should be the only necessary case
             return compareToConvert(compareVal);
         }
