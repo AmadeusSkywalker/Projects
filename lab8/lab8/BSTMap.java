@@ -25,32 +25,32 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
 
     public BSTMap() {
         size = 0;
-        root=null;
+        root = null;
     }
 
     @Override
     public void clear() {
         clearhelper(root);
-        root=null;
-        size=0;
+        root = null;
+        size = 0;
     }
 
-    public void clearhelper(Node x){
-        if(x.left!=null){
+    public void clearhelper(Node x) {
+        if (x.left != null) {
             clearhelper(x.left);
-            x.left=null;
+            x.left = null;
         }
-        if(x.right!=null){
+        if (x.right != null) {
             clearhelper(x.right);
-            x.right=null;
+            x.right = null;
         }
-        x.key=null;
-        x.value=null;
+        x.key = null;
+        x.value = null;
     }
 
     @Override
     public boolean containsKey(K key1) {
-        return containsKeyhelper(key1,root);
+        return containsKeyhelper(key1, root);
     }
 
     private boolean containsKeyhelper(K key1, Node x) {
@@ -58,9 +58,9 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
             if (x.key.equals(key1)) {
                 return true;
             } else {
-                boolean left=containsKeyhelper(key1,x.left);
-                boolean right=containsKeyhelper(key1,x.right);
-                return left||right;
+                boolean left = containsKeyhelper(key1, x.left);
+                boolean right = containsKeyhelper(key1, x.right);
+                return left || right;
             }
         }
         return false;
@@ -68,21 +68,21 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
 
     @Override
     public V get(K key1) {
-        return gethelper(key1,root);
+        return gethelper(key1, root);
     }
 
-    private V gethelper(K key1,Node x) {
+    private V gethelper(K key1, Node x) {
         if (x == null) {
             return null;
         }
-            int cmp = key1.compareTo(x.key);
-            if (cmp < 0) {
-                return gethelper(key1, x.left);
-            }
-            if (cmp > 0) {
-                return gethelper(key1, x.right);
-            }
-            return x.value;
+        int cmp = key1.compareTo(x.key);
+        if (cmp < 0) {
+            return gethelper(key1, x.left);
+        }
+        if (cmp > 0) {
+            return gethelper(key1, x.right);
+        }
+        return x.value;
     }
 
     @Override
@@ -92,28 +92,25 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
 
     @Override
     public void put(K key, V value) {
-        if(this.root==null){
-            root=new Node(key,value);
-        }
-        else{
-           puthelper(key, value,root);
+        if (this.root == null) {
+            root = new Node(key, value);
+        } else {
+            puthelper(key, value, root);
         }
         size = size + 1;
     }
 
-    public void puthelper(K key1, V value1,Node x) {
+    public void puthelper(K key1, V value1, Node x) {
         if (key1.compareTo(x.key) > 0) {
-            if(x.right==null){
-                x.right=new Node(key1,value1);
-            }
-            else{
-                puthelper(key1, value1,x.right);
+            if (x.right == null) {
+                x.right = new Node(key1, value1);
+            } else {
+                puthelper(key1, value1, x.right);
             }
         } else {
-            if(x.left==null){
-                x.left=new Node(key1,value1);
-            }
-            else {
+            if (x.left == null) {
+                x.left = new Node(key1, value1);
+            } else {
                 puthelper(key1, value1, x.left);
             }
         }
@@ -125,12 +122,11 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     }
 
     private void printInOrder(Node x) {
-        if(x.left==null&&x.right==null){
-            System.out.print(x.value+", ");
-        }
-        else{
+        if (x.left == null && x.right == null) {
+            System.out.print(x.value + ", ");
+        } else {
             printInOrder(x.left);
-            System.out.println(x.value+", ");
+            System.out.println(x.value + ", ");
             printInOrder(x.right);
         }
     }
