@@ -16,7 +16,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         private Node left, right;
         private Node parent;
 
-        public Node(K key, V value) {
+        Node(K key, V value) {
             this.key = key;
             this.value = value;
         }
