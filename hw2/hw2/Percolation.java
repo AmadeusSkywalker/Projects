@@ -82,6 +82,9 @@ public class Percolation {
     }
 
     public boolean percolates() {
+        if (gridlength == 1) {
+            return isOpen(0, 0);
+        }
         for (int i = 0; i < gridlength; i++) {
             for (int k = 0; k < gridlength; k++) {
                 int index1 = grid[0][i].xyTo1D(0, i);
@@ -125,9 +128,13 @@ public class Percolation {
 
     @Test
     public static void main(String[] args) {
+        /*
         Percolation input8 = new Percolation(8);
         input8.open(0, 2);
         input8.open(1, 5);
         assertEquals(false, input8.isFull(1, 5));
+        */
+        Percolation input1 = new Percolation(1);
+        assertEquals(false, input1.percolates());
     }
 }                       
