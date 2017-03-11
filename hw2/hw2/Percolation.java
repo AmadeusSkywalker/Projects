@@ -9,7 +9,10 @@ public class Percolation {
     Placeholder[][] grid;
     int gridlength;
     WeightedQuickUnionUF union;
+    WeightedQuickUnionUF nobackwash;
     int numofopensites;
+    int virtualtopsite;
+    int virtualbottomsite;
 
     public Percolation(int N) {
         if (N <= 0) {
@@ -23,7 +26,17 @@ public class Percolation {
                 grid[i][k] = new Placeholder(i, k, N);
             }
         }
-        union = new WeightedQuickUnionUF(N * N);
+        virtualtopsite = N * N;
+        virtualbottomsite = N * N + 1;
+        union = new WeightedQuickUnionUF(N * N + 2);
+        nobackwash = new WeightedQuickUnionUF(N * N + 2);
+        for (int i = 0; i < gridlength; i++) {
+            union.union(grid[0][i].xyTo1D(0, i), virtualtopsite);
+            nobackwash.union(grid[0][i].xyTo1D(0, i), virtualtopsite);
+        }
+        for (int k = 0; k < gridlength; k++) {
+            union.union(grid[gridlength - 1][k].xyTo1D(gridlength - 1, k), virtualbottomsite);
+        }
     }
 
     public void open(int row, int col) {
@@ -39,16 +52,20 @@ public class Percolation {
             int down = index + gridlength;
             if (left >= 0 && index % gridlength != 0 && grid[row][col - 1].isOpen()) {
                 union.union(index, left);
+                nobackwash.union(index, left);
             }
             if (right < gridlength * gridlength && (index + 1) % gridlength != 0
                     && grid[row][col + 1].isOpen()) {
                 union.union(index, right);
+                nobackwash.union(index, right);
             }
             if (up >= 0 && grid[row - 1][col].isOpen()) {
                 union.union(index, up);
+                nobackwash.union(index, up);
             }
             if (down < gridlength * gridlength && grid[row + 1][col].isOpen()) {
                 union.union(index, down);
+                nobackwash.union(index, down);
             }
             numofopensites = numofopensites + 1;
         }
@@ -67,12 +84,7 @@ public class Percolation {
         }
         if (grid[row][col].isOpen()) {
             int index = grid[row][col].xyTo1D(row, col);
-            for (int i = 0; i < gridlength; i++) {
-                int topindex = grid[0][i].xyTo1D(0, i);
-                if (union.connected(index, topindex)) {
-                    return true;
-                }
-            }
+            return nobackwash.connected(index, virtualtopsite);
         }
         return false;
     }
@@ -85,16 +97,7 @@ public class Percolation {
         if (gridlength == 1) {
             return isOpen(0, 0);
         }
-        for (int i = 0; i < gridlength; i++) {
-            for (int k = 0; k < gridlength; k++) {
-                int index1 = grid[0][i].xyTo1D(0, i);
-                int index2 = grid[gridlength - 1][k].xyTo1D(gridlength - 1, k);
-                if (union.connected(index1, index2)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return union.connected(virtualtopsite, virtualbottomsite);
     }
 
     private class Placeholder {
@@ -128,12 +131,33 @@ public class Percolation {
 
     @Test
     public static void main(String[] args) {
-        /*
+        Percolation testing = new Percolation(5);
+        assertEquals(false, testing.percolates());
+        testing.open(3, 4);
+        testing.open(2, 4);
+        assertEquals(true, testing.isOpen(3, 4));
+        testing.open(2, 2);
+        testing.open(2, 3);
+        assertEquals(false, testing.percolates());
+        testing.open(0, 2);
+        testing.open(1, 2);
+        assertEquals(true, testing.isFull(2, 2));
+        testing.open(4, 4);
+        assertEquals(true, testing.percolates());
+        assertEquals(7, testing.numberOfOpenSites());
+        assertEquals(false, testing.isOpen(2, 1));
+
+        Percolation testing2 = new Percolation(2);
+        testing2.open(0, 0);
+        testing2.open(0, 1);
+        testing2.open(1, 0);
+        assertEquals(false, testing2.isOpen(1, 1));
+
         Percolation input8 = new Percolation(8);
         input8.open(0, 2);
         input8.open(1, 5);
         assertEquals(false, input8.isFull(1, 5));
-        */
+
         Percolation input1 = new Percolation(1);
         assertEquals(false, input1.percolates());
     }
