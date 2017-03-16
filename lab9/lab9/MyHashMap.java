@@ -28,6 +28,12 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
         public int hashCode() {
             return key.hashCode();
         }
+
+        @Override
+        public boolean equals(Object o) {
+            Node x = (Node) o;
+            return x.hashCode() == o.hashCode();
+        }
     }
 
     public MyHashMap() {
