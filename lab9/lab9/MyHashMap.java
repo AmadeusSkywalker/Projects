@@ -26,7 +26,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
 
         @Override
         public int hashCode() {
-            return Math.abs(key.hashCode());
+            return key.hashCode();
         }
     }
 
@@ -68,6 +68,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
             keys.add(key);
             Node poorthing = new Node(key, value);
             int hashnumber = poorthing.hashCode();
+            hashnumber=Math.abs(hashnumber);
             int index = hashnumber % values.length;
             values[index].add(poorthing);
             size = size + 1;
