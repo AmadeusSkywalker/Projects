@@ -121,6 +121,12 @@ public class Board implements WorldState {
     }
 
     public boolean equals(Object y) {
+        if (y == null) {
+            return false;
+        }
+        if (!(y instanceof Board)) {
+            return false;
+        }
         Board real = (Board) y;
         if (this.size() != real.size()) {
             return false;
