@@ -117,7 +117,7 @@ public class Board implements WorldState {
     }
 
     public boolean isGoal() {
-        return board.equals(expected);
+        return estimatedDistanceToGoal() == 0;
     }
 
     public boolean equals(Object y) {
