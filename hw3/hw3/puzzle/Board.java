@@ -136,11 +136,16 @@ public class Board implements WorldState {
         return true;
     }
 
-    /*
+
     public int hashCode() {
-        return super.hashCode();
+        int hash = 0;
+        for (int i = 0; i < size(); i++) {
+            for (int j = 0; j < size(); j++) {
+                hash += board[i][j] * (i + size() * j);
+            }
+        }
+        return hash;
     }
-    */
 
 
     /**
