@@ -172,7 +172,9 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         T assassinatedpresident = contents[size].item();
         contents[size] = null;
         size = size - 1;
-        sink(1);
+        if (size() > 0) {
+            sink(1);
+        }
         return assassinatedpresident;
     }
 
@@ -196,7 +198,7 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
     @Override
     public void changePriority(T item, double priority) {
         int index = 0;
-        for (int i = 0; i < size(); i++) {
+        for (int i = 1; i <= size(); i++) {
             if (contents[i].item().equals(item)) {
                 index = i;
                 break;
