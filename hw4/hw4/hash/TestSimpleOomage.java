@@ -11,6 +11,13 @@ import static org.junit.Assert.*;
 
 public class TestSimpleOomage {
 
+    /**
+     * Calls tests for SimpleOomage.
+     */
+    public static void main(String[] args) {
+        jh61b.junit.textui.runClasses(TestSimpleOomage.class);
+    }
+
     @Test
     public void testHashCodeDeterministic() {
         SimpleOomage so = SimpleOomage.randomSimpleOomage();
@@ -29,6 +36,9 @@ public class TestSimpleOomage {
         SimpleOomage ooA = new SimpleOomage(5, 10, 20);
         SimpleOomage ooB = new SimpleOomage(15, 5, 15);
         SimpleOomage ooC = new SimpleOomage(5, 10, 20);
+        SimpleOomage oo1 = new SimpleOomage(0, 0, 155);
+        SimpleOomage oo2 = new SimpleOomage(0, 5, 0);
+        assertNotEquals(oo1.hashCode(), oo2.hashCode());
         assertNotEquals(ooA.hashCode(), ooB.hashCode());
         assertEquals(ooA.hashCode(), ooC.hashCode());
     }
@@ -53,7 +63,6 @@ public class TestSimpleOomage {
         assertTrue(hashSet.contains(ooA2));
     }
 
-
     @Test
     public void testRandomOomagesHashCodeSpread() {
         List<Oomage> oomages = new ArrayList<>();
@@ -64,12 +73,5 @@ public class TestSimpleOomage {
         }
 
         assertTrue(OomageTestUtility.haveNiceHashCodeSpread(oomages, 10));
-    }
-
-    /**
-     * Calls tests for SimpleOomage.
-     */
-    public static void main(String[] args) {
-        jh61b.junit.textui.runClasses(TestSimpleOomage.class);
     }
 }

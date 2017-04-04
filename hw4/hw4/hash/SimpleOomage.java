@@ -32,9 +32,9 @@ public class SimpleOomage implements Oomage {
             return red + green + blue;
         } else {
             int hash = 17;
-            hash = 31 * hash + red;
-            hash = 31 * hash + green;
-            hash = 31 * hash + blue;
+            hash = 17 * hash + red;
+            hash = 17 * hash + green;
+            hash = 17 * hash + blue;
             return hash;
         }
     }
