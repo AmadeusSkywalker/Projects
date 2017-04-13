@@ -1,5 +1,7 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.PriorityQueue;
 
 /**
  * This class provides all code necessary to take a query box and produce
@@ -10,10 +12,13 @@ import java.util.Map;
 public class Rasterer {
     // Recommended: QuadTree instance variable. You'll need to make
     //              your own QuadTree since there is no built-in quadtree in Java.
-
+    QuadTree files;
+    String filepath;
     /** imgRoot is the name of the directory containing the images.
      *  You may not actually need this for your class. */
     public Rasterer(String imgRoot) {
+        filepath=imgRoot;
+        files=new QuadTree();
         // YOUR CODE HERE
     }
 
@@ -51,11 +56,107 @@ public class Rasterer {
      * @see #REQUIRED_RASTER_REQUEST_PARAMS
      */
     public Map<String, Object> getMapRaster(Map<String, Double> params) {
-        // System.out.println(params);
         Map<String, Object> results = new HashMap<>();
-        System.out.println("Since you haven't implemented getMapRaster, nothing is displayed in "
-                           + "your browser.");
+        Double ullon =params.get("ullon");
+        Double ullat=params.get("ullat");
+        Double lrlon=params.get("lrlon");
+        Double lrlat=params.get("lrlat");
+        Double width=params.get("w");
+        Double height=params.get("h");
+        Node query=new Node(ullon,ullat,lrlon,lrlat,width,height);
+        ArrayList<Node> nodelist=new ArrayList<>();
+        Integer depth1=nodelist.get(0).imgnum;
+        Integer depth2=depth1.toString().length();
+        findquery(files.root,query,nodelist);
+        String[][] result=metamorphsis(nodelist);
+        results.put("render_grid",result);
+        results.put("raster_ul_lon",ullon);
+        results.put("raster_ul_lat",ullat);
+        results.put("raster_lr_lon",lrlon);
+        results.put("raster_lr_lat",lrlat);
+        results.put("depth",depth2);
+        results.put("query_success",true);
         return results;
     }
 
+    public void findquery(Node root,Node query,ArrayList<Node> x){
+        if(isoverlapping(root,query)){
+            if(root.LonDpp<query.LonDpp||root.imgnum*10>4444444){
+                x.add(root);
+            }
+            else{
+                findquery(root.NW,query,x);
+                findquery(root.NE,query,x);
+                findquery(root.SW,query,x);
+                findquery(root.SE,query,x);
+            }
+        }
+    }
+
+    public String[][] metamorphsis(ArrayList<Node> x){
+         int rowlength=Rasterer.findrowlength(x);
+         int numofrows=x.size()/rowlength;
+         String[][]result=new String[numofrows][rowlength];
+         PriorityQueue<Node> nodes=new PriorityQueue<>(x.size());
+         for(Node node:x){
+             nodes.add(node);
+         }
+         for(int i=0;i<numofrows;i++){
+             for(int j=0;j<rowlength;j++){
+                 result[i][j]=filepath+nodes.poll().filename;
+             }
+         }
+         return result;
+    }
+
+
+    public static boolean onthesamerow(Node n1,Node n2){
+        if(n1.ullat==n2.ullat&&n1.lrlat==n2.lrlat){
+            return true;
+        }
+        return false;
+    }
+
+    public static int findrowlength(ArrayList<Node> x){
+        Node firstone=x.get(0);
+        int counter=0;
+        for(Node element:x){
+            if(onthesamerow(firstone,element)){
+                counter+=1;
+            }
+        }
+        return counter;
+    }
+
+    public boolean isoverlapping(Node n1,Node n2){
+        if(n2.lrlong<n1.ullong||n1.lrlong<n2.ullong){
+          return false;
+        }
+        else if(n2.lrlat>n1.ullat||n1.lrlat>n2.ullat){
+          return false;
+        }
+        return true;
+    }
+
+
+
+    public static void main(String[]args){
+        Rasterer wtf=new Rasterer("img/");
+        Node query=new Node(-122.30410170759153,37.870213571328854,-122.2104604264636,37.8318576119893,1085.0,566.0);
+        ArrayList<Node> nodelist=new ArrayList<>();
+        wtf.findquery(wtf.files.root,query,nodelist);
+        for(Node x:nodelist){
+            System.out.print(x.imgnum+" ");
+        }
+        System.out.println();
+        System.out.println(findrowlength(nodelist));
+        String[][]matrix=wtf.metamorphsis(nodelist);
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                System.out.print(matrix[i][j] + " ");
+            }
+            System.out.println();
+        }
+        System.out.println(new Integer(233).toString().length());
+    }
 }
