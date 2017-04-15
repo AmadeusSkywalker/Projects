@@ -146,7 +146,8 @@ public class Rasterer {
 
     public static void main(String[] args) {
         Rasterer wtf = new Rasterer("img/");
-        Node query = new Node(-122.3027284165759, 37.88708748276975, -122.20908713544797, 37.848731523430196, 305.0, 300.0);
+        Node query = new Node(-122.3027284165759, 37.88708748276975,
+                -122.20908713544797, 37.848731523430196, 305.0, 300.0);
         ArrayList<Node> nodelist = new ArrayList<>();
         wtf.findquery(wtf.files.root, query, nodelist);
         for (Node x : nodelist) {
@@ -162,7 +163,8 @@ public class Rasterer {
             System.out.println();
         }
 
-        Node query2 = new Node(-122.24163047377972, 37.87655856892288, -122.24053369025242, 37.87548268822065, 892.0, 875.0);
+        Node query2 = new Node(-122.24163047377972, 37.87655856892288, -122.24053369025242,
+                37.87548268822065, 892.0, 875.0);
         ArrayList<Node> nodelist2 = new ArrayList<>();
         wtf.findquery(wtf.files.root, query2, nodelist2);
         for (Node x : nodelist2) {
