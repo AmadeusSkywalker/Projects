@@ -29,7 +29,7 @@ public class Rasterer {
      * Takes a user query and finds the grid of images that best matches the query. These
      * images will be combined into one big image (rastered) by the front end. <br>
      * <p>
-<<<<<<< HEAD
+     * <<<<<<< HEAD
      * The grid of images must obey the following properties, where image in the
      * grid is referred to as a "tile".
      * <ul>
@@ -42,18 +42,18 @@ public class Rasterer {
      * above condition.</li>
      * <li>The tiles must be arranged in-order to reconstruct the full image.</li>
      * </ul>
-=======
-     *     The grid of images must obey the following properties, where image in the
-     *     grid is referred to as a "tile".
-     *     <ul>
-     *         <li>The tiles collected must cover the most longitudinal distance per pixel
-     *         (LonDPP) possible, while still covering less than or equal to the amount of
-     *         longitudinal distance per pixel in the query box for the user viewport size. </li>
-     *         <li>Contains all tiles that intersect the query bounding box that fulfill the
-     *         above condition.</li>
-     *         <li>The tiles must be arranged in-order to reconstruct the full image.</li>
-     *     </ul>
->>>>>>> e5eb1deae982c391e100a8fe3837e97db9d60f20
+     * =======
+     * The grid of images must obey the following properties, where image in the
+     * grid is referred to as a "tile".
+     * <ul>
+     * <li>The tiles collected must cover the most longitudinal distance per pixel
+     * (LonDPP) possible, while still covering less than or equal to the amount of
+     * longitudinal distance per pixel in the query box for the user viewport size. </li>
+     * <li>Contains all tiles that intersect the query bounding box that fulfill the
+     * above condition.</li>
+     * <li>The tiles must be arranged in-order to reconstruct the full image.</li>
+     * </ul>
+     * >>>>>>> e5eb1deae982c391e100a8fe3837e97db9d60f20
      * </p>
      *
      * @param params Map of the HTTP GET request's query parameters - the query box and
@@ -101,7 +101,7 @@ public class Rasterer {
 
     public void findquery(Node root, Node query, ArrayList<Node> x) {
         if (isoverlapping(root, query)) {
-            if (root.LonDpp < query.LonDpp || root.imgnum * 10 > 4444444) {
+            if (root.LonDpp <= query.LonDpp || root.imgnum * 10 > 4444444) {
                 x.add(root);
             } else {
                 findquery(root.NW, query, x);
@@ -159,8 +159,8 @@ public class Rasterer {
 
     public static void main(String[] args) {
         Rasterer wtf = new Rasterer("img/");
-        Node query = new Node(-122.3027284165759, 37.88708748276975,
-                -122.20908713544797, 37.848731523430196, 305.0, 300.0);
+        Node query = new Node(-122.30410170759153, 37.870213571328854,
+                -122.2104604264636, 37.8318576119893, 1091.0, 556.0);
         ArrayList<Node> nodelist = new ArrayList<>();
         wtf.findquery(wtf.files.root, query, nodelist);
         for (Node x : nodelist) {
@@ -176,21 +176,5 @@ public class Rasterer {
             System.out.println();
         }
 
-        Node query2 = new Node(-122.24163047377972, 37.87655856892288, -122.24053369025242,
-                37.87548268822065, 892.0, 875.0);
-        ArrayList<Node> nodelist2 = new ArrayList<>();
-        wtf.findquery(wtf.files.root, query2, nodelist2);
-        for (Node x : nodelist2) {
-            System.out.print(x.imgnum + " ");
-        }
-        System.out.println();
-        System.out.println(findrowlength(nodelist2));
-        String[][] matrix2 = wtf.metamorphsis(nodelist2);
-        for (int i = 0; i < matrix2.length; i++) {
-            for (int j = 0; j < matrix2[i].length; j++) {
-                System.out.print(matrix2[i][j] + " ");
-            }
-            System.out.println();
-        }
     }
 }
