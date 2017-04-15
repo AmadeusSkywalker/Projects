@@ -1,5 +1,3 @@
-import sun.awt.image.ImageWatched;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -15,32 +13,52 @@ import java.util.PriorityQueue;
  */
 public class Router {
     /**
-     * Return a LinkedList of <code>Long</code>s representing the shortest path from st to dest, 
+     * Return a LinkedList of <code>Long</code>s representing the shortest path from st to dest,
      * where the longs are node IDs.
      */
     public static LinkedList<Long> shortestPath(GraphDB g, double stlon, double stlat, double destlon, double destlat) {
-        LinkedList<Long> result=new LinkedList<>();
-        HashMap<Vertices,ArrayList<Vertices>> map=g.ourgraph;
-        Vertices start=new Vertices(new Long(0),0.0,0.0);
-        Vertices end=new Vertices(new Long(0),0.0,0.0);
-        boolean findreallove=false;
-        for(Vertices x: map.keySet()){
-            if(x.lat==stlat&&x.lon==stlon){
-                 start=x;
-                 start.distancefromstart=0;
-            }
-            if(x.lat==destlat&&x.lon==destlat){
-                 end=x;
-                 end.heuristics=0;
-            }
-        }
-        start.heuristics=g.helpdistance(start,end);
-        PriorityQueue<Vertices> fringe=new PriorityQueue<>();
+        LinkedList<Long> result = new LinkedList<>();
+        HashMap<Vertices, ArrayList<Vertices>> map = g.ourgraph;
+        HashMap<Long, Vertices> index = g.allnodes;
+        boolean findreallove = false;
+        Long end1 = g.closest(destlon, destlat);
+        Vertices end = index.get(end1);
+        Long start1 = g.closest(stlon, stlat);
+        Vertices start = index.get(start1);
+        end.heuristics = 0;
+        start.distancefromstart = 0;
+        start.previous = null;
+        start.heuristics = g.helpdistance(start, end);
+        PriorityQueue<Vertices> fringe = new PriorityQueue<>();
         fringe.add(start);
-        while(!fringe.isEmpty()&&!findreallove){
-
+        while (!fringe.isEmpty() && !findreallove) {
+            Vertices current = fringe.poll();
+            if (current.heuristics != 0) {
+                ArrayList<Long> neighbors = (ArrayList) g.adjacent(current.id);
+                if (neighbors.size() != 0) {
+                    for (Long close : neighbors) {
+                        Vertices neighbor = index.get(close);
+                        if (current.previous == null) {
+                            neighbor.previous = current;
+                            neighbor.heuristics = g.helpdistance(neighbor, end);
+                            neighbor.distancefromstart = current.distancefromstart + g.helpdistance(neighbor, current);
+                            fringe.add(neighbor);
+                        } else if (neighbor.id != current.previous.id) {
+                            neighbor.previous = current;
+                            neighbor.heuristics = g.helpdistance(neighbor, end);
+                            neighbor.distancefromstart = current.distancefromstart + g.helpdistance(neighbor, current);
+                            fringe.add(neighbor);
+                        }
+                    }
+                }
+            } else {
+                findreallove = true;
+                while (current != null) {
+                    result.add(current.id);
+                    current = current.previous;
+                }
+            }
         }
-
-        return new LinkedList<Long>();
+        return result;
     }
 }

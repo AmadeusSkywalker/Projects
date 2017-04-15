@@ -68,6 +68,7 @@ public class GraphDB {
         while (iter.hasNext()) {
             Vertices current = iter.next();
             if (current.issingle == true) {
+                allnodes.remove(current.id);
                 iter.remove();
             }
         }
@@ -79,8 +80,8 @@ public class GraphDB {
     Iterable<Long> vertices() {
         //YOUR CODE HERE, this currently returns only an empty list.
         ArrayList<Long> result = new ArrayList<>();
-        for (Long id : allnodes.keySet()) {
-            result.add(id);
+        for (Vertices v : ourgraph.keySet()) {
+            result.add(v.id);
         }
         return result;
     }
@@ -92,21 +93,23 @@ public class GraphDB {
         ArrayList<Long> result = new ArrayList<>();
         Vertices markedpoint = allnodes.get(v);
         ArrayList<Vertices> allverts = ourgraph.get(markedpoint);
-        for (Vertices i : allverts) {
-            result.add(i.id);
+        if (allverts != null) {
+            for (Vertices i : allverts) {
+                result.add(i.id);
+            }
         }
         return result;
     }
 
-    /** Returns the Euclidean distance between vertices v and w, where Euclidean distance
-     *  is defined as sqrt( (lonV - lonV)^2 + (latV - latV)^2 ). */
+    /**
+     * Returns the Euclidean distance between vertices v and w, where Euclidean distance
+     * is defined as sqrt( (lonV - lonV)^2 + (latV - latV)^2 ).
+     */
 
     double distance(long v, long w) {
         Vertices n1 = allnodes.get(v);
         Vertices n2 = allnodes.get(w);
-        double x = Math.abs(n1.lon - n2.lon);
-        double y = Math.abs(n1.lat - n2.lat);
-        return Math.sqrt(x * x + y * y);
+        return helpdistance(n1, n2);
     }
 
     double helpdistance(Vertices n1, Vertices n2) {
@@ -120,12 +123,12 @@ public class GraphDB {
      * Returns the vertex id closest to the given longitude and latitude.
      */
     long closest(double lon, double lat) {
-        Long love = new Long(19981013);
-        long smallest = Long.MAX_VALUE;
-        Vertices smallvertex = new Vertices(love, lon, lat);//just initialize it
-        Vertices target = new Vertices(love, lon, lat);
+        Long id = new Long(19981013);
+        double smallest = Double.MAX_VALUE;
+        Vertices smallvertex = new Vertices(id, lon, lat);//just initialize it
+        Vertices target = new Vertices(id, lon, lat);
         for (Vertices x : ourgraph.keySet()) {
-            long distance = new Double(helpdistance(x, target)).longValue();
+            double distance = helpdistance(x, target);
             if (distance < smallest) {
                 smallest = distance;
                 smallvertex = x;
