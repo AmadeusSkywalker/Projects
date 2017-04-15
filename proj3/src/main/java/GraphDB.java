@@ -98,6 +98,11 @@ public class GraphDB {
         return result;
     }
 
+<<<<<<< HEAD
+=======
+    /** Returns the Euclidean distance between vertices v and w, where Euclidean distance
+     *  is defined as sqrt( (lonV - lonV)^2 + (latV - latV)^2 ). */
+>>>>>>> e5eb1deae982c391e100a8fe3837e97db9d60f20
     double distance(long v, long w) {
         Vertices n1 = allnodes.get(v);
         Vertices n2 = allnodes.get(w);
