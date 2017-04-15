@@ -65,9 +65,9 @@ public class Rasterer {
         Double height=params.get("h");
         Node query=new Node(ullon,ullat,lrlon,lrlat,width,height);
         ArrayList<Node> nodelist=new ArrayList<>();
+        findquery(files.root,query,nodelist);
         Integer depth1=nodelist.get(0).imgnum;
         Integer depth2=depth1.toString().length();
-        findquery(files.root,query,nodelist);
         String[][] result=metamorphsis(nodelist);
         results.put("render_grid",result);
         results.put("raster_ul_lon",ullon);
@@ -142,7 +142,7 @@ public class Rasterer {
 
     public static void main(String[]args){
         Rasterer wtf=new Rasterer("img/");
-        Node query=new Node(-122.30410170759153,37.870213571328854,-122.2104604264636,37.8318576119893,1085.0,566.0);
+        Node query=new Node(-122.3027284165759,37.88708748276975,-122.20908713544797,37.848731523430196,305.0,300.0);
         ArrayList<Node> nodelist=new ArrayList<>();
         wtf.findquery(wtf.files.root,query,nodelist);
         for(Node x:nodelist){
@@ -157,6 +157,21 @@ public class Rasterer {
             }
             System.out.println();
         }
-        System.out.println(new Integer(233).toString().length());
+
+        Node query2=new Node(-122.24163047377972,37.87655856892288,-122.24053369025242,37.87548268822065,892.0,875.0);
+        ArrayList<Node> nodelist2=new ArrayList<>();
+        wtf.findquery(wtf.files.root,query2,nodelist2);
+        for(Node x:nodelist2){
+            System.out.print(x.imgnum+" ");
+        }
+        System.out.println();
+        System.out.println(findrowlength(nodelist2));
+        String[][]matrix2=wtf.metamorphsis(nodelist2);
+        for (int i = 0; i < matrix2.length; i++) {
+            for (int j = 0; j < matrix2[i].length; j++) {
+                System.out.print(matrix2[i][j] + " ");
+            }
+            System.out.println();
+        }
     }
 }
