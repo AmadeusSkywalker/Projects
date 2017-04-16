@@ -44,11 +44,24 @@ public class Router {
                                 + g.helpdistance(neighbor, current);
                         fringe.add(neighbor);
                     } else if (neighbor.id != current.previous.id) {
-                        neighbor.previous = current;
-                        neighbor.heuristics = g.helpdistance(neighbor, end);
-                        neighbor.distancefromstart = current.distancefromstart
-                                + g.helpdistance(neighbor, current);
-                        fringe.add(neighbor);
+                        if (neighbor.previous != null) {
+                            Vertices exwife = neighbor.previous;
+                            double x1 = exwife.distancefromstart + g.helpdistance(exwife, neighbor);
+                            double x2 = current.distancefromstart + g.helpdistance(current, neighbor);
+                            if (x1 > x2) {
+                                neighbor.previous = current;
+                                neighbor.heuristics = g.helpdistance(neighbor, end);
+                                neighbor.distancefromstart = current.distancefromstart
+                                        + g.helpdistance(neighbor, current);
+                                fringe.add(neighbor);
+                            }
+                        } else {
+                            neighbor.previous = current;
+                            neighbor.heuristics = g.helpdistance(neighbor, end);
+                            neighbor.distancefromstart = current.distancefromstart
+                                    + g.helpdistance(neighbor, current);
+                            fringe.add(neighbor);
+                        }
                     }
                 }
             } else {
@@ -64,6 +77,13 @@ public class Router {
             }
         }
         return result;
+    }
+
+
+    public static void main(String[] args) {
+        GraphDB g = new GraphDB("berkeley.osm");
+        LinkedList<Long> result = Router.shortestPath(g, -122.26926822660224, 37.839580731291605, -122.26901653037999, 37.82995260073409);
+        System.out.println(result);
     }
 }
 
