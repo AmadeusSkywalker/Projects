@@ -47,7 +47,8 @@ public class Router {
                         if (neighbor.previous != null) {
                             Vertices exwife = neighbor.previous;
                             double x1 = exwife.distancefromstart + g.helpdistance(exwife, neighbor);
-                            double x2 = current.distancefromstart + g.helpdistance(current, neighbor);
+                            double x2 = current.distancefromstart +
+                                    g.helpdistance(current, neighbor);
                             if (x1 > x2) {
                                 neighbor.previous = current;
                                 neighbor.heuristics = g.helpdistance(neighbor, end);
@@ -76,9 +77,9 @@ public class Router {
                 }
             }
         }
-        for(Long index1:index.keySet()){
-            Vertices newv=index.get(index1);
-            newv.previous=null;
+        for (Long index1 : index.keySet()) {
+            Vertices newv = index.get(index1);
+            newv.previous = null;
         }
         return result;
     }
@@ -86,9 +87,11 @@ public class Router {
 
     public static void main(String[] args) {
         GraphDB g = new GraphDB("berkeley.osm");
-        LinkedList<Long> result = Router.shortestPath(g, -122.25645867831877, 37.85010232750908, -122.25897184667542, 37.849578805572065);
+        LinkedList<Long> result = Router.shortestPath(g, -122.25645867831877, 37.85010232750908,
+                -122.25897184667542, 37.849578805572065);
         System.out.println(result);
-        LinkedList<Long> result2 = Router.shortestPath(g, -122.25645867831877, 37.85010232750908, -122.25897184667542, 37.849578805572065);
+        LinkedList<Long> result2 = Router.shortestPath(g, -122.25645867831877, 37.85010232750908,
+                -122.25897184667542, 37.849578805572065);
         System.out.println(result2);
     }
 }

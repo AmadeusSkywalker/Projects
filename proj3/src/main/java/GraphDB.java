@@ -63,11 +63,10 @@ public class GraphDB {
      * we can reasonably assume this since typically roads are connected.
      */
     private void clean() {
-        // TODO: Your code here.
         Iterator<Vertices> iter = ourgraph.keySet().iterator();
         while (iter.hasNext()) {
             Vertices current = iter.next();
-            if (current.issingle == true) {
+            if (current.issingle) {
                 allnodes.remove(current.id);
                 iter.remove();
             }
@@ -136,8 +135,7 @@ public class GraphDB {
         }
         return smallvertex.id;
     }
-    //TODO: iterate over all the points,find smallest distance
-
+    
     /**
      * Longitude of vertex v.
      */
