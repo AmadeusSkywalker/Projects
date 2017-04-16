@@ -82,7 +82,7 @@ public class Router {
 
     public static void main(String[] args) {
         GraphDB g = new GraphDB("berkeley.osm");
-        LinkedList<Long> result = Router.shortestPath(g, -122.26926822660224, 37.839580731291605, -122.26901653037999, 37.82995260073409);
+        LinkedList<Long> result = Router.shortestPath(g, -122.25645867831877, 37.85010232750908, -122.25897184667542, 37.849578805572065);
         System.out.println(result);
     }
 }
