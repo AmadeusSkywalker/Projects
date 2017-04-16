@@ -16,7 +16,8 @@ public class Router {
      * Return a LinkedList of <code>Long</code>s representing the shortest path from st to dest,
      * where the longs are node IDs.
      */
-    public static LinkedList<Long> shortestPath(GraphDB g, double stlon, double stlat, double destlon, double destlat) {
+    public static LinkedList<Long> shortestPath(GraphDB g, double stlon,
+                                                double stlat, double destlon, double destlat) {
         LinkedList<Long> result = new LinkedList<>();
         HashMap<Vertices, ArrayList<Vertices>> map = g.ourgraph;
         HashMap<Long, Vertices> index = g.allnodes;
@@ -34,31 +35,36 @@ public class Router {
         while (!fringe.isEmpty() && !findreallove) {
             Vertices current = fringe.poll();
             if (current.heuristics != 0) {
-                ArrayList<Long> neighbors = (ArrayList) g.adjacent(current.id);
-                if (neighbors.size() != 0) {
-                    for (Long close : neighbors) {
-                        Vertices neighbor = index.get(close);
-                        if (current.previous == null) {
-                            neighbor.previous = current;
-                            neighbor.heuristics = g.helpdistance(neighbor, end);
-                            neighbor.distancefromstart = current.distancefromstart + g.helpdistance(neighbor, current);
-                            fringe.add(neighbor);
-                        } else if (neighbor.id != current.previous.id) {
-                            neighbor.previous = current;
-                            neighbor.heuristics = g.helpdistance(neighbor, end);
-                            neighbor.distancefromstart = current.distancefromstart + g.helpdistance(neighbor, current);
-                            fringe.add(neighbor);
-                        }
+                for (Long close : g.adjacent(current.id)) {
+                    Vertices neighbor = index.get(close);
+                    if (current.previous == null) {
+                        neighbor.previous = current;
+                        neighbor.heuristics = g.helpdistance(neighbor, end);
+                        neighbor.distancefromstart = current.distancefromstart
+                                + g.helpdistance(neighbor, current);
+                        fringe.add(neighbor);
+                    } else if (neighbor.id != current.previous.id) {
+                        neighbor.previous = current;
+                        neighbor.heuristics = g.helpdistance(neighbor, end);
+                        neighbor.distancefromstart = current.distancefromstart
+                                + g.helpdistance(neighbor, current);
+                        fringe.add(neighbor);
                     }
                 }
             } else {
                 findreallove = true;
+                LinkedList<Long> temporary = new LinkedList<>();
                 while (current != null) {
-                    result.add(current.id);
+                    temporary.add(current.id);
                     current = current.previous;
+                }
+                while (!temporary.isEmpty()) {
+                    result.add(temporary.removeLast());
                 }
             }
         }
         return result;
     }
 }
+
+

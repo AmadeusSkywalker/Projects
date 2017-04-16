@@ -23,8 +23,8 @@ public class GraphDB {
      * Your instance variables for storing the graph. You should consider
      * creating helper classes, e.g. Node, Edge, etc.
      */
-    public static HashMap<Vertices, ArrayList<Vertices>> ourgraph;
-    public static HashMap<Long, Vertices> allnodes;
+    static HashMap<Vertices, ArrayList<Vertices>> ourgraph;
+    static HashMap<Long, Vertices> allnodes;
 
     /**
      * Example constructor shows how to create and start an XML parser.
