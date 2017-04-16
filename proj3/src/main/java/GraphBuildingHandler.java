@@ -73,8 +73,8 @@ public class GraphBuildingHandler extends DefaultHandler {
             double lat = Double.parseDouble(attributes.getValue("lat"));
             Vertices newvertice = new Vertices(id, lon, lat);
             lastvertice = newvertice;
-            GraphDB.allnodes.put(lastvertice.id, lastvertice);
-            GraphDB.ourgraph.put(newvertice, new ArrayList<Vertices>());
+            g.allnodes.put(lastvertice.id, lastvertice);
+            g.ourgraph.put(newvertice, new ArrayList<Vertices>());
         } else if (qName.equals("way")) {
             activeState = "way";
             int id = Integer.parseInt(attributes.getValue("id"));
@@ -137,17 +137,17 @@ public class GraphBuildingHandler extends DefaultHandler {
 //            System.out.println("Finishing a way...");
             if (currentroad.isallowed == true) {
                 for (int i = 0; i < currentroad.nodeids.size() - 1; i++) {
-                    Vertices vert1 = GraphDB.allnodes.get(currentroad.nodeids.get(i));
-                    Vertices vert2 = GraphDB.allnodes.get(currentroad.nodeids.get(i + 1));
+                    Vertices vert1 = g.allnodes.get(currentroad.nodeids.get(i));
+                    Vertices vert2 = g.allnodes.get(currentroad.nodeids.get(i + 1));
                     addrelation(vert1, vert2);
                 }
             }
         }
     }
 
-    public static void addrelation(Vertices n1, Vertices n2) {
-        GraphDB.ourgraph.get(n1).add(n2);
-        GraphDB.ourgraph.get(n2).add(n1);
+    public void addrelation(Vertices n1, Vertices n2) {
+        g.ourgraph.get(n1).add(n2);
+        g.ourgraph.get(n2).add(n1);
         n1.issingle = false;
         n2.issingle = false;
     }

@@ -76,6 +76,10 @@ public class Router {
                 }
             }
         }
+        for(Long index1:index.keySet()){
+            Vertices newv=index.get(index1);
+            newv.previous=null;
+        }
         return result;
     }
 
@@ -84,6 +88,8 @@ public class Router {
         GraphDB g = new GraphDB("berkeley.osm");
         LinkedList<Long> result = Router.shortestPath(g, -122.25645867831877, 37.85010232750908, -122.25897184667542, 37.849578805572065);
         System.out.println(result);
+        LinkedList<Long> result2 = Router.shortestPath(g, -122.25645867831877, 37.85010232750908, -122.25897184667542, 37.849578805572065);
+        System.out.println(result2);
     }
 }
 
