@@ -124,7 +124,7 @@ public class GraphDB {
     long closest(double lon, double lat) {
         Long id = new Long(19981013);
         double smallest = Double.MAX_VALUE;
-        Vertices smallvertex = new Vertices(id, lon, lat);//just initialize it
+        Vertices smallvertex = new Vertices(id, lon, lat);
         Vertices target = new Vertices(id, lon, lat);
         for (Vertices x : ourgraph.keySet()) {
             double distance = helpdistance(x, target);
@@ -135,7 +135,7 @@ public class GraphDB {
         }
         return smallvertex.id;
     }
-    
+
     /**
      * Longitude of vertex v.
      */

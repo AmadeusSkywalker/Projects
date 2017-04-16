@@ -47,8 +47,8 @@ public class Router {
                         if (neighbor.previous != null) {
                             Vertices exwife = neighbor.previous;
                             double x1 = exwife.distancefromstart + g.helpdistance(exwife, neighbor);
-                            double x2 = current.distancefromstart +
-                                    g.helpdistance(current, neighbor);
+                            double x2 = current.distancefromstart
+                                    + g.helpdistance(current, neighbor);
                             if (x1 > x2) {
                                 neighbor.previous = current;
                                 neighbor.heuristics = g.helpdistance(neighbor, end);
