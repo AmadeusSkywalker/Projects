@@ -1,24 +1,21 @@
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.BasicStroke;
-import java.awt.Color;
+import com.google.gson.Gson;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
-import java.io.IOException;
-
-
-/* Maven is used to pull in these dependencies. */
-import com.google.gson.Gson;
 
 import static spark.Spark.*;
+
+/* Maven is used to pull in these dependencies. */
 
 /**
  * This MapServer class is the entry point for running the JavaSpark web server for the BearMaps
@@ -26,6 +23,7 @@ import static spark.Spark.*;
  * requested images and routes. You should not need to modify this file unless you're
  * doing the Autocomplete part of the project, though you are welcome to do so.
  * This code is using BearMaps skeleton code version 2.0.
+ *
  * @author Alan Yao, Josh Hug
  */
 public class MapServer {
@@ -36,15 +34,25 @@ public class MapServer {
      */
     public static final double ROOT_ULLAT = 37.892195547244356, ROOT_ULLON = -122.2998046875,
             ROOT_LRLAT = 37.82280243352756, ROOT_LRLON = -122.2119140625;
-    /** Each tile is 256x256 pixels. */
+    /**
+     * Each tile is 256x256 pixels.
+     */
     public static final int TILE_SIZE = 256;
-    /** HTTP failed response. */
+    /**
+     * HTTP failed response.
+     */
     private static final int HALT_RESPONSE = 403;
-    /** Route stroke information: typically roads are not more than 5px wide. */
+    /**
+     * Route stroke information: typically roads are not more than 5px wide.
+     */
     public static final float ROUTE_STROKE_WIDTH_PX = 5.0f;
-    /** Route stroke information: Cyan with half transparency. */
+    /**
+     * Route stroke information: Cyan with half transparency.
+     */
     public static final Color ROUTE_STROKE_COLOR = new Color(108, 181, 230, 200);
-    /** The tile images are in the IMG_ROOT folder. */
+    /**
+     * The tile images are in the IMG_ROOT folder.
+     */
     private static final String IMG_ROOT = "img/";
     /**
      * The OSM XML file path. Downloaded from <a href="http://download.bbbike.org/osm/">here</a>
@@ -60,7 +68,7 @@ public class MapServer {
      * w -> user viewport window width in pixels,<br> h -> user viewport height in pixels.
      **/
     private static final String[] REQUIRED_RASTER_REQUEST_PARAMS = {"ullat", "ullon", "lrlat",
-        "lrlon", "w", "h"};
+            "lrlon", "w", "h"};
     /**
      * Each route request to the server will have the following parameters
      * as keys in the params map.<br>
@@ -68,18 +76,20 @@ public class MapServer {
      * end_lat -> end point latitude, <br>end_lon -> end point longitude.
      **/
     private static final String[] REQUIRED_ROUTE_REQUEST_PARAMS = {"start_lat", "start_lon",
-        "end_lat", "end_lon"};
+            "end_lat", "end_lon"};
 
     /**
      * The result of rastering must be a map containing all of the
      * fields listed in the comments for getMapRaster in Rasterer.java.
      **/
     private static final String[] REQUIRED_RASTER_RESULT_PARAMS = {"render_grid", "raster_ul_lon",
-        "raster_ul_lat", "raster_lr_lon", "raster_lr_lat", "depth", "query_success"};
+            "raster_ul_lat", "raster_lr_lon", "raster_lr_lat", "depth", "query_success"};
 
     private static Rasterer rasterer;
     private static GraphDB graph;
     private static LinkedList<Long> route = new LinkedList<>();
+    private static Trie goldpoint;
+    public static HashMap<String, String> cleansed;
     /* Define any static variables here. Do not define any instance variables of MapServer. */
 
 
@@ -91,6 +101,14 @@ public class MapServer {
     public static void initialize() {
         graph = new GraphDB(OSM_DB_PATH);
         rasterer = new Rasterer(IMG_ROOT);
+        goldpoint = new Trie();
+        cleansed = new HashMap<>();
+        for (Vertices x : graph.locations) {
+            String original = x.name;
+            String after = clean(original);
+            cleansed.put(after, original);
+            goldpoint.insert(after);
+        }
     }
 
     public static void main(String[] args) {
@@ -169,7 +187,8 @@ public class MapServer {
     /**
      * Validate & return a parameter map of the required request parameters.
      * Requires that all input parameters are doubles.
-     * @param req HTTP Request
+     *
+     * @param req            HTTP Request
      * @param requiredParams TestParams to validate
      * @return A populated map of input parameter to it's numerical value.
      */
@@ -192,7 +211,8 @@ public class MapServer {
         return params;
     }
 
-    /** Writes the images corresponding to rasteredImgParams to the output stream.
+    /**
+     * Writes the images corresponding to rasteredImgParams to the output stream.
      * In Spring 2016, students had to do this on their own, but in 2017,
      * we have made this into provided code since it was just a bit too low level.
      */
@@ -233,9 +253,9 @@ public class MapServer {
                     BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
             route.stream().reduce((v, w) -> {
                 g2d.drawLine((int) ((graph.lon(v) - ullon) * (1 / wdpp)),
-                             (int) ((ullat - graph.lat(v)) * (1 / hdpp)),
-                             (int) ((graph.lon(w) - ullon) * (1 / wdpp)),
-                             (int) ((ullat - graph.lat(w)) * (1 / hdpp)));
+                        (int) ((ullat - graph.lat(v)) * (1 / hdpp)),
+                        (int) ((graph.lon(w) - ullon) * (1 / wdpp)),
+                        (int) ((ullat - graph.lat(w)) * (1 / hdpp)));
                 return w;
             });
         }
@@ -273,18 +293,21 @@ public class MapServer {
 
     /**
      * In linear time, collect all the names of OSM locations that prefix-match the query string.
+     *
      * @param prefix Prefix string to be searched for. Could be any case, with our without
      *               punctuation.
      * @return A <code>List</code> of the full names of locations whose cleaned name matches the
      * cleaned <code>prefix</code>.
      */
     public static List<String> getLocationsByPrefix(String prefix) {
-        return new LinkedList<>();
+        LinkedList<String> result = goldpoint.autocompletion(prefix);
+        return result;
     }
 
     /**
      * Collect all locations that match a cleaned <code>locationName</code>, and return
      * information about each node that matches.
+     *
      * @param locationName A full name of a location searched for.
      * @return A list of locations whose cleaned name matches the
      * cleaned <code>locationName</code>, and each location is a map of parameters for the Json
@@ -295,10 +318,37 @@ public class MapServer {
      * "id" -> Number, The id of the node. <br>
      */
     public static List<Map<String, Object>> getLocations(String locationName) {
-        return new LinkedList<>();
+        LinkedList<Map<String, Object>> result = new LinkedList<>();
+        for (Vertices x : graph.locations) {
+            String tocleam = x.name;
+            String cleaned = clean(tocleam);
+            if (cleaned.equals(locationName)) {
+                HashMap<String, Object> info = new HashMap<>();
+                info.put("lat", x.lat);
+                info.put("lon", x.lon);
+                info.put("name", x.name);
+                info.put("id", x.id);
+                result.add(info);
+            }
+        }
+        return result;
     }
 
-    /** Validates that Rasterer has returned a result that can be rendered.
+    public static String clean(String toclean) {
+        String cleaned1 = toclean.replaceAll("[^a-zA-Z\\s]", "");
+        char[] temp = cleaned1.toCharArray();
+        for (int i = 0; i < temp.length; i++) {
+            if (Character.isUpperCase(temp[i])) {
+                temp[i] = Character.toLowerCase(temp[i]);
+            }
+        }
+        String cleaned2 = String.valueOf(temp);
+        return cleaned2;
+    }
+
+    /**
+     * Validates that Rasterer has returned a result that can be rendered.
+     *
      * @param rip : Parameters provided by the rasterer
      */
     private static boolean validateRasteredImgParams(Map<String, Object> rip) {

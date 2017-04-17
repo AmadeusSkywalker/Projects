@@ -8,7 +8,7 @@ public class Vertices implements Comparable {
     double lon;
     double lat;
     boolean isloc;
-    HashMap<String, String> extrainfo;
+    String name;
     boolean issingle;
     double distancefromstart;
     double heuristics;
@@ -19,7 +19,6 @@ public class Vertices implements Comparable {
         lon = lon1;
         lat = lat1;
         isloc = false;
-        extrainfo = new HashMap<>();
         issingle = true;
     }
 

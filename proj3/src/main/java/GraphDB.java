@@ -25,6 +25,7 @@ public class GraphDB {
      */
     HashMap<Vertices, ArrayList<Vertices>> ourgraph;
     HashMap<Long, Vertices> allnodes;
+    ArrayList<Vertices> locations;
 
     /**
      * Example constructor shows how to create and start an XML parser.
@@ -35,6 +36,7 @@ public class GraphDB {
     public GraphDB(String dbPath) {
         ourgraph = new HashMap<>();
         allnodes = new HashMap<>();
+        locations = new ArrayList<>();
         try {
             File inputFile = new File(dbPath);
             SAXParserFactory factory = SAXParserFactory.newInstance();

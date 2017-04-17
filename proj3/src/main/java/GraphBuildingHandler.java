@@ -108,7 +108,8 @@ public class GraphBuildingHandler extends DefaultHandler {
         } else if (activeState.equals("node") && qName.equals("tag") && attributes.getValue("k")
                 .equals("name")) {
             lastvertice.isloc = true;
-            lastvertice.extrainfo.put("name", attributes.getValue("v"));
+            lastvertice.name = attributes.getValue("v");
+            g.locations.add(lastvertice);
             /* Hint: Since we found this <tag...> INSIDE a node, we should probably remember which
             node this tag belongs to. Remember XML is parsed top-to-bottom, so probably it's the
             last node that you looked at (check the first if-case). */
