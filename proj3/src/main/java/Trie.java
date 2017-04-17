@@ -51,14 +51,7 @@ public class Trie {
         else
             return false;
     }
-
-    public boolean startsWith(String prefix) {
-        if (searchNode(prefix) == null)
-            return false;
-        else
-            return true;
-    }
-
+    
     public TrieNode searchNode(String str) {
         Map<Character, TrieNode> children = root.children;
         TrieNode t = null;
