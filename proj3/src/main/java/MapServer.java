@@ -102,11 +102,11 @@ public class MapServer {
         graph = new GraphDB(OSM_DB_PATH);
         rasterer = new Rasterer(IMG_ROOT);
         goldpoint = new Trie();
-        //cleansed = new HashMap<>();
+        cleansed = new HashMap<>();
         for (Vertices x : graph.locations) {
             String original = x.name;
             String after = clean(original);
-            //cleansed.put(after, original);
+            cleansed.put(after, original);
             goldpoint.insert(after);
         }
     }
