@@ -68,7 +68,7 @@ public class GraphDB {
         Iterator<Vertices> iter = ourgraph.keySet().iterator();
         while (iter.hasNext()) {
             Vertices current = iter.next();
-            if (current.issingle) {
+            if (current.issingle && !current.isloc) {
                 allnodes.remove(current.id);
                 iter.remove();
             }
