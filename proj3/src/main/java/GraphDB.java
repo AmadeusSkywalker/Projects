@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 
 /**
  * Graph for storing all of the intersection (vertex) and road (edge) information.
@@ -23,7 +24,7 @@ public class GraphDB {
      * Your instance variables for storing the graph. You should consider
      * creating helper classes, e.g. Node, Edge, etc.
      */
-    HashMap<Vertices, ArrayList<Vertices>> ourgraph;
+    LinkedHashMap<Vertices, ArrayList<Vertices>> ourgraph;
     HashMap<Long, Vertices> allnodes;
     //ArrayList<Vertices> locations;
 
@@ -34,7 +35,7 @@ public class GraphDB {
      * @param dbPath Path to the XML file to be parsed.
      */
     public GraphDB(String dbPath) {
-        ourgraph = new HashMap<>();
+        ourgraph = new LinkedHashMap<>();
         allnodes = new HashMap<>();
         //locations = new ArrayList<>();
         try {

@@ -12,7 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Queue;
+
 
 import static spark.Spark.*;
 
@@ -322,7 +322,6 @@ public class MapServer {
      */
     public static List<Map<String, Object>> getLocations(String locationName) {
         LinkedList<Map<String, Object>> result = new LinkedList<>();
-        LinkedList<Map<String,Object>> temp=new LinkedList<>();
         for (Vertices x : /*graph.locations*/graph.ourgraph.keySet()) {
             if (x.isloc) {
                 String tocleam = x.name;
@@ -333,12 +332,9 @@ public class MapServer {
                     info.put("lon", x.lon);
                     info.put("name", x.name);
                     info.put("id", x.id);
-                    temp.add(info);
+                    result.add(info);
                 }
             }
-        }
-        while(!temp.isEmpty()){
-            result.add(temp.removeLast());
         }
         return result;
     }

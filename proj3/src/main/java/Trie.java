@@ -136,5 +136,6 @@ public class Trie {
         x.insert("Chaparral");
         x.insert("Chaparral Peak");
         System.out.println(MapServer.clean("Oak Grove & College"));
+        System.out.println(MapServer.getLocations("la farine"));
     }
 }
