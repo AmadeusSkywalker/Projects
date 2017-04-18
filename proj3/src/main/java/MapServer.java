@@ -91,6 +91,7 @@ public class MapServer {
     private static LinkedList<Long> route = new LinkedList<>();
     private static Trie goldpoint;
     public static HashMap<String, String> cleansed;
+    public static HashMap<String,Vertices> shit;
     /* Define any static variables here. Do not define any instance variables of MapServer. */
 
 
@@ -104,12 +105,14 @@ public class MapServer {
         rasterer = new Rasterer(IMG_ROOT);
         goldpoint = new Trie();
         cleansed = new HashMap<>();
+        shit=new HashMap<>();
         for (Vertices x : /*graph.locations*/graph.ourgraph.keySet()) {
             if(x.isloc) {
                 String original = x.name;
                 String after = clean(original);
                 cleansed.put(after, original);
                 goldpoint.insert(after);
+                shit.put(after,x);
             }
         }
     }
@@ -322,7 +325,8 @@ public class MapServer {
      */
     public static List<Map<String, Object>> getLocations(String locationName) {
         LinkedList<Map<String, Object>> result = new LinkedList<>();
-        for (Vertices x : /*graph.locations*/graph.ourgraph.keySet()) {
+        /*
+        for (Vertices x : graph.ourgraph.keySet()) {
             if (x.isloc) {
                 String tocleam = x.name;
                 String cleaned = clean(tocleam);
@@ -335,6 +339,16 @@ public class MapServer {
                     result.add(info);
                 }
             }
+        }
+        */
+        Vertices x=shit.get(locationName);
+        if(x!=null){
+            HashMap<String, Object> info = new HashMap<>();
+            info.put("lat", x.lat);
+            info.put("lon", x.lon);
+            info.put("name", x.name);
+            info.put("id", x.id);
+            result.add(info);
         }
         return result;
     }
