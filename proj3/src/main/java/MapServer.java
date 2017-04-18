@@ -338,7 +338,7 @@ public class MapServer {
             }
         }
         while(!temp.isEmpty()){
-            result.add(temp.removeFirst());
+            result.add(temp.removeLast());
         }
         return result;
     }
