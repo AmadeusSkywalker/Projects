@@ -6,13 +6,13 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Queue;
 
 import static spark.Spark.*;
 
@@ -91,7 +91,7 @@ public class MapServer {
     private static LinkedList<Long> route = new LinkedList<>();
     private static Trie goldpoint;
     public static HashMap<String, String> cleansed;
-    public static HashMap<String,Vertices> shit;
+    public static HashMap<String, ArrayList<Vertices>> shit;
     /* Define any static variables here. Do not define any instance variables of MapServer. */
 
 
@@ -105,14 +105,20 @@ public class MapServer {
         rasterer = new Rasterer(IMG_ROOT);
         goldpoint = new Trie();
         cleansed = new HashMap<>();
-        shit=new HashMap<>();
+        shit = new HashMap<>();
         for (Vertices x : /*graph.locations*/graph.ourgraph.keySet()) {
-            if(x.isloc) {
+            if (x.isloc) {
                 String original = x.name;
                 String after = clean(original);
                 cleansed.put(after, original);
                 goldpoint.insert(after);
-                shit.put(after,x);
+                if(shit.containsKey(after)){
+                    shit.get(after).add(x);
+                }
+                else{
+                    shit.put(after,new ArrayList<>());
+                    shit.get(after).add(x);
+                }
             }
         }
     }
@@ -341,14 +347,16 @@ public class MapServer {
             }
         }
         */
-        Vertices x=shit.get(locationName);
-        if(x!=null){
-            HashMap<String, Object> info = new HashMap<>();
-            info.put("lat", x.lat);
-            info.put("lon", x.lon);
-            info.put("name", x.name);
-            info.put("id", x.id);
-            result.add(info);
+        ArrayList<Vertices> current = shit.get(locationName);
+        if (!current.isEmpty()) {
+            for(Vertices x:current) {
+                HashMap<String, Object> info = new HashMap<>();
+                info.put("lat", x.lat);
+                info.put("lon", x.lon);
+                info.put("name", x.name);
+                info.put("id", x.id);
+                result.add(info);
+            }
         }
         return result;
     }
