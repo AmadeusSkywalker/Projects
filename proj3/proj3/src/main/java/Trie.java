@@ -132,6 +132,7 @@ public class Trie {
     }
 
     public static void main(String[] args) {
+        MapServer.initialize();
         Trie x = new Trie();
         x.insert("Chaparral");
         x.insert("Chaparral Peak");
