@@ -103,11 +103,13 @@ public class MapServer {
         rasterer = new Rasterer(IMG_ROOT);
         goldpoint = new Trie();
         cleansed = new HashMap<>();
-        for (Vertices x : graph.locations) {
-            String original = x.name;
-            String after = clean(original);
-            cleansed.put(after, original);
-            goldpoint.insert(after);
+        for (Vertices x : /*graph.locations*/graph.ourgraph.keySet()) {
+            if(x.isloc) {
+                String original = x.name;
+                String after = clean(original);
+                cleansed.put(after, original);
+                goldpoint.insert(after);
+            }
         }
     }
 
@@ -319,16 +321,18 @@ public class MapServer {
      */
     public static List<Map<String, Object>> getLocations(String locationName) {
         LinkedList<Map<String, Object>> result = new LinkedList<>();
-        for (Vertices x : graph.locations) {
-            String tocleam = x.name;
-            String cleaned = clean(tocleam);
-            if (cleaned.equals(locationName)) {
-                HashMap<String, Object> info = new HashMap<>();
-                info.put("lat", x.lat);
-                info.put("lon", x.lon);
-                info.put("name", x.name);
-                info.put("id", x.id);
-                result.add(info);
+        for (Vertices x : /*graph.locations*/graph.ourgraph.keySet()) {
+            if (x.isloc) {
+                String tocleam = x.name;
+                String cleaned = clean(tocleam);
+                if (cleaned.equals(locationName)) {
+                    HashMap<String, Object> info = new HashMap<>();
+                    info.put("lat", x.lat);
+                    info.put("lon", x.lon);
+                    info.put("name", x.name);
+                    info.put("id", x.id);
+                    result.add(info);
+                }
             }
         }
         return result;
