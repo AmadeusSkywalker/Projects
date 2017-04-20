@@ -37,19 +37,8 @@ public class RadixSort {
                    counts[(int)c+1]+=1;
                }
             }
-            for(int f=0;f<counts.length;f++){
-                System.out.print(counts[f]+" ");
-            }
             System.out.println();
-            int sum=0;
-            for(int j=0;j<counts.length;j++){
-                start[j]=sum;
-                sum+=counts[j];
-            }
-            for(int f=0;f<start.length;f++){
-                System.out.print(start[f]+" ");
-            }
-            System.out.println();
+            makestart(start,counts);
             for(String x:cloned){
                 int charn=0;
                 if(x.length()-i>=0){
@@ -63,9 +52,18 @@ public class RadixSort {
                 System.out.print(sorted[f]+" ");
             }
             System.out.println();
-            cloned=sorted;
+            cloned=sorted.clone();
         }
         return sorted;
+    }
+
+
+    public static void makestart(int[] start,int[] counts){
+        int sum=0;
+        for(int j=0;j<counts.length;j++){
+            start[j]=sum;
+            sum+=counts[j];
+        }
     }
 
     /**
@@ -83,9 +81,9 @@ public class RadixSort {
 
     public static void main(String[] args) {
         String[] stupid=new String[3];
-        stupid[0]="abcd";
-        stupid[1]="abc";
-        stupid[2]="abd";
+        stupid[0]="cde";
+        stupid[1]="cdsx";
+        stupid[2]="cdg";
         stupid=sort(stupid);
         for(String x:stupid) {
             System.out.println(x);
