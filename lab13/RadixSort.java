@@ -16,21 +16,56 @@ public class RadixSort {
      * @return String[] the sorted array
      **/
     public static String[] sort(String[] asciis) {
+        String[] cloned=asciis.clone();
         String[] sorted = new String[asciis.length];
-        int[] counts = new int[256];
-        String[] arr = new String[asciis.length];
         int longeststring = 0;
         for (String x : asciis) {
             if (x.length() > longeststring) {
                 longeststring = x.length();
             }
         }
-        for (int i = 0; i < longeststring; i++) {
-            int index = longeststring - i - 1;
+
+
+        for(int i=1;i<longeststring+1;i++){
+            int[] counts=new int[257];
+            int[] start=new int[counts.length];
+            for(String x:cloned){
+               if(x.length()-i<0){
+                   counts[0]+=1;
+               }else{
+                   char c=x.charAt(x.length()-i);
+                   counts[(int)c+1]+=1;
+               }
+            }
+            for(int f=0;f<counts.length;f++){
+                System.out.print(counts[f]+" ");
+            }
+            System.out.println();
+            int sum=0;
+            for(int j=0;j<counts.length;j++){
+                start[j]=sum;
+                sum+=counts[j];
+            }
+            for(int f=0;f<start.length;f++){
+                System.out.print(start[f]+" ");
+            }
+            System.out.println();
+            for(String x:cloned){
+                int charn=0;
+                if(x.length()-i>=0){
+                    charn=(int)x.charAt(x.length()-i)+1;
+                }
+                int startindex=start[charn];
+                sorted[startindex]=x;
+                start[charn]+=1;
+            }
+            for(int f=0;f<sorted.length;f++){
+                System.out.print(sorted[f]+" ");
+            }
+            System.out.println();
+            cloned=sorted;
         }
-
-
-        return null;
+        return sorted;
     }
 
     /**
@@ -47,6 +82,13 @@ public class RadixSort {
     }
 
     public static void main(String[] args) {
-        System.out.println('a' > 'b');
+        String[] stupid=new String[3];
+        stupid[0]="abcd";
+        stupid[1]="abc";
+        stupid[2]="abd";
+        stupid=sort(stupid);
+        for(String x:stupid) {
+            System.out.println(x);
+        }
     }
 }
