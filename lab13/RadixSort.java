@@ -3,38 +3,52 @@
  *
  * @author Akhil Batra
  * @version 1.4 - April 14, 2016
- *
  **/
-public class RadixSort
-{
+public class RadixSort {
 
     /**
      * Does Radix sort on the passed in array with the following restrictions:
-     *  The array can only have ASCII Strings (sequence of 1 byte characters)
-     *  The sorting is stable and non-destructive
-     *  The Strings can be variable length (all Strings are not constrained to 1 length)
+     * The array can only have ASCII Strings (sequence of 1 byte characters)
+     * The sorting is stable and non-destructive
+     * The Strings can be variable length (all Strings are not constrained to 1 length)
      *
      * @param asciis String[] that needs to be sorted
-     *
      * @return String[] the sorted array
      **/
-    public static String[] sort(String[] asciis)
-    {
+    public static String[] sort(String[] asciis) {
+        String[] sorted = new String[asciis.length];
+        int[] counts = new int[256];
+        String[] arr = new String[asciis.length];
+        int longeststring = 0;
+        for (String x : asciis) {
+            if (x.length() > longeststring) {
+                longeststring = x.length();
+            }
+        }
+        for (int i = 0; i < longeststring; i++) {
+            int index = longeststring - i - 1;
+            for (String x :)
+
+        }
+
+
         return null;
     }
 
     /**
      * Radix sort helper function that recursively calls itself to achieve the sorted array
-     *  destructive method that changes the passed in array, asciis
+     * destructive method that changes the passed in array, asciis
      *
      * @param asciis String[] to be sorted
-     * @param start int for where to start sorting in this method (includes String at start)
-     * @param end int for where to end sorting in this method (does not include String at end)
-     * @param index the index of the character the method is currently sorting on
-     *
+     * @param start  int for where to start sorting in this method (includes String at start)
+     * @param end    int for where to end sorting in this method (does not include String at end)
+     * @param index  the index of the character the method is currently sorting on
      **/
-    private static void sortHelper(String[] asciis, int start, int end, int index)
-    {
+    private static void sortHelper(String[] asciis, int start, int end, int index) {
         //TODO use if you want to
+    }
+
+    public static void main(String[] args) {
+        System.out.println('a' > 'b');
     }
 }

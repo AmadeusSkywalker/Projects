@@ -12,6 +12,8 @@ public class CountingSortTester {
      * Array that will cause CountingSort.naiveCountingSort to fail, but CountingSort.betterCountingSort can handle
      **/
     public static int[] someNegative = {9, 5, -4, 2, 1, -2, 5, 3, 0, -2, 3, 1, 1};
+
+    public static int[] willfail={-1,Integer.MAX_VALUE};
     
     public static void assertIsSorted(int[] a) {
     	int previous = Integer.MIN_VALUE;
@@ -46,6 +48,12 @@ public class CountingSortTester {
 	public void testBetterWithSomeNegative() {
 		int[] sortedSomeNegative = CountingSort.betterCountingSort(someNegative);
 		assertIsSorted(sortedSomeNegative);
+	}
+
+	@Test
+	public void thiswillfail(){
+    	int[] sortedfail=CountingSort.betterCountingSort(willfail);
+    	assertIsSorted(sortedfail);
 	}
 
 
