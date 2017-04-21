@@ -16,7 +16,8 @@ public class RadixSort {
      * @return String[] the sorted array
      **/
     public static String[] sort(String[] asciis) {
-        String[] cloned=asciis.clone();
+        String[] cloned=new String[asciis.length];
+        System.arraycopy(asciis,0,cloned,0,asciis.length);
         String[] sorted = new String[asciis.length];
         int longeststring = 0;
         for (String x : asciis) {
@@ -24,38 +25,44 @@ public class RadixSort {
                 longeststring = x.length();
             }
         }
-        for(int i=1;i<longeststring+1;i++){
-            int[] counts=new int[257];
-            int[] start=new int[counts.length];
-            for(String x:cloned){
-               if(x.length()-i<0){
-                   counts[0]+=1;
-               }else{
-                   char c=x.charAt(x.length()-i);
-                   counts[(int)c+1]+=1;
-               }
-            }
-            makestart(start,counts);
-            for(String x:cloned){
-                int charn=0;
-                if(x.length()-i>=0){
-                    charn=(int)x.charAt(x.length()-i)+1;
+        for(int i=0;i<cloned.length;i++){
+            if(cloned[i].length()<longeststring){
+                for (int j = 0; j < longeststring - cloned[i].length(); j++) {
+                    char c = Character.MIN_VALUE;
+                    cloned[i] += c;
                 }
-                int startindex=start[charn];
-                sorted[startindex]=x;
-                start[charn]+=1;
             }
-            cloned=sorted.clone();
+        }
+        for (int i = 1; i < longeststring + 1; i++) {
+            int[] counts = new int[257];
+            int[] start = new int[counts.length];
+            for (String x : cloned) {
+                char c = x.charAt(x.length() - i);
+                counts[(int) c + 1] += 1;
+            }
+            makestart(start, counts);
+            for (String x : cloned) {
+                int charn = (int) x.charAt(x.length() - i) + 1;
+                int startindex = start[charn];
+                sorted[startindex] = x;
+                start[charn] += 1;
+            }
+            System.arraycopy(sorted,0,cloned,0,sorted.length);
+        }
+        for(int i=0;i<sorted.length;i++){
+            while(sorted[i].indexOf(Character.MIN_VALUE)!=-1){
+                sorted[i]=sorted[i].substring(0,sorted[i].length()-1);
+            }
         }
         return sorted;
     }
 
 
-    public static void makestart(int[] start,int[] counts){
-        int sum=0;
-        for(int j=0;j<counts.length;j++){
-            start[j]=sum;
-            sum+=counts[j];
+    public static void makestart(int[] start, int[] counts) {
+        int sum = 0;
+        for (int j = 0; j < counts.length; j++) {
+            start[j] = sum;
+            sum += counts[j];
         }
     }
 
@@ -73,13 +80,13 @@ public class RadixSort {
     }
 
     public static void main(String[] args) {
-        String[] stupid=new String[2];
-        char a=(char)254;
+        String[] stupid = new String[2];
+        char a = (char) 254;
         System.out.println(a);
-        stupid[0]="cdsxa";
-        stupid[1]="cdgef";
-        stupid=sort(stupid);
-        for(String x:stupid) {
+        stupid[0] = "cdsxa";
+        stupid[1] = "cdge";
+        stupid = sort(stupid);
+        for (String x : stupid) {
             System.out.println(x);
         }
     }
