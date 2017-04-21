@@ -27,7 +27,8 @@ public class RadixSort {
         }
         for(int i=0;i<cloned.length;i++){
             if(cloned[i].length()<longeststring){
-                for (int j = 0; j < longeststring - cloned[i].length(); j++) {
+                int initiallength=cloned[i].length();
+                for (int j = 0; j < longeststring -initiallength; j++) {
                     char c = Character.MIN_VALUE;
                     cloned[i] += c;
                 }
@@ -84,7 +85,7 @@ public class RadixSort {
         char a = (char) 254;
         System.out.println(a);
         stupid[0] = "cdsxa";
-        stupid[1] = "cdge";
+        stupid[1] = "cdgeeeeeee";
         stupid = sort(stupid);
         for (String x : stupid) {
             System.out.println(x);
