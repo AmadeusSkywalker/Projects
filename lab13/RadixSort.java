@@ -73,10 +73,11 @@ public class RadixSort {
     }
 
     public static void main(String[] args) {
-        String[] stupid=new String[3];
-        stupid[0]="cde";
-        stupid[1]="cdsxa";
-        stupid[2]="cdgef";
+        String[] stupid=new String[2];
+        char a=(char)254;
+        System.out.println(a);
+        stupid[0]="cdsxa";
+        stupid[1]="cdgef";
         stupid=sort(stupid);
         for(String x:stupid) {
             System.out.println(x);
