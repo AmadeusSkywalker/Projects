@@ -24,8 +24,6 @@ public class RadixSort {
                 longeststring = x.length();
             }
         }
-
-
         for(int i=1;i<longeststring+1;i++){
             int[] counts=new int[257];
             int[] start=new int[counts.length];
@@ -37,7 +35,6 @@ public class RadixSort {
                    counts[(int)c+1]+=1;
                }
             }
-            System.out.println();
             makestart(start,counts);
             for(String x:cloned){
                 int charn=0;
@@ -48,10 +45,6 @@ public class RadixSort {
                 sorted[startindex]=x;
                 start[charn]+=1;
             }
-            for(int f=0;f<sorted.length;f++){
-                System.out.print(sorted[f]+" ");
-            }
-            System.out.println();
             cloned=sorted.clone();
         }
         return sorted;
@@ -82,8 +75,8 @@ public class RadixSort {
     public static void main(String[] args) {
         String[] stupid=new String[3];
         stupid[0]="cde";
-        stupid[1]="cdsx";
-        stupid[2]="cdg";
+        stupid[1]="cdsxa";
+        stupid[2]="cdgef";
         stupid=sort(stupid);
         for(String x:stupid) {
             System.out.println(x);
