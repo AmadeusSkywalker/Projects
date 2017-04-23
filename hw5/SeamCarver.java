@@ -80,8 +80,8 @@ public class SeamCarver {
         double downmin = Double.MAX_VALUE;
         int leftindex = 0;
         for (int i = 0; i < matrix.length; i++) {
-            if (matrix[i][matrix[i].length-1] < downmin) {
-                downmin = matrix[i][matrix[i].length-1];
+            if (matrix[i][matrix[i].length - 1] < downmin) {
+                downmin = matrix[i][matrix[i].length - 1];
                 leftindex = i;
             }
         }
