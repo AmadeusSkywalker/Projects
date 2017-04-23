@@ -4,7 +4,7 @@
 
 import edu.princeton.cs.algs4.Picture;
 
-import java.awt.Color;
+import java.awt.*;
 
 
 public class SeamCarver {
@@ -15,7 +15,8 @@ public class SeamCarver {
     }
 
     public Picture picture() {
-        return mainframe;
+        Picture newpic = new Picture(mainframe);
+        return newpic;
     }                     // current picture
 
     public int width() {
@@ -33,7 +34,7 @@ public class SeamCarver {
         return energyx(x, y) + energyy(x, y);
     }  // energy of pixel at column x and row y
 
-    public double energyx(int x, int y) {
+    private double energyx(int x, int y) {
         Color first;
         Color second;
         if (x == mainframe.width() - 1) {
@@ -52,7 +53,7 @@ public class SeamCarver {
         return rx * rx + gx * gx + bx * bx;
     }
 
-    public double energyy(int x, int y) {
+    private double energyy(int x, int y) {
         Color first;
         Color second;
         if (y == mainframe.height() - 1) {
@@ -73,105 +74,102 @@ public class SeamCarver {
 
 
     public int[] findHorizontalSeam() {
-        int[] result=new int[width()];
-        double[][] matrix=setmatrixY();
-        int col=matrix[0].length-1;
-        double downmin=Double.MAX_VALUE;
-        int leftindex=0;
-        for(int i=0;i<matrix.length;i++){
-            if(matrix[i][0]<downmin){
-                downmin=matrix[i][0];
-                leftindex=i;
+        int[] result = new int[width()];
+        double[][] matrix = setmatrixY();
+        int col = matrix[0].length - 1;
+        double downmin = Double.MAX_VALUE;
+        int leftindex = 0;
+        for (int i = 0; i < matrix.length; i++) {
+            if (matrix[i][0] < downmin) {
+                downmin = matrix[i][0];
+                leftindex = i;
             }
         }
-        int index=result.length-1;
-        while(col>0){
-            result[index]=leftindex;
-            double sum1=Double.MAX_VALUE;
+        int index = result.length - 1;
+        while (col > 0) {
+            result[index] = leftindex;
+            double sum1 = Double.MAX_VALUE;
             double sum2;
-            double sum3=Double.MAX_VALUE;
-            sum2=matrix[leftindex][col-1];
-            if(leftindex!=matrix.length-1) {
-                sum3 = matrix[leftindex + 1][col-1];
+            double sum3 = Double.MAX_VALUE;
+            sum2 = matrix[leftindex][col - 1];
+            if (leftindex != matrix.length - 1) {
+                sum3 = matrix[leftindex + 1][col - 1];
             }
-            if(leftindex!=0){
-                sum1=matrix[leftindex-1][col-1];
+            if (leftindex != 0) {
+                sum1 = matrix[leftindex - 1][col - 1];
             }
-            double min=findmin(sum1,sum2,sum3);
-            if(min==sum1){
-                leftindex=leftindex-1;
+            double min = findmin(sum1, sum2, sum3);
+            if (min == sum1) {
+                leftindex = leftindex - 1;
+            } else if (min == sum3) {
+                leftindex = leftindex + 1;
             }
-            else if(min==sum3){
-                leftindex=leftindex+1;
-            }
-            index-=1;
-            col-=1;
+            index -= 1;
+            col -= 1;
         }
-        result[0]=leftindex;
+        result[0] = leftindex;
         return result;
     }        // sequence of indices for horizontal seam
 
-    public double findmin(double x1, double x2, double x3){
-        double min1=Math.min(x1,x2);
-        double min2=Math.min(min1,x3);
-        if(min2==x1){
+    private double findmin(double x1, double x2, double x3) {
+        double min1 = Math.min(x1, x2);
+        double min2 = Math.min(min1, x3);
+        if (min2 == x1) {
             return x1;
-        }
-        else if(min2==x2){
+        } else if (min2 == x2) {
             return x2;
-        }
-        else{
+        } else {
             return x3;
         }
     }
 
-    public double[][] setmatrixX(){
-        double[][] sums=new double[mainframe.height()][mainframe.width()];
-        for(int i=0;i<width();i++){
-            sums[0][i]=energy(i,0);
+    private double[][] setmatrixX() {
+        double[][] sums = new double[mainframe.height()][mainframe.width()];
+        for (int i = 0; i < width(); i++) {
+            sums[0][i] = energy(i, 0);
         }
-        for(int j=1;j<height();j++){
-            for(int i=0;i<width();i++){
-                double energy=energy(i,j);
-                double sum1=Double.MAX_VALUE;
+        for (int j = 1; j < height(); j++) {
+            for (int i = 0; i < width(); i++) {
+                double energy = energy(i, j);
+                double sum1 = Double.MAX_VALUE;
                 double sum2;
-                double sum3=Double.MAX_VALUE;
-                sum2=energy+sums[j-1][i];
-                if(i!=0){
-                    sum1=energy+sums[j-1][i-1];
+                double sum3 = Double.MAX_VALUE;
+                sum2 = energy + sums[j - 1][i];
+                if (i != 0) {
+                    sum1 = energy + sums[j - 1][i - 1];
                 }
-                if(i!=width()-1){
-                    sum3=energy+sums[j-1][i+1];
+                if (i != width() - 1) {
+                    sum3 = energy + sums[j - 1][i + 1];
                 }
-                double min1=Math.min(sum1,sum2);
-                double min2=Math.min(min1,sum3);
-                sums[j][i]=min2;
+                double min1 = Math.min(sum1, sum2);
+                double min2 = Math.min(min1, sum3);
+                sums[j][i] = min2;
             }
         }
         return sums;
     }
 
-    public double[][] setmatrixY(){
-        double[][] sums=new double[mainframe.height()][mainframe.width()];
-        for(int i=0;i<height();i++){
-            sums[i][0]=energy(0,i);
+    private double[][] setmatrixY() {
+        double[][] sums = new double[mainframe.height()][mainframe.width()];
+        for (int i = 0; i < height(); i++) {
+            sums[i][0] = energy(0, i);
         }
-        for(int j=1;j<width();j++){
-            for(int i=0;i<height();i++){
-                double energy=energy(j,i);
-                double sum1=Double.MAX_VALUE;
+        for (int j = 1; j < width(); j++) {
+            for (int i = 0; i < height(); i++) {
+                double energy = energy(j, i);
+                double sum1 = Double.MAX_VALUE;
                 double sum2;
-                double sum3=Double.MAX_VALUE;
-                sum2=energy+sums[i][j-1];
-                if(i!=0){
-                    sum1=energy+sums[i-1][j-1];
+                double sum3 = Double.MAX_VALUE;
+                sum2 = energy + sums[i][j - 1];
+                if (i != 0) {
+                    sum1 = energy + sums[i - 1][j - 1];
                 }
-                if(i!=height()-1){
-                    sum3=energy+sums[i+1][j-1];
+                if (i != height() - 1) {
+                    sum3 = energy + sums[i + 1][j - 1];
                 }
-                double min1=Math.min(sum1,sum2);
-                double min2=Math.min(min1,sum3);
-                sums[i][j]=min2;
+                double min1 = Math.min(sum1, sum2);
+                double min2 = Math.min(min1, sum3);
+                sums[i][j] = min2;
             }
         }
         return sums;
@@ -179,90 +177,89 @@ public class SeamCarver {
     }
 
     public int[] findVerticalSeam() {
-        int[] result=new int[height()];
-        double[][] matrix=setmatrixX();
-        int row=matrix.length-1;
-        double downmin=Double.MAX_VALUE;
-        int downindex=0;
-        for(int i=0;i<matrix[row].length;i++){
-            if(matrix[row][i]<downmin){
-                downmin=matrix[row][i];
-                downindex=i;
+        int[] result = new int[height()];
+        double[][] matrix = setmatrixX();
+        int row = matrix.length - 1;
+        double downmin = Double.MAX_VALUE;
+        int downindex = 0;
+        for (int i = 0; i < matrix[row].length; i++) {
+            if (matrix[row][i] < downmin) {
+                downmin = matrix[row][i];
+                downindex = i;
             }
         }
-        int index=result.length-1;
-        while(row>0){
-            result[index]=downindex;
-            double sum1=Double.MAX_VALUE;
+        int index = result.length - 1;
+        while (row > 0) {
+            result[index] = downindex;
+            double sum1 = Double.MAX_VALUE;
             double sum2;
-            double sum3=Double.MAX_VALUE;
-            sum2=matrix[row-1][downindex];
-            if(downindex!=matrix[row].length-1) {
+            double sum3 = Double.MAX_VALUE;
+            sum2 = matrix[row - 1][downindex];
+            if (downindex != matrix[row].length - 1) {
                 sum3 = matrix[row - 1][downindex + 1];
             }
-            if(downindex!=0){
-                sum1=matrix[row-1][downindex-1];
+            if (downindex != 0) {
+                sum1 = matrix[row - 1][downindex - 1];
             }
-            double min=findmin(sum1,sum2,sum3);
-            if(min==sum1){
-                downindex=downindex-1;
+            double min = findmin(sum1, sum2, sum3);
+            if (min == sum1) {
+                downindex = downindex - 1;
+            } else if (min == sum3) {
+                downindex = downindex + 1;
             }
-            else if(min==sum3){
-                downindex=downindex+1;
-            }
-            index-=1;
-            row-=1;
+            index -= 1;
+            row -= 1;
         }
-        result[0]=downindex;
+        result[0] = downindex;
         return result;
     }          // sequence of indices for vertical seam
 
     public void removeHorizontalSeam(int[] seam) {
-        if(!checkHorzitonal(seam)){
+        if (!checkHorzitonal(seam)) {
             throw new IllegalArgumentException();
         }
-        Color white=new Color(0,0,0);
-        for(int i=0;i<seam.length;i++){
-           mainframe.set(seam[i],i,white);
+        Color white = new Color(0, 0, 0);
+        for (int i = 0; i < seam.length; i++) {
+            mainframe.set(seam[i], i, white);
         }
     } // remove horizontal seam from picture
 
     public void removeVerticalSeam(int[] seam) {
-        if(!checkVerticalSeam(seam)){
+        if (!checkVerticalSeam(seam)) {
             throw new IllegalArgumentException();
         }
-        Color white=new Color(0,0,0);
-        for(int i=0;i<seam.length;i++){
-            mainframe.set(i,seam[i],white);
+        Color white = new Color(0, 0, 0);
+        for (int i = 0; i < seam.length; i++) {
+            mainframe.set(i, seam[i], white);
         }
     }  // remove vertical seam from picture
 
-    public boolean checkHorzitonal(int[] seam){
-        if(seam.length!=width()){
+    private boolean checkHorzitonal(int[] seam) {
+        if (seam.length != width()) {
             return false;
         }
-        for(int i=0;i<seam.length-1;i++){
-            int tocheck=seam[i];
-            if(tocheck<0||tocheck>=height()){
+        for (int i = 0; i < seam.length - 1; i++) {
+            int tocheck = seam[i];
+            if (tocheck < 0 || tocheck >= height()) {
                 return false;
             }
-            if(Math.abs(tocheck-seam[i+1])>1){
+            if (Math.abs(tocheck - seam[i + 1]) > 1) {
                 return false;
             }
         }
         return true;
     }
 
-    public boolean checkVerticalSeam(int[] seam){
-        if(seam.length!=height()){
+    private boolean checkVerticalSeam(int[] seam) {
+        if (seam.length != height()) {
             return false;
         }
-        for(int j=0;j<seam.length-1;j++){
-            int tocheck=seam[j];
-            if(tocheck<0||tocheck>=width()){
+        for (int j = 0; j < seam.length - 1; j++) {
+            int tocheck = seam[j];
+            if (tocheck < 0 || tocheck >= width()) {
                 return false;
             }
-            if(Math.abs(tocheck-seam[j+1])>1){
+            if (Math.abs(tocheck - seam[j + 1]) > 1) {
                 return false;
             }
         }
@@ -270,9 +267,4 @@ public class SeamCarver {
     }
 
 
-    public static void main(String[]args){
-       Picture p=new Picture(6,5);
-       SeamCarver tool=new SeamCarver(p);
-       System.out.println(tool.energy(0,0));
-    }
 }
