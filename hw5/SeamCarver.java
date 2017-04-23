@@ -4,11 +4,11 @@
 
 import edu.princeton.cs.algs4.Picture;
 
-import java.awt.*;
+import java.awt.Color;
 
 
 public class SeamCarver {
-    Picture mainframe;
+    private Picture mainframe;
 
     public SeamCarver(Picture picture) {
         mainframe = picture;
@@ -80,8 +80,8 @@ public class SeamCarver {
         double downmin = Double.MAX_VALUE;
         int leftindex = 0;
         for (int i = 0; i < matrix.length; i++) {
-            if (matrix[i][0] < downmin) {
-                downmin = matrix[i][0];
+            if (matrix[i][matrix[i].length-1] < downmin) {
+                downmin = matrix[i][matrix[i].length-1];
                 leftindex = i;
             }
         }
