@@ -218,9 +218,10 @@ public class SeamCarver {
         if (!checkHorzitonal(seam)) {
             throw new IllegalArgumentException();
         }
+        Picture copy = picture();
         Color white = new Color(0, 0, 0);
         for (int i = 0; i < seam.length; i++) {
-            mainframe.set(seam[i], i, white);
+            copy.set(seam[i], i, white);
         }
     } // remove horizontal seam from picture
 
@@ -228,9 +229,10 @@ public class SeamCarver {
         if (!checkVerticalSeam(seam)) {
             throw new IllegalArgumentException();
         }
+        Picture copy = picture();
         Color white = new Color(0, 0, 0);
         for (int i = 0; i < seam.length; i++) {
-            mainframe.set(i, seam[i], white);
+            picture().set(i, seam[i], white);
         }
     }  // remove vertical seam from picture
 
