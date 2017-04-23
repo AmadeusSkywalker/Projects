@@ -11,12 +11,11 @@ public class SeamCarver {
     private Picture mainframe;
 
     public SeamCarver(Picture picture) {
-        mainframe = picture;
+        mainframe = new Picture(picture);
     }
 
     public Picture picture() {
-        Picture newpic = new Picture(mainframe);
-        return new Picture(newpic);
+        return mainframe;
     }                     // current picture
 
     public int width() {
