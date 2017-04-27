@@ -1,5 +1,6 @@
 package lab14lib;
 import org.knowm.xchart.XYChart;
+import org.knowm.xchart.internal.chartpart.Chart;
 import org.knowm.xchart.QuickChart;
 import org.knowm.xchart.SwingWrapper;
 
