@@ -10,7 +10,7 @@ public class HuffmanDecoder {
         BinaryTrie trie = (BinaryTrie) or.readObject();
         BitSequence hugebits = (BitSequence) or.readObject();
         ArrayList<Match> matchlist = new ArrayList<>();
-        while (hugebits != null) {
+        while (hugebits != null && hugebits.length() != 0) {
             Match matched = trie.longestPrefixMatch(hugebits);
             matchlist.add(matched);
             BitSequence getout = matched.getSequence();
