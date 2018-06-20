@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "RottenProfessors/DisplayProfessorsViewController.swift"
+            timestampString = "546894724.3333369"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "12"
+            endingLineNumber = "12"
+            landmarkName = "DisplayProfessorsViewController"
+            landmarkType = "3">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "RottenProfessors.DisplayProfessorsViewController.__deallocating_deinit"
+                  moduleName = "RottenProfessors"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jingjingjia/Desktop/CostumApp/RottenProfessors/RottenProfessors/DisplayProfessorsViewController.swift"
+                  timestampString = "545798145.8114491"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "0"
+                  endingLineNumber = "0"
+                  offsetFromSymbolStart = "4">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "RottenProfessors.DisplayProfessorsViewController.__allocating_init(nibName: Swift.Optional&lt;Swift.String&gt;, bundle: Swift.Optional&lt;__ObjC.Bundle&gt;) -&gt; RottenProfessors.DisplayProfessorsViewController"
+                  moduleName = "RottenProfessors"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jingjingjia/Desktop/CostumApp/RottenProfessors/RottenProfessors/DisplayProfessorsViewController.swift"
+                  timestampString = "545798145.8177"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "0"
+                  endingLineNumber = "0"
+                  offsetFromSymbolStart = "12">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "RottenProfessors.DisplayProfessorsViewController.init(nibName: Swift.Optional&lt;Swift.String&gt;, bundle: Swift.Optional&lt;__ObjC.Bundle&gt;) -&gt; RottenProfessors.DisplayProfessorsViewController"
+                  moduleName = "RottenProfessors"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jingjingjia/Desktop/CostumApp/RottenProfessors/RottenProfessors/DisplayProfessorsViewController.swift"
+                  timestampString = "545798145.82046"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "24"
+                  endingLineNumber = "24"
+                  offsetFromSymbolStart = "85">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "RottenProfessors.DisplayProfessorsViewController.__allocating_init(coder: __ObjC.NSCoder) -&gt; Swift.Optional&lt;RottenProfessors.DisplayProfessorsViewController&gt;"
+                  moduleName = "RottenProfessors"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jingjingjia/Desktop/CostumApp/RottenProfessors/RottenProfessors/DisplayProfessorsViewController.swift"
+                  timestampString = "545798145.822289"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "0"
+                  endingLineNumber = "0"
+                  offsetFromSymbolStart = "4">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "RottenProfessors.DisplayProfessorsViewController.init(coder: __ObjC.NSCoder) -&gt; Swift.Optional&lt;RottenProfessors.DisplayProfessorsViewController&gt;"
+                  moduleName = "RottenProfessors"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jingjingjia/Desktop/CostumApp/RottenProfessors/RottenProfessors/DisplayProfessorsViewController.swift"
+                  timestampString = "545798145.8241169"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "24"
+                  endingLineNumber = "24"
+                  offsetFromSymbolStart = "54">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "RottenProfessors/DisplayProfessorsViewController.swift"
+            timestampString = "546894724.333869"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "148"
+            endingLineNumber = "148"
+            landmarkName = "collectionView(_:didSelectItemAt:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "RottenProfessors/DisplayProfessorsViewController.swift"
+            timestampString = "546894724.334114"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "147"
+            endingLineNumber = "147"
+            landmarkName = "collectionView(_:didSelectItemAt:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>
