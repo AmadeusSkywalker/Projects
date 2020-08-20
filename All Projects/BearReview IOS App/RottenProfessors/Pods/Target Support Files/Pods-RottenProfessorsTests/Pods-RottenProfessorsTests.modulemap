@@ -1,6 +1,0 @@
-framework module Pods_RottenProfessorsTests {
-  umbrella header "Pods-RottenProfessorsTests-umbrella.h"
-
-  export *
-  module * { export * }
-}

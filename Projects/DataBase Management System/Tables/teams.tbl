@@ -1,0 +1,4 @@
+TeamName string,City string,Sport string ,YearEstablished int,Mascot string,Stadium string
+'Cloud9','Los Angeles','eSports',2012,NOVALUE,NOVALUE
+'EnVyUs','Charlotte','eSports',2007,NOVALUE,NOVALUE
+
